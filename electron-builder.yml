@@ -1,5 +1,5 @@
-appId: com.electron.app
-productName: electron-app
+appId: com.dolce-gabbana-retail
+productName: dolce-gabbana-retail
 directories:
   buildResources: build
 files:
