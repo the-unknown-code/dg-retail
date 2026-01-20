@@ -1,11 +1,18 @@
 import { WebGLRenderer, WebGLRendererParameters } from 'three'
+import { M0Store } from './index'
+import { EffectComposer } from 'postprocessing'
+import M0SceneManager from '../view/SceneManager'
 
 export default class M0Renderer {
   static instance: M0Renderer
 
-  #r: WebGLRenderer
+  #store: M0Store
+  #manager: M0SceneManager
 
-  static M0Renderer(
+  #r: WebGLRenderer
+  #c: EffectComposer
+
+  static getInstance(
     options: Partial<WebGLRendererParameters>,
     canvas: HTMLCanvasElement
   ): M0Renderer {
@@ -16,14 +23,23 @@ export default class M0Renderer {
   }
 
   constructor(options: Partial<WebGLRendererParameters>, canvas: HTMLCanvasElement) {
+    this.#store = M0Store.getInstance()
+    this.#manager = M0SceneManager.getInstance()
+
     this.#r = new WebGLRenderer({ ...options, canvas })
+    this.#r.setPixelRatio(this.#store.dpr)
+
+    this.#c = new EffectComposer(this.#r)
   }
 
   resize(width: number, height: number): void {
     this.#r.setSize(width, height)
+    this.#c.setSize(width, height)
   }
 
-  render(time: number, dt: number): void {
-    console.log(time, dt)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  render(_time: number, _dt: number): void {
+    const { instance } = this.#manager.activeScene
+    this.#r.render(instance.scene, instance.camera)
   }
 }

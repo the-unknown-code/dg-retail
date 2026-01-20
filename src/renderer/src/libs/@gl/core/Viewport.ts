@@ -12,7 +12,7 @@ export default class M0Viewport {
   #y: Ref<number> = ref(0)
   #mouse: Vector2 = new Vector2(0, 0)
 
-  static M0Viewport(): M0Viewport {
+  static getInstance(): M0Viewport {
     if (!M0Viewport.instance) {
       M0Viewport.instance = new M0Viewport()
     }

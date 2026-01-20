@@ -14,21 +14,34 @@ const scope = effectScope()
 
 const resize = useDebounceFn((): void => {
   if (!$three) return
-  $three.resize(width.value, height.value)
+  $three.resize()
 }, 100)
 
 const initialize = (): void => {
   if (!$canvas.value) return
 
   $three = new M0Application({}, $canvas.value)
-  resize()
+  $three.start()
 }
 
 scope.run(() => {
-  watch([width, height], resize)
+  watch([width, height], () => {
+    resize()
+  })
 })
 
 onMounted(() => {
   initialize()
 })
 </script>
+
+<style lang="scss" scoped>
+#canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 10px solid red;
+}
+</style>
