@@ -1,5 +1,5 @@
 <template>
-  <canvas id="canvas" ref="$canvas" />
+  <div id="gl" ref="$gl"></div>
 </template>
 
 <script setup lang="ts">
@@ -8,7 +8,7 @@ import { useDebounceFn, useWindowSize } from '@vueuse/core'
 import { ref, onMounted, watch, effectScope } from 'vue'
 
 const { width, height } = useWindowSize()
-const $canvas = ref<HTMLCanvasElement>()
+const $gl = ref<HTMLCanvasElement>()
 let $three: M0Application
 const scope = effectScope()
 
@@ -18,9 +18,11 @@ const resize = useDebounceFn((): void => {
 }, 100)
 
 const initialize = (): void => {
-  if (!$canvas.value) return
+  if (!$gl.value) return
 
-  $three = new M0Application({}, $canvas.value)
+  $three = new M0Application()
+  $gl.value.appendChild($three.renderer.domElement)
+
   $three.start()
 }
 
@@ -35,13 +37,21 @@ onMounted(() => {
 })
 </script>
 
-<style lang="scss" scoped>
-#canvas {
+<style lang="scss">
+#gl {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  border: 10px solid red;
+
+  canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 10px solid red;
+  }
 }
 </style>

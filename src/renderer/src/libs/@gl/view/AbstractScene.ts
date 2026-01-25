@@ -11,7 +11,7 @@ export default class M0AbstractScene {
     this.#viewport = M0Viewport.getInstance()
 
     this.#scene = new Scene()
-    this.#camera = new PerspectiveCamera(17.1, 1, 0.1, 1000)
+    this.#camera = new PerspectiveCamera(75, this.#viewport.width / this.#viewport.height, 0.1, 100)
     this.#camera.position.z = 10
   }
 

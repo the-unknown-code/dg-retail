@@ -1,12 +1,14 @@
 import { WebGLRendererParameters } from 'three'
 import Tempus, { TempusCallback } from 'tempus'
-import { M0Renderer, M0Store, M0Viewport } from './core'
+import { M0Renderer, M0Store, M0Viewport, M0Loader } from './core'
 import M0SceneManager from './view/SceneManager'
+import { MANIFEST } from './data/manifest'
 
 export default class M0Application {
   #canRender: boolean = false
 
   #store: M0Store
+  #loader: M0Loader
   #manager: M0SceneManager
   #viewport: M0Viewport
   #renderer: M0Renderer
@@ -14,13 +16,22 @@ export default class M0Application {
   #renderFn: TempusCallback
   #rafCancelFn: (() => void) | undefined
 
-  constructor(options: Partial<WebGLRendererParameters>, canvas: HTMLCanvasElement) {
+  constructor() {
     this.#store = M0Store.getInstance()
+    this.#loader = M0Loader.getInstance()
     this.#viewport = M0Viewport.getInstance()
     this.#manager = M0SceneManager.getInstance()
 
-    this.#renderer = M0Renderer.getInstance(options, canvas)
+    void this.#loader
+
+    this.#renderer = M0Renderer.getInstance()
     this.#renderFn = this.render.bind(this)
+
+    this.initialize()
+  }
+
+  async initialize(): Promise<void> {
+    await this.#loader.preload(MANIFEST)
   }
 
   resize(): void {

@@ -2,6 +2,7 @@ export default class M0Store {
   static instance: M0Store
 
   #dpr: number = 1
+  #assets: Record<string, any> = {}
 
   static getInstance(): M0Store {
     if (!M0Store.instance) {
@@ -11,6 +12,16 @@ export default class M0Store {
   }
   constructor() {
     this.#dpr = Math.min(window.devicePixelRatio, 2)
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  set(id: string, asset: any): void {
+    this.#assets[id] = asset
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  get(id: string): any {
+    return this.#assets[id]
   }
 
   get dpr(): number {
