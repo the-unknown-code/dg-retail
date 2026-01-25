@@ -1,4 +1,3 @@
-import { WebGLRendererParameters } from 'three'
 import Tempus, { TempusCallback } from 'tempus'
 import { M0Renderer, M0Store, M0Viewport, M0Loader } from './core'
 import M0SceneManager from './view/SceneManager'
@@ -20,10 +19,8 @@ export default class M0Application {
     this.#store = M0Store.getInstance()
     this.#loader = M0Loader.getInstance()
     this.#viewport = M0Viewport.getInstance()
+
     this.#manager = M0SceneManager.getInstance()
-
-    void this.#loader
-
     this.#renderer = M0Renderer.getInstance()
     this.#renderFn = this.render.bind(this)
 
@@ -32,6 +29,7 @@ export default class M0Application {
 
   async initialize(): Promise<void> {
     await this.#loader.preload(MANIFEST)
+    this.#manager.initialize()
   }
 
   resize(): void {

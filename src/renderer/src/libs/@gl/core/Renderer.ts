@@ -37,7 +37,13 @@ export default class M0Renderer {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   render(_time: number, _dt: number): void {
     const { instance } = this.#manager.activeScene
+    if (!instance) return
+
     this.#r.render(instance.scene, instance.camera)
+  }
+
+  get r(): WebGLRenderer {
+    return this.#r
   }
 
   get domElement(): HTMLCanvasElement {

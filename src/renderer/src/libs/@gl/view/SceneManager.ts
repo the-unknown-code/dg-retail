@@ -14,10 +14,6 @@ export default class M0SceneManager {
     return M0SceneManager.instance
   }
 
-  constructor() {
-    this.initialize()
-  }
-
   initialize(): void {
     this.#scenes.push(new SeaScene())
   }

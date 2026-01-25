@@ -1,100 +1,66 @@
-import {
-  FloatType,
-  Mesh,
-  OrthographicCamera,
-  PlaneGeometry,
-  RawShaderMaterial,
-  WebGLRenderTarget
-} from 'three'
+import { ShaderChunk, Texture, Vector3 } from 'three'
+import { M0Renderer, M0Store } from '../../core'
 import M0AbstractScene from '../AbstractScene'
+import Caustics from './classes/Caustics'
+import Pool from './classes/Pool'
+import Water from './classes/Water'
+import WaterSimulation from './classes/WaterSimulation'
 
-import vertexShader from '../../shaders/simulation/vertex.glsl?raw'
-import dropFragmentShader from '../../shaders/simulation/drop_fragment.glsl?raw'
-import normalFragmentShader from '../../shaders/simulation/normal_fragment.glsl?raw'
-import updateFragmentShader from '../../shaders/simulation/update_fragment.glsl?raw'
+import utils from '../../shaders/utils.glsl?raw'
 
 export default class SeaScene extends M0AbstractScene {
-  _camera: OrthographicCamera
-  _geometry: PlaneGeometry
+  #waterSimulation: WaterSimulation
+  #water: Water
+  #caustics: Caustics
+  #pool: Pool
 
-  _rtA: WebGLRenderTarget
-  _rtB: WebGLRenderTarget
-
-  _texture: WebGLRenderTarget
-
-  _dropShader: RawShaderMaterial
-  _normalShader: RawShaderMaterial
-  _updateShader: RawShaderMaterial
-
-  _dropMesh: Mesh
-  _normalMesh: Mesh
-  _updateMesh: Mesh
-
-  //#renderer: M0Renderer
+  #light: Vector3
+  #renderer: M0Renderer
+  #store: M0Store
 
   constructor() {
     super()
 
-    // this.#renderer = M0Renderer.getInstance()
+    this.#store = M0Store.getInstance()
 
-    this._camera = new OrthographicCamera(0, 1, 1, 0, 0, 2000)
-    this._geometry = new PlaneGeometry(2, 2)
-    this._rtA = new WebGLRenderTarget(256, 256, { type: FloatType })
-    this._rtB = new WebGLRenderTarget(256, 256, { type: FloatType })
+    this.camera.position.set(0, 2, 3)
+    this.camera.rotation.set(-0.2, 0, 0)
+    this.scene.environment = this.#store.get('env')
 
-    this._texture = this._rtA
+    ShaderChunk['utils'] = utils
+    this.#renderer = M0Renderer.getInstance()
+    this.#light = new Vector3(0.7559289460184544, 0.7559289460184544, -0.3779644730092272)
 
-    this._dropShader = new RawShaderMaterial({
-      uniforms: {
-        center: { value: [0, 0] },
-        radius: { value: 0 },
-        strength: { value: 0 },
-        texture: { value: null }
-      },
-      vertexShader,
-      fragmentShader: dropFragmentShader
-    })
+    this.#waterSimulation = new WaterSimulation(this.#renderer)
+    this.#water = new Water(this.#renderer, this.#light, this.camera)
+    this.#caustics = new Caustics(this.#renderer, this.#water.geometry, this.#light)
+    this.#pool = new Pool(this.#renderer, this.#light, this.camera)
 
-    this._normalShader = new RawShaderMaterial({
-      uniforms: {
-        delta: { value: [1 / 256, 1 / 256] }, // TODO: Remove this useless uniform and hardcode it in shaders?
-        texture: { value: null }
-      },
-      vertexShader,
-      fragmentShader: normalFragmentShader
-    })
-
-    this._updateShader = new RawShaderMaterial({
-      uniforms: {
-        delta: { value: [1 / 256, 1 / 256] }, // TODO: Remove this useless uniform and hardcode it in shaders?
-        texture: { value: null }
-      },
-      vertexShader,
-      fragmentShader: updateFragmentShader
-    })
-
-    this._dropMesh = new Mesh(this._geometry, this._dropShader)
-    this._normalMesh = new Mesh(this._geometry, this._normalShader)
-    this._updateMesh = new Mesh(this._geometry, this._updateShader)
+    for (let i = 0; i < 20; i++) {
+      this.#waterSimulation.addDrop(
+        Math.random() * 2 - 1,
+        Math.random() * 2 - 1,
+        Math.random() * 0.3 + 0.01,
+        i & 1 ? 0.02 : -0.02
+      )
+    }
   }
 
-  // Add a drop of water at the (x, y) coordinate (in the range [-1, 1])
-  addDrop(x: number, y: number, radius: number, strength: number): void {
-    this._dropShader.uniforms.center.value = [x, y]
-    this._dropShader.uniforms.radius.value = radius
-    this._dropShader.uniforms.strength.value = strength
-    this._dropShader.uniforms.texture.value = this._texture
-  }
+  override render(_time: number, _dt: number): void {
+    console.log('render')
+    super.render(_time, _dt)
 
-  stepSimulation(): void {
-    this.compile(this._updateMesh)
-  }
+    this.#waterSimulation.stepSimulation()
+    this.#waterSimulation.updateNormals()
 
-  updateNormals(): void {
-    this.compile(this._normalMesh)
-  }
+    const waterTexture: Texture = this.#waterSimulation.texture
+    this.#caustics.update(waterTexture)
 
-  compile(_mesh: Mesh): void {
-    console.log('compile', _mesh)
+    this.#renderer.r.setRenderTarget(null)
+    this.#renderer.r.setClearColor(0xffffff, 1)
+
+    const causticTexture: Texture = this.#caustics.texture
+    this.#water.update(waterTexture, causticTexture)
+    this.#pool.update(waterTexture, causticTexture)
   }
 }
