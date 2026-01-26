@@ -9,7 +9,7 @@ import WaterSimulation from './classes/WaterSimulation'
 import utils from '../../shaders/utils.glsl?raw'
 import { randomFloat } from '../../libs/Math'
 
-const THRESHOLD_PX = 3
+const THRESHOLD_PX = 5
 
 export default class SeaScene extends M0AbstractScene {
   #waterSimulation: WaterSimulation
@@ -35,9 +35,11 @@ export default class SeaScene extends M0AbstractScene {
     this.#waterSimulation = new WaterSimulation(this.#renderer)
     this.#water = new Water(this.#renderer, this.#light, this.camera)
     this.#caustics = new Caustics(this.#renderer, this.#water.geometry, this.#light)
+
+    this.#lastMouse.copy(this.viewport.mouseGL)
+
     // this.#pool = new Pool(this.#renderer, this.#light, this.camera)
 
-    /*
     for (let i = 0; i < 20; i++) {
       this.#waterSimulation.addDrop(
         Math.random() * 2 - 1,
@@ -46,7 +48,6 @@ export default class SeaScene extends M0AbstractScene {
         i & 1 ? 0.05 : -0.05
       )
     }
-    */
   }
 
   override render(_time: number, _dt: number): void {
@@ -61,11 +62,10 @@ export default class SeaScene extends M0AbstractScene {
     const distPxSq = dxPx * dxPx + dyPx * dyPx
 
     if (distPxSq > THRESHOLD_PX * THRESHOLD_PX) {
-      console.log(this.viewport.speed)
       this.#waterSimulation.addDrop(
         this.viewport.mouseGL.x,
         this.viewport.mouseGL.y,
-        randomFloat(0.02, 0.03) * MathUtils.clamp(this.viewport.speed, 0.5, 5),
+        randomFloat(0.02, 0.03) * MathUtils.clamp(this.viewport.speed, 0.85, 6.5),
         randomFloat(0.02, 0.05)
       )
 

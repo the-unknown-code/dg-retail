@@ -37,6 +37,7 @@ export default class Water {
         tiles: { value: this.#store.get('tile') },
         sky: { value: this.#store.get('env') },
         water: { value: null },
+        elevationScale: { value: 1 },
         causticTex: { value: null },
         underwater: { value: false }
       },
@@ -66,7 +67,7 @@ export default class Water {
   }
 
   resize(): void {
-    const PADDING = 40
+    const PADDING = 80
     const dist: number = this._camera.position.y
 
     // Calculate half-heights/widths in world units, then add padding in same units.

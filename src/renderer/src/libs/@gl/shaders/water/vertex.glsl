@@ -1,4 +1,5 @@
 uniform sampler2D water;
+uniform float elevationScale;
 
 varying vec3 eye;
 varying vec3 pos;
@@ -7,7 +8,7 @@ varying vec3 pos;
 void main() {
   vec4 info = texture2D(water, position.xy * 0.5 + 0.5);
   pos = position.xzy;
-  pos.y += info.r;
+  pos.y += info.r * elevationScale;
 
   vec3 axis_x = vec3(modelViewMatrix[0].x, modelViewMatrix[0].y, modelViewMatrix[0].z);
   vec3 axis_y = vec3(modelViewMatrix[1].x, modelViewMatrix[1].y, modelViewMatrix[1].z);

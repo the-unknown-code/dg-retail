@@ -1,10 +1,11 @@
-const float IOR_AIR = 1.1;
-const float IOR_WATER = 1.333;
+const float IOR_AIR = 1.05;
+const float IOR_WATER = 1.777;
 
-const vec3 abovewaterColor = vec3(0.25, 1.0, 1.25);
+const vec3 COLOR_62FEF6 = vec3(98.0 / 255.0, 254.0 / 255.0, 246.0 / 255.0);
+const vec3 abovewaterColor = COLOR_62FEF6;
 const vec3 underwaterColor = vec3(.4, 0.9, 1.0);
 
-const float poolHeight = .5;
+const float poolHeight = .4;
 
 uniform vec3 light;
 uniform sampler2D tiles;
@@ -57,8 +58,6 @@ vec3 getWallColor(vec3 point) {
 
     scale += diffuse * 0.5;
   }
-
-
-
+  
   return wallColor * scale;
 }
