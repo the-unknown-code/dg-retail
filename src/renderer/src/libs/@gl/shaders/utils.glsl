@@ -2,8 +2,10 @@ const float IOR_AIR = 1.05;
 const float IOR_WATER = 1.777;
 
 const vec3 COLOR_62FEF6 = vec3(98.0 / 255.0, 254.0 / 255.0, 246.0 / 255.0);
+const vec3 COLOR_007EA2 = vec3(255.0 / 255.0, 126.0 / 255.0, 162.0 / 255.0);
+
 const vec3 abovewaterColor = COLOR_62FEF6;
-const vec3 underwaterColor = vec3(.4, 0.9, 1.0);
+const vec3 underwaterColor = COLOR_007EA2;
 
 const float poolHeight = .4;
 

@@ -59,9 +59,9 @@ void main() {
   } else {
     vec3 reflectedRay = reflect(incomingRay, normal);
     vec3 refractedRay = refract(incomingRay, normal, IOR_AIR / IOR_WATER);
-    float fresnel = mix(0.25, 1.0, pow(1.0 - dot(normal, -incomingRay), 3.0));
+    float fresnel = mix(0.25, 1.0, pow(1.0 - dot(normal, -incomingRay), 3.));
 
-    vec3 reflectedColor = getSurfaceRayColor(pos, reflectedRay, abovewaterColor);
+    vec3 reflectedColor = getSurfaceRayColor(pos, reflectedRay, underwaterColor);
     vec3 refractedColor = getSurfaceRayColor(pos, refractedRay, abovewaterColor);
 
     gl_FragColor = vec4(mix(refractedColor, reflectedColor, fresnel), 1.0);

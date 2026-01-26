@@ -10,7 +10,7 @@ export default class M0Viewport {
   #height: Ref<number> = ref(0)
   #x: Ref<number> = ref(0)
   #y: Ref<number> = ref(0)
-  #mouse: Vector2 = new Vector2(0, 0)
+  #mouse: Vector2 = new Vector2(0.5, 0.5)
 
   #prevMouseGL: Vector2 = new Vector2(0, 0)
   #mouseGL: Vector2 = new Vector2(0, 0)
@@ -67,7 +67,7 @@ export default class M0Viewport {
   }
 
   get mouseGL(): Vector2 {
-    return this.#mouseGL
+    return this.#mouse
   }
 
   get mouse(): Vector2 {
