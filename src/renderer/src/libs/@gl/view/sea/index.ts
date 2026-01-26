@@ -23,13 +23,13 @@ export default class SeaScene extends M0AbstractScene {
 
     this.#store = M0Store.getInstance()
 
-    this.camera.position.set(0, 2, 3)
-    this.camera.rotation.set(-0.2, 0, 0)
+    this.camera.position.set(-0.15, 2, -0.15)
+    this.camera.rotation.set(-Math.PI / 2, 0, 0)
     this.scene.environment = this.#store.get('env')
 
     ShaderChunk['utils'] = utils
     this.#renderer = M0Renderer.getInstance()
-    this.#light = new Vector3(0.7559289460184544, 0.7559289460184544, -0.3779644730092272)
+    this.#light = new Vector3(0, 0.7559289460184544, -0)
 
     this.#waterSimulation = new WaterSimulation(this.#renderer)
     this.#water = new Water(this.#renderer, this.#light, this.camera)
@@ -41,13 +41,12 @@ export default class SeaScene extends M0AbstractScene {
         Math.random() * 2 - 1,
         Math.random() * 2 - 1,
         Math.random() * 0.3 + 0.01,
-        i & 1 ? 0.02 : -0.02
+        i & 1 ? 0.12 : -0.02
       )
     }
   }
 
   override render(_time: number, _dt: number): void {
-    console.log('render')
     super.render(_time, _dt)
 
     this.#waterSimulation.stepSimulation()

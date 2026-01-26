@@ -96,7 +96,7 @@ export default class WaterSimulation {
 
   compile(_mesh: Mesh): void {
     const oldRT: WebGLRenderTarget = this._rt
-    const newRT: WebGLRenderTarget = oldRT === this._rtA ? this._rtB : this._rtA
+    const newRT: WebGLRenderTarget = this._rt === this._rtA ? this._rtB : this._rtA
 
     if (_mesh.material instanceof ShaderMaterial) {
       _mesh.material.uniforms!.tDiffuse.value = oldRT.texture

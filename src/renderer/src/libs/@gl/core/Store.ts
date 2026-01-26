@@ -2,6 +2,8 @@ export default class M0Store {
   static instance: M0Store
 
   #dpr: number = 1
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   #assets: Record<string, any> = {}
 
   static getInstance(): M0Store {

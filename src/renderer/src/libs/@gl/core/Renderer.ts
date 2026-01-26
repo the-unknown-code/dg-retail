@@ -23,7 +23,13 @@ export default class M0Renderer {
     this.#store = M0Store.getInstance()
     this.#manager = M0SceneManager.getInstance()
 
-    this.#r = new WebGLRenderer()
+    this.#r = new WebGLRenderer({
+      antialias: false,
+      alpha: true
+    })
+
+    this.#r.autoClear = false
+
     this.#r.setPixelRatio(this.#store.dpr)
 
     this.#c = new EffectComposer(this.#r)
