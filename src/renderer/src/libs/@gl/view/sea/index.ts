@@ -1,5 +1,5 @@
 import { ShaderChunk, Texture, Vector3 } from 'three'
-import { M0Renderer, M0Store } from '../../core'
+import { M0Renderer } from '../../core'
 import M0AbstractScene from '../AbstractScene'
 import Caustics from './classes/Caustics'
 import Pool from './classes/Pool'
@@ -16,20 +16,16 @@ export default class SeaScene extends M0AbstractScene {
 
   #light: Vector3
   #renderer: M0Renderer
-  #store: M0Store
 
   constructor() {
     super()
 
-    this.#store = M0Store.getInstance()
-
-    this.camera.position.set(-0.15, 2, -0.15)
+    this.camera.position.set(0, 2.4, 0)
     this.camera.rotation.set(-Math.PI / 2, 0, 0)
-    this.scene.environment = this.#store.get('env')
 
     ShaderChunk['utils'] = utils
     this.#renderer = M0Renderer.getInstance()
-    this.#light = new Vector3(0, 0.7559289460184544, -0)
+    this.#light = new Vector3(0.007559289460184544, 0.7559289460184544, -0.00779644730092272)
 
     this.#waterSimulation = new WaterSimulation(this.#renderer)
     this.#water = new Water(this.#renderer, this.#light, this.camera)
@@ -57,9 +53,17 @@ export default class SeaScene extends M0AbstractScene {
 
     this.#renderer.r.setRenderTarget(null)
     this.#renderer.r.setClearColor(0xffffff, 1)
+    this.#renderer.r.clear()
 
     const causticTexture: Texture = this.#caustics.texture
+
+    // this.#debug.update(causticTexture)
     this.#water.update(waterTexture, causticTexture)
     this.#pool.update(waterTexture, causticTexture)
+  }
+
+  override resize(): void {
+    super.resize()
+    this.#water.resize()
   }
 }

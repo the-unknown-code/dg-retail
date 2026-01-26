@@ -1,6 +1,7 @@
 import {
   BackSide,
   FrontSide,
+  MathUtils,
   Mesh,
   PerspectiveCamera,
   PlaneGeometry,
@@ -57,6 +58,14 @@ export default class Water {
     this._shader.side = BackSide
     this._shader.uniforms.underwater.value = false
     this.#renderer.r.render(this._mesh, this._camera)
+  }
+
+  resize(): void {
+    const dist: number = this._camera.position.y
+    const cHeight = 2 * dist * Math.tan(MathUtils.degToRad(this._camera.fov * 0.5))
+    const cWidth = cHeight * this._camera.aspect
+
+    this._mesh.scale.set(cWidth / 2, 1, cHeight / 2)
   }
 
   get geometry(): PlaneGeometry {

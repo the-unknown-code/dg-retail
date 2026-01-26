@@ -14,4 +14,5 @@ void main() {
   if (pos.y < info.r) {
     gl_FragColor.rgb *= underwaterColor * 1.2;
   }
+
 }

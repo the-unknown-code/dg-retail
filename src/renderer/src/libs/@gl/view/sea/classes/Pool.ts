@@ -55,6 +55,7 @@ export default class Pool {
     })
 
     this._mesh = new Mesh(this._geometry, this._shader)
+    this._mesh.visible = false
   }
 
   update(waterTexture: Texture, causticTexture: Texture): void {

@@ -20,6 +20,7 @@ export default class M0SceneManager {
 
   resize(): void {
     this.#scenes.forEach((scene) => {
+      console.log(scene)
       scene.resize()
     })
   }

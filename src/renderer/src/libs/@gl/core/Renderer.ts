@@ -46,6 +46,7 @@ export default class M0Renderer {
     if (!instance) return
 
     this.#r.render(instance.scene, instance.camera)
+    //this.#c.render()
   }
 
   get r(): WebGLRenderer {
