@@ -1,8 +1,8 @@
-const float IOR_AIR = 1.0;
+const float IOR_AIR = 1.1;
 const float IOR_WATER = 1.333;
 
 const vec3 abovewaterColor = vec3(0.25, 1.0, 1.25);
-const vec3 underwaterColor = vec3(0.4, 0.9, 1.0);
+const vec3 underwaterColor = vec3(.4, 0.9, 1.0);
 
 const float poolHeight = .5;
 
@@ -39,6 +39,7 @@ vec3 getWallColor(vec3 point) {
     wallColor = texture2D(tiles, point.xz * 0.5 + 0.5).rgb;
     normal = vec3(0.0, 1.0, 0.0);
   }
+  
 
   scale /= length(point); /* pool ambient occlusion */
 
@@ -56,6 +57,8 @@ vec3 getWallColor(vec3 point) {
 
     scale += diffuse * 0.5;
   }
+
+
 
   return wallColor * scale;
 }

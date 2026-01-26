@@ -1,6 +1,6 @@
 import { WebGLRenderer } from 'three'
 import { M0Store } from './index'
-import { EffectComposer } from 'postprocessing'
+
 import M0SceneManager from '../view/SceneManager'
 
 export default class M0Renderer {
@@ -10,7 +10,6 @@ export default class M0Renderer {
   #manager: M0SceneManager
 
   #r: WebGLRenderer
-  #c: EffectComposer
 
   static getInstance(): M0Renderer {
     if (!M0Renderer.instance) {
@@ -29,15 +28,12 @@ export default class M0Renderer {
     })
 
     this.#r.autoClear = false
-
     this.#r.setPixelRatio(this.#store.dpr)
-
-    this.#c = new EffectComposer(this.#r)
   }
 
   resize(width: number, height: number): void {
     this.#r.setSize(width, height)
-    this.#c.setSize(width, height)
+    //  this.#c.setSize(width, height)
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -46,7 +42,7 @@ export default class M0Renderer {
     if (!instance) return
 
     this.#r.render(instance.scene, instance.camera)
-    //this.#c.render()
+    // this.#c.render()
   }
 
   get r(): WebGLRenderer {

@@ -49,3 +49,14 @@ export function wrapValue(value: number, lowBound: number, highBound: number): n
   const range = highBound - lowBound
   return ((((value - lowBound) % range) + range) % range) + lowBound
 }
+
+/**
+ * Returns a random number between min and max, inclusive.
+ */
+export function randomInt(min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
+export function randomFloat(min: number, max: number): number {
+  return Math.random() * (max - min) + min
+}

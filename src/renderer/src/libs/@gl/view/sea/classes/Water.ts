@@ -60,12 +60,24 @@ export default class Water {
     this.#renderer.r.render(this._mesh, this._camera)
   }
 
+  pixelsToWorld(px: number, cHeight: number): number {
+    // window.innerHeight is the projection height for this camera
+    return cHeight * (px / window.innerHeight)
+  }
+
   resize(): void {
+    const PADDING = 40
     const dist: number = this._camera.position.y
+
+    // Calculate half-heights/widths in world units, then add padding in same units.
     const cHeight = 2 * dist * Math.tan(MathUtils.degToRad(this._camera.fov * 0.5))
     const cWidth = cHeight * this._camera.aspect
 
-    this._mesh.scale.set(cWidth / 2, 1, cHeight / 2)
+    // Convert 120px padding to world units.
+    const paddingWorldH = this.pixelsToWorld(PADDING, cHeight)
+    const paddingWorldW = paddingWorldH * this._camera.aspect
+
+    this._mesh.scale.set((cWidth + paddingWorldW) / 2, 1, (cHeight + paddingWorldH) / 2)
   }
 
   get geometry(): PlaneGeometry {

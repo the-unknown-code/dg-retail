@@ -13,7 +13,7 @@ export default class M0Store {
     return M0Store.instance
   }
   constructor() {
-    this.#dpr = Math.min(window.devicePixelRatio, 1)
+    this.#dpr = Math.min(window.devicePixelRatio, 1.5)
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

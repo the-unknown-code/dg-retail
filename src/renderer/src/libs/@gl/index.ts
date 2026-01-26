@@ -39,6 +39,7 @@ export default class M0Application {
   }
 
   render(time: number, dt: number): void {
+    this.#viewport.render(time, dt)
     this.#manager.render(time, dt)
     this.#renderer.render(time, dt)
   }
