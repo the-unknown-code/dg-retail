@@ -10,7 +10,7 @@ out vec3 ray;
 
 /* project the ray onto the plane */
 vec3 project(vec3 origin, vec3 rayDir, vec3 refractedLight) {
-  vec2 tcube = intersectCube(
+  vec2 tcube = _intersectCube(
     origin,
     rayDir,
     vec3(-1.0, -poolHeight, -1.0),

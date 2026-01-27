@@ -2,10 +2,10 @@ const float IOR_AIR = 1.05;
 const float IOR_WATER = 1.777;
 
 const vec3 COLOR_62FEF6 = vec3(98.0 / 255.0, 254.0 / 255.0, 246.0 / 255.0);
-const vec3 COLOR_007EA2 = vec3(255.0 / 255.0, 126.0 / 255.0, 162.0 / 255.0);
+const vec3 COLOR_0DE4DC = vec3(13.0 / 255.0, 228.0 / 255.0, 220.0 / 255.0);
 
 const vec3 abovewaterColor = COLOR_62FEF6;
-const vec3 underwaterColor = COLOR_007EA2;
+const vec3 underwaterColor = COLOR_0DE4DC;
 
 const float poolHeight = .4;
 
@@ -15,7 +15,7 @@ uniform sampler2D causticTex;
 uniform sampler2D water;
 
 
-vec2 intersectCube(vec3 origin, vec3 ray, vec3 cubeMin, vec3 cubeMax) {
+vec2 _intersectCube(vec3 origin, vec3 ray, vec3 cubeMin, vec3 cubeMax) {
   vec3 tMin = (cubeMin - origin) / ray;
   vec3 tMax = (cubeMax - origin) / ray;
   vec3 t1 = min(tMin, tMax);
@@ -23,6 +23,19 @@ vec2 intersectCube(vec3 origin, vec3 ray, vec3 cubeMin, vec3 cubeMax) {
   float tNear = max(max(t1.x, t1.y), t1.z);
   float tFar = min(min(t2.x, t2.y), t2.z);
   return vec2(tNear, tFar);
+}
+
+vec2 intersectCube(vec3 origin, vec3 ray, vec3 cubeMin, vec3 cubeMax) {
+
+  // If ray is not going down, never intersect anything
+  if (ray.y >= 0.0 || abs(ray.y) < 1e-4) {
+    return vec2(1e9, 1e9);
+  }
+
+  // Only intersect the floor
+  float t = (cubeMin.y - origin.y) / ray.y;
+
+  return vec2(t, t);
 }
 
 

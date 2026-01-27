@@ -9,7 +9,7 @@ import WaterSimulation from './classes/WaterSimulation'
 import utils from '../../shaders/utils.glsl?raw'
 import { randomFloat } from '../../libs/Math'
 
-const THRESHOLD_PX = 5
+const THRESHOLD_PX = 1
 
 export default class SeaScene extends M0AbstractScene {
   #waterSimulation: WaterSimulation

@@ -10,10 +10,10 @@ export default class M0Viewport {
   #height: Ref<number> = ref(0)
   #x: Ref<number> = ref(0)
   #y: Ref<number> = ref(0)
-  #mouse: Vector2 = new Vector2(0.5, 0.5)
+  #mouse: Vector2 = new Vector2(-1, -1)
 
-  #prevMouseGL: Vector2 = new Vector2(0, 0)
-  #mouseGL: Vector2 = new Vector2(0, 0)
+  #prevMouseGL: Vector2 = new Vector2(-1, -1)
+  #mouseGL: Vector2 = new Vector2(-1, -1)
   #speed: number = 0
 
   static getInstance(): M0Viewport {
@@ -33,8 +33,8 @@ export default class M0Viewport {
     this.#y = y
     this.#mouse = new Vector2(0, 0)
 
-    this.#prevMouseGL = new Vector2(0, 0)
-    this.#mouseGL = new Vector2(0, 0)
+    this.#prevMouseGL = new Vector2(-1, -1)
+    this.#mouseGL = new Vector2(-1, -1)
   }
 
   render(_time: number, dt: number): void {
@@ -67,7 +67,7 @@ export default class M0Viewport {
   }
 
   get mouseGL(): Vector2 {
-    return this.#mouse
+    return this.#mouseGL
   }
 
   get mouse(): Vector2 {
