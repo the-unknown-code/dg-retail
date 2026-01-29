@@ -30,7 +30,7 @@ export default class Water {
 
     this.#store = M0Store.getInstance()
 
-    this._geometry = new PlaneGeometry(2, 2, 1024, 1024)
+    this._geometry = new PlaneGeometry(2, 2, 2048, 2048)
     this._shader = new ShaderMaterial({
       uniforms: {
         light: { value: light },
@@ -67,7 +67,7 @@ export default class Water {
   }
 
   resize(): void {
-    const PADDING = 40
+    const PADDING = 80
     const dist: number = this._camera.position.y
 
     // Calculate half-heights/widths in world units, then add padding in same units.

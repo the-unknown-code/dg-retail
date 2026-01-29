@@ -1,3 +1,4 @@
+
 precision highp float;
 precision highp int;
 
@@ -26,6 +27,6 @@ void main() {
   gl_FragColor.r *=
     1.0 / (1.0 + exp(
       -200.0 / (1.0 + 10.0 * (t.y - t.x)) *
-      (newPos.y - refractedLight.y * t.y - 2.0 / 112.0)
+      (newPos.y - refractedLight.y * t.y - 2.0 / 2.0)
     ));
 }
