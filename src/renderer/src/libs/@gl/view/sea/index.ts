@@ -75,6 +75,10 @@ export default class SeaScene extends M0AbstractScene {
     )
   }
 
+  pauseDrops(): void {
+    this.#pause()
+  }
+
   override render(_time: number, _dt: number): void {
     super.render(_time, _dt)
 
