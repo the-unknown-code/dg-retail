@@ -8,6 +8,8 @@ import WaterSimulation from './classes/WaterSimulation'
 
 import utils from '../../shaders/utils.glsl?raw'
 import { randomFloat } from '../../libs/Math'
+import { useIntervalFn } from '@vueuse/core'
+import { random } from '@renderer/libs/@math'
 
 const THRESHOLD_PX = 1
 
@@ -21,6 +23,10 @@ export default class SeaScene extends M0AbstractScene {
   #renderer: M0Renderer
 
   #lastMouse: Vector2 = new Vector2(0, 0)
+
+  #addDrop: () => void
+  #pause!: () => void
+  #resume: () => void
 
   constructor() {
     super()
@@ -40,6 +46,7 @@ export default class SeaScene extends M0AbstractScene {
 
     // this.#pool = new Pool(this.#renderer, this.#light, this.camera)
 
+    /*
     for (let i = 0; i < 20; i++) {
       this.#waterSimulation.addDrop(
         Math.random() * 2 - 1,
@@ -48,6 +55,24 @@ export default class SeaScene extends M0AbstractScene {
         i & 1 ? 0.05 : -0.05
       )
     }
+    */
+
+    this.#addDrop = this.addDrop.bind(this)
+
+    const { pause, resume } = useIntervalFn(this.#addDrop, 300, { immediate: false })
+    this.#pause = pause
+    this.#resume = resume
+
+    this.#resume()
+  }
+
+  addDrop(): void {
+    this.#waterSimulation.addDrop(
+      Math.random() * 2 - 1,
+      Math.random() * 2 - 1,
+      Math.random() * 0.2 + 0.01,
+      random(-0.005, 0.005)
+    )
   }
 
   override render(_time: number, _dt: number): void {

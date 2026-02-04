@@ -1,4 +1,9 @@
 body {
   font-family: 'Futura Cyrillic', sans-serif;
   color: var(--blue);
+
+  * {
+    user-select: none !important;
+    -webkit-highlight: none !important;
+  }
 }

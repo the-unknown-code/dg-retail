@@ -1,64 +1,119 @@
 <template>
   <div class="start">
     <div ref="$circle" class="circle"></div>
-    <button>
+    <button :class="{ 'is-pressed': isStartPressed }">
       <img src="/assets/button.webp" alt="start" draggable="false" />
       <p>Start</p>
     </button>
+    <div class="start__footer">
+      <p>PRESS START TO CREATE YOUR LIGHT BLUE SOUND WAVE</p>
+      <p>اضغط على زر البدء لإنشاء موجة صوتية زرقاء فاتحة</p>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import gsap from 'gsap'
+import { ref } from 'vue'
 import { random } from '@renderer/libs/@math'
-import gsap from 'gsap/all'
-import { ref, onMounted } from 'vue'
+import { tryOnBeforeUnmount, tryOnMounted, useIntervalFn } from '@vueuse/core'
 
-const canDraw = ref(true)
+const props = defineProps<{
+  callback: () => void
+}>()
+
 const $circle = ref<HTMLDivElement>()
+const canDraw = ref(true)
+const isStartPressed = ref(false)
+/* ----------------------------------
+   PERFORMANCE CONSTANTS
+---------------------------------- */
+const MAX_ACTIVE = 6
 
-const drawCircle = (): void => {
-  if (!$circle.value || !canDraw.value) return
+/* ----------------------------------
+   ELEMENT POOL
+---------------------------------- */
+const pool: HTMLDivElement[] = []
 
-  const $circleItem = document.createElement('div')
-  $circleItem.classList.add('circle--item')
+const getCircle = (): HTMLDivElement => {
+  if (pool.length) return pool.pop()!
 
-  $circle.value.appendChild($circleItem)
+  const el = document.createElement('div')
+  el.className = 'circle--item'
+  return el
+}
 
-  const duration = random(4, 5)
+const releaseCircle = (el: HTMLDivElement): void => {
+  gsap.set(el, { clearProps: 'all' })
+  pool.push(el)
+}
 
-  gsap.to($circleItem, {
-    duration,
-    ease: 'power2.in',
-    width: '100%',
-    opacity: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0)'
-  })
+/* ----------------------------------
+   DRAW FUNCTION
+---------------------------------- */
+const drawCircle = (force: boolean = false): void => {
+  if (!canDraw.value || !$circle.value) return
+  if ($circle.value.children.length >= MAX_ACTIVE) return
 
-  gsap.to($circleItem, {
-    duration: duration / 2,
-    delay: duration / 2,
-    ease: 'power2.inOut',
-    border: '1px solid rgba(255, 255, 255, 0)',
-    onComplete: () => {
-      gsap.killTweensOf($circleItem)
-      $circleItem.remove()
-    }
-  })
+  const el = getCircle()
+  $circle.value.appendChild(el)
 
-  setTimeout(
-    () => {
-      drawCircle()
+  const duration = force ? 1 : random(2.5, 7)
+
+  gsap.fromTo(
+    el,
+    {
+      scale: 0.2,
+      opacity: 0.5
     },
-    random(1, duration / 3) * 1000
+    {
+      scale: random(8, 12),
+      opacity: 0,
+      duration,
+      ease: 'power2.out',
+      onComplete: () => {
+        el.remove()
+        releaseCircle(el)
+      }
+    }
   )
 }
 
-const initialize = (): void => {
-  drawCircle()
+/* ----------------------------------
+   INTERVAL
+---------------------------------- */
+const { resume, pause } = useIntervalFn(drawCircle, 1200, {
+  immediate: false
+})
+
+const onPress = (e: KeyboardEvent): void => {
+  if (e.key === 's' || e.key === 'S') {
+    drawCircle(true)
+    isStartPressed.value = true
+    props.callback?.()
+  }
 }
 
-onMounted(() => {
-  initialize()
+const onRelease = (e: KeyboardEvent): void => {
+  if (e.key === 's' || e.key === 'S') {
+    isStartPressed.value = false
+  }
+}
+
+const addListener = (): void => {
+  window.addEventListener('keydown', onPress)
+  window.addEventListener('keyup', onRelease)
+}
+
+tryOnMounted(() => {
+  addListener()
+  resume()
+})
+
+tryOnBeforeUnmount(() => {
+  window.removeEventListener('keydown', onPress)
+  window.removeEventListener('keyup', onRelease)
+  pause()
 })
 </script>
 
@@ -82,6 +137,7 @@ onMounted(() => {
     align-items: center;
     mix-blend-mode: overlay;
     z-index: 1;
+    pointer-events: none;
 
     &:deep(.circle--item) {
       position: absolute;
@@ -102,6 +158,12 @@ onMounted(() => {
     display: flex;
     justify-content: center;
     align-items: center;
+    transition: transform 180ms ease-out;
+
+    &.is-pressed {
+      transition-duration: 40ms;
+      transform: scale(0.9);
+    }
 
     img {
       position: absolute;
@@ -117,6 +179,25 @@ onMounted(() => {
       text-transform: uppercase;
       font-size: 22px;
       text-shadow: 0 0 60px rgba(255, 255, 255, 0.8);
+    }
+  }
+
+  &__footer {
+    position: absolute;
+    bottom: var(--app-padding);
+    left: 0;
+    width: 100%;
+    margin-top: auto;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: var(--app-gap);
+
+    p {
+      font-size: 16px;
+      text-shadow:
+        0 1px 24px rgba(255, 255, 255, 0.6),
+        0 2px 50px #fff;
     }
   }
 }

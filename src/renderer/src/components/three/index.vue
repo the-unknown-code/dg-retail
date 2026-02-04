@@ -1,5 +1,7 @@
 <template>
-  <div id="gl" ref="$gl"></div>
+  <div id="gl" ref="$gl">
+    <div id="gl--gradient"></div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -38,6 +40,25 @@ onMounted(() => {
 </script>
 
 <style lang="scss">
+@property --angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+:root {
+  --angle: 0deg;
+}
+
+@keyframes rotateGradient {
+  0% {
+    --angle: 0deg;
+  }
+  100% {
+    --angle: 360deg;
+  }
+}
+
 #gl {
   position: fixed;
   top: 0;
@@ -51,6 +72,20 @@ onMounted(() => {
     left: 0;
     width: 100%;
     height: 100%;
+    transform: scale(1.14);
+  }
+
+  #gl--gradient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(var(--angle), #faf3e9, var(--blue));
+    animation: rotateGradient 30s linear infinite;
+    z-index: 2;
+    mix-blend-mode: overlay;
+    opacity: 0.4;
   }
 }
 </style>
