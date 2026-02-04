@@ -2,7 +2,6 @@ import Tempus, { TempusCallback } from 'tempus'
 import { M0Renderer, M0Store, M0Viewport, M0Loader } from './core'
 import M0SceneManager from './view/SceneManager'
 import { MANIFEST } from './data/manifest'
-import Debug from './view/sea/classes/Debug'
 import Stats from 'three/examples/jsm/libs/stats.module.js'
 
 export default class M0Application {
@@ -17,7 +16,7 @@ export default class M0Application {
   #renderFn: TempusCallback
   #rafCancelFn: (() => void) | undefined
 
-  #stats: Stats
+  #stats!: Stats
 
   constructor() {
     this.#store = M0Store.getInstance()

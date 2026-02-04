@@ -28,15 +28,21 @@ import { tryOnBeforeUnmount, tryOnMounted } from '@vueuse/core'
 import gsap from 'gsap/all'
 import { ref } from 'vue'
 
-const $graph = ref<HTMLDivElement>()
+const props = defineProps<{
+  callback: () => void
+}>()
 
+const $graph = ref<HTMLDivElement>()
 const initialize = (): void => {
   if (!$graph.value) return
 
   gsap.to($graph.value, {
     width: 297,
     duration: 6,
-    ease: 'none'
+    ease: 'none',
+    onComplete: () => {
+      props.callback?.()
+    }
   })
 }
 
@@ -69,13 +75,13 @@ tryOnBeforeUnmount(() => {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: linear-gradient(180deg, #40edfd11, #40edfd33);
-    backdrop-filter: blur(6px) saturate(140%);
-    -webkit-backdrop-filter: blur(6px) saturate(140%);
+    background: linear-gradient(180deg, #ffffff11, #40edfd11);
+    backdrop-filter: blur(6px) saturate(110%);
+    -webkit-backdrop-filter: blur(6px) saturate(110%);
     border-radius: 30px;
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-bottom: 1px solid #40edfd44;
-    box-shadow: 0 4px 14px #0fb8f033;
+    box-shadow: 0 4px 14px #0fb8f055;
     padding: 0 var(--app-padding);
 
     .graph {

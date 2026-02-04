@@ -1,8 +1,6 @@
 .quick-fade-enter-active,
 .quick-fade-leave-active {
-  transition:
-    opacity 170ms var(--ease-in-out-sine),
-    transform 70ms var(--ease-in-out-sine);
+  transition: opacity 850ms var(--ease-in-out-sine);
   transform: translateY(0);
 }
 .quick-fade-enter-from,

@@ -4,7 +4,7 @@
     <transition mode="out-in" name="quick-fade">
       <Start v-if="$store.appState === APP_STATE.START" :callback="onStart" />
       <OnBoarding v-else-if="$store.appState === APP_STATE.ONBOARDING" />
-      <Mixing v-else-if="$store.appState === APP_STATE.MIXING" />
+      <Mixing v-else-if="$store.appState === APP_STATE.MIXING" :callback="onMixing" />
     </transition>
   </div>
 </template>
@@ -21,6 +21,13 @@ const $store = useAppStore()
 
 const onStart = (): void => {
   $store.start()
+  setTimeout(() => {
+    $store.appState = APP_STATE.MIXING
+  }, 5000)
+}
+
+const onMixing = (): void => {
+  $store.appState = APP_STATE.QR_CODE
 }
 </script>
 

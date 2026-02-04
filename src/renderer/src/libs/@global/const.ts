@@ -5,5 +5,6 @@ export const EVENTS = {
 export const APP_STATE = {
   START: 'start',
   ONBOARDING: 'onboarding',
-  MIXING: 'mixing'
+  MIXING: 'mixing',
+  QR_CODE: 'qr-code'
 }

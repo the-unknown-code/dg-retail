@@ -1,19 +1,23 @@
 <template>
-  <div id="gl" ref="$gl">
+  <div id="gl" ref="$gl" :class="{ 'is-mixing': isMixing }">
     <img src="/assets/noise.webp" alt="background" />
-    <div id="gl--gradient"></div>
+    <div id="gl--gradient" />
   </div>
 </template>
 
 <script setup lang="ts">
 import M0Application from '@renderer/libs/@gl'
+import { APP_STATE } from '@renderer/libs/@global/const'
+import { useAppStore } from '@renderer/store'
 import { useDebounceFn, useWindowSize } from '@vueuse/core'
 import { ref, onMounted, watch, effectScope } from 'vue'
 
+const $store = useAppStore()
 const { width, height } = useWindowSize()
 const $gl = ref<HTMLCanvasElement>()
 let $three: M0Application
 const scope = effectScope()
+const isMixing = ref(false)
 
 const resize = useDebounceFn((): void => {
   if (!$three) return
@@ -30,6 +34,15 @@ const initialize = (): void => {
 }
 
 scope.run(() => {
+  watch(
+    () => $store.appState,
+    () => {
+      if ($store.appState === APP_STATE.MIXING) {
+        isMixing.value = true
+      }
+    }
+  )
+
   watch([width, height], () => {
     resize()
   })
@@ -67,6 +80,12 @@ onMounted(() => {
   width: 100%;
   height: 100%;
 
+  &:not(.is-mixing) {
+    canvas {
+      filter: blur(4px);
+    }
+  }
+
   canvas {
     position: absolute;
     top: 0;
@@ -74,6 +93,7 @@ onMounted(() => {
     width: 100%;
     height: 100%;
     transform: scale(1.14);
+    transition: filter 2s ease-out;
   }
 
   img {
