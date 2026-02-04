@@ -2,6 +2,8 @@ import Tempus, { TempusCallback } from 'tempus'
 import { M0Renderer, M0Store, M0Viewport, M0Loader } from './core'
 import M0SceneManager from './view/SceneManager'
 import { MANIFEST } from './data/manifest'
+import Debug from './view/sea/classes/Debug'
+import Stats from 'three/examples/jsm/libs/stats.module.js'
 
 export default class M0Application {
   #canRender: boolean = false
@@ -15,6 +17,8 @@ export default class M0Application {
   #renderFn: TempusCallback
   #rafCancelFn: (() => void) | undefined
 
+  #stats: Stats
+
   constructor() {
     this.#store = M0Store.getInstance()
     this.#loader = M0Loader.getInstance()
@@ -25,6 +29,13 @@ export default class M0Application {
     this.#renderFn = this.render.bind(this)
 
     this.initialize()
+    this.createDebug()
+  }
+
+  createDebug(): void {
+    this.#stats = new Stats()
+    this.#stats.showPanel(0)
+    document.body.appendChild(this.#stats.dom)
   }
 
   async initialize(): Promise<void> {
@@ -39,9 +50,11 @@ export default class M0Application {
   }
 
   render(time: number, dt: number): void {
+    this.#stats.begin()
     this.#viewport.render(time, dt)
     this.#manager.render(time, dt)
     this.#renderer.render(time, dt)
+    this.#stats.end()
   }
 
   start(): void {

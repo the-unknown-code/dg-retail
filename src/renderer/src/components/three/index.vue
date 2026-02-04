@@ -1,5 +1,6 @@
 <template>
   <div id="gl" ref="$gl">
+    <img src="/assets/noise.webp" alt="background" />
     <div id="gl--gradient"></div>
   </div>
 </template>
@@ -75,17 +76,27 @@ onMounted(() => {
     transform: scale(1.14);
   }
 
+  img {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    object-fit: cover;
+    mix-blend-mode: screen;
+    opacity: 0.15;
+  }
+
   #gl--gradient {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(var(--angle), #faf3e9, var(--blue));
+    background: linear-gradient(var(--angle), #faf3e9, var(--blue) 50%);
     animation: rotateGradient 30s linear infinite;
     z-index: 2;
     mix-blend-mode: overlay;
-    opacity: 0.4;
+    opacity: 0.7;
   }
 }
 </style>

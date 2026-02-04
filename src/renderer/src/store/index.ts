@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 
 export const useAppStore = defineStore('app', {
   state: () => ({
-    appState: APP_STATE.ONBOARDING
+    appState: APP_STATE.MIXING
   }),
 
   actions: {

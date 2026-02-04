@@ -4,6 +4,7 @@
     <transition mode="out-in" name="quick-fade">
       <Start v-if="$store.appState === APP_STATE.START" :callback="onStart" />
       <OnBoarding v-else-if="$store.appState === APP_STATE.ONBOARDING" />
+      <Mixing v-else-if="$store.appState === APP_STATE.MIXING" />
     </transition>
   </div>
 </template>
@@ -13,6 +14,7 @@ import { useAppStore } from '@renderer/store'
 import Header from './blocks/header.vue'
 import Start from './blocks/start.vue'
 import OnBoarding from './blocks/onBoarding.vue'
+import Mixing from './blocks/mixing.vue'
 import { APP_STATE } from '@renderer/libs/@global/const'
 
 const $store = useAppStore()

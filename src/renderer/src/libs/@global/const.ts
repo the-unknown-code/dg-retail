@@ -4,5 +4,6 @@ export const EVENTS = {
 
 export const APP_STATE = {
   START: 'start',
-  ONBOARDING: 'onboarding'
+  ONBOARDING: 'onboarding',
+  MIXING: 'mixing'
 }

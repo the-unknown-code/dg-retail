@@ -1,4 +1,4 @@
-import { WebGLRenderer } from 'three'
+import { NoToneMapping, SRGBColorSpace, WebGLRenderer } from 'three'
 import { M0Store } from './index'
 
 import M0SceneManager from '../view/SceneManager'
@@ -28,11 +28,13 @@ export default class M0Renderer {
     })
 
     this.#r.autoClear = false
+    this.#r.outputColorSpace = SRGBColorSpace
+    this.#r.toneMapping = NoToneMapping
     this.#r.setPixelRatio(this.#store.dpr)
   }
 
   resize(width: number, height: number): void {
-    this.#r.setSize(width, height)
+    this.#r.setSize(width, height, false)
     //  this.#c.setSize(width, height)
   }
 

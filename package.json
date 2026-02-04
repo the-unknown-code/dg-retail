@@ -29,6 +29,7 @@
     "mitt": "^3.0.1",
     "pinia": "^3.0.4",
     "postprocessing": "^6.38.2",
+    "stats.js": "^0.17.0",
     "tempus": "^1.0.0-dev.17",
     "three": "^0.182.0"
   },
