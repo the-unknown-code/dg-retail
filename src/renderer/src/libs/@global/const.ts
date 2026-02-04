@@ -3,5 +3,6 @@ export const EVENTS = {
 }
 
 export const APP_STATE = {
-  START: 'start'
+  START: 'start',
+  ONBOARDING: 'onboarding'
 }

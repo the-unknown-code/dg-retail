@@ -1,16 +1,24 @@
 <template>
   <div class="app">
     <Header />
-    <Start :callback="onStart" />
+    <transition mode="out-in" name="quick-fade">
+      <Start v-if="$store.appState === APP_STATE.START" :callback="onStart" />
+      <OnBoarding v-else-if="$store.appState === APP_STATE.ONBOARDING" />
+    </transition>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useAppStore } from '@renderer/store'
 import Header from './blocks/header.vue'
 import Start from './blocks/start.vue'
+import OnBoarding from './blocks/onBoarding.vue'
+import { APP_STATE } from '@renderer/libs/@global/const'
+
+const $store = useAppStore()
 
 const onStart = (): void => {
-  console.log('start')
+  $store.start()
 }
 </script>
 

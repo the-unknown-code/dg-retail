@@ -2,6 +2,7 @@ import './assets/main.scss'
 
 import Tempus from 'tempus'
 import gsap from 'gsap'
+import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 import emitter from './plugins/mitt'
 import App from './App.vue'
@@ -16,6 +17,9 @@ Tempus?.add(
   { priority: 0 }
 )
 
+const pinia = createPinia()
 const app = createApp(App)
+
+app.use(pinia)
 app.provide('emitter', emitter)
 app.mount('#app')
