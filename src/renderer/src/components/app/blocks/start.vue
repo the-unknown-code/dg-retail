@@ -3,11 +3,22 @@
     <div ref="$circle" class="circle"></div>
     <button :class="{ 'is-pressed': isStartPressed }">
       <img src="/assets/button.webp" alt="start" draggable="false" />
-      <p>Start</p>
+      <template v-if="!qrCode">
+        <p>Start</p>
+      </template>
+      <template v-else>
+        <img class="qr" src="/assets/qr-code.png" alt="qr-code" draggable="false" />
+      </template>
     </button>
     <div class="start__footer">
-      <p>PRESS START TO CREATE YOUR LIGHT BLUE SOUND WAVE</p>
-      <p>اضغط على زر البدء لإنشاء موجة صوتية زرقاء فاتحة</p>
+      <template v-if="!qrCode">
+        <p>PRESS START TO CREATE YOUR LIGHT BLUE SOUND WAVE</p>
+        <p>اضغط على زر البدء لإنشاء موجة صوتية زرقاء فاتحة</p>
+      </template>
+      <template v-else>
+        <p>thank you! scan the qr code to download your light blue playlist</p>
+        <p>مسح الكود الثنائي لإنشاء موجة صوتية زرقاء فاتحة</p>
+      </template>
     </div>
   </div>
 </template>
@@ -20,6 +31,7 @@ import { tryOnBeforeUnmount, tryOnMounted, useIntervalFn } from '@vueuse/core'
 
 const props = defineProps<{
   callback: () => void
+  qrCode: boolean
 }>()
 
 const $circle = ref<HTMLDivElement>()
@@ -172,12 +184,21 @@ tryOnBeforeUnmount(() => {
       width: 100%;
       height: 100%;
       object-fit: contain;
+
+      &.qr {
+        position: relative;
+        width: 100px;
+        height: 100px;
+        mix-blend-mode: multiply;
+      }
     }
 
     p {
       position: relative;
       text-transform: uppercase;
       font-size: 22px;
+      opacity: 1;
+      transition: opacity 180ms ease-out;
       text-shadow: 0 0 60px rgba(255, 255, 255, 0.8);
     }
   }

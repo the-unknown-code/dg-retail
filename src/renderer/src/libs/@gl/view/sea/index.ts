@@ -10,6 +10,9 @@ import utils from '../../shaders/utils.glsl?raw'
 import { randomFloat } from '../../libs/Math'
 import { useIntervalFn } from '@vueuse/core'
 import { random } from '@renderer/libs/@math'
+import { useAppStore } from '@renderer/store'
+import { APP_STATE } from '@renderer/libs/@global/const'
+import { watch } from 'vue'
 
 const THRESHOLD_PX = 1
 
@@ -64,6 +67,18 @@ export default class SeaScene extends M0AbstractScene {
     this.#resume = resume
 
     this.#resume()
+
+    const $store = useAppStore()
+    watch(
+      () => $store.appState,
+      () => {
+        if ($store.appState === APP_STATE.MIXING) {
+          this.#pause()
+        } else {
+          this.#resume()
+        }
+      }
+    )
   }
 
   addDrop(): void {

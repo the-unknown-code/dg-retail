@@ -2,7 +2,11 @@
   <div class="app">
     <Header />
     <transition mode="out-in" name="quick-fade">
-      <Start v-if="$store.appState === APP_STATE.START" :callback="onStart" />
+      <Start
+        v-if="$store.appState === APP_STATE.START || $store.appState === APP_STATE.QR_CODE"
+        :callback="onStart"
+        :qr-code="$store.appState === APP_STATE.QR_CODE"
+      />
       <OnBoarding v-else-if="$store.appState === APP_STATE.ONBOARDING" />
       <Mixing v-else-if="$store.appState === APP_STATE.MIXING" :callback="onMixing" />
     </transition>
