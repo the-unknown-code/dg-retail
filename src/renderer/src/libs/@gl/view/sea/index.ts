@@ -59,7 +59,7 @@ export default class SeaScene extends M0AbstractScene {
 
     this.#addDrop = this.addDrop.bind(this)
 
-    const { pause, resume } = useIntervalFn(this.#addDrop, 300, { immediate: false })
+    const { pause, resume } = useIntervalFn(this.#addDrop, 3200, { immediate: false })
     this.#pause = pause
     this.#resume = resume
 
@@ -71,7 +71,7 @@ export default class SeaScene extends M0AbstractScene {
       Math.random() * 2 - 1,
       Math.random() * 2 - 1,
       Math.random() * 0.2 + 0.01,
-      random(-0.005, 0.005)
+      random(-0.25, 0.25)
     )
   }
 

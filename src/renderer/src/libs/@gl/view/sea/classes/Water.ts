@@ -30,7 +30,7 @@ export default class Water {
 
     this.#store = M0Store.getInstance()
 
-    this._geometry = new PlaneGeometry(2, 2, 2048, 2048)
+    this._geometry = new PlaneGeometry(2, 2, 512, 512)
     this._shader = new ShaderMaterial({
       uniforms: {
         light: { value: light },
