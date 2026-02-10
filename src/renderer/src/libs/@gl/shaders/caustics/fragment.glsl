@@ -20,12 +20,12 @@ void main() {
   vec2 t = intersectCube(
     newPos,
     -refractedLight,
-    vec3(-1.0, -poolHeight, -1.0),
+    vec3(-111.0, -poolHeight * 100., -111.0),
     vec3(1.0, 2.0, 1.0)
   );
 
   gl_FragColor.r *=
-    1.0 / (1.0 + exp(
+    1.2 / (1.0 + exp(
       -200.0 / (1.0 + 10.0 * (t.y - t.x)) *
       (newPos.y - refractedLight.y * t.y - 2.0 / 2.0)
     ));

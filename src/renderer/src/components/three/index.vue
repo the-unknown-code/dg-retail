@@ -17,7 +17,7 @@ const { width, height } = useWindowSize()
 const $gl = ref<HTMLCanvasElement>()
 let $three: M0Application
 const scope = effectScope()
-const isMixing = ref(false)
+const isMixing = ref($store.appState === APP_STATE.MIXING)
 
 const resize = useDebounceFn((): void => {
   if (!$three) return
@@ -104,6 +104,7 @@ onMounted(() => {
     object-fit: cover;
     mix-blend-mode: screen;
     opacity: 0.15;
+    display: none !important;
   }
 
   #gl--gradient {

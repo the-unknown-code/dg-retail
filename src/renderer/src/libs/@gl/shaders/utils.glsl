@@ -1,14 +1,16 @@
 const float IOR_AIR = 1.05;
-const float IOR_WATER = 1.777;
+const float IOR_WATER = 1.333;
 
 const vec3 COLOR_83CBEA = vec3(131.0 / 255.0, 203.0 / 255.0, 234.0 / 255.0);
 const vec3 COLOR_B2DAEA = vec3(178.0 / 255.0, 218.0 / 255.0, 234.0 / 255.0);
-const vec3 CAUSTIC_COLOR = vec3(250.0 / 255.0, 243.0 / 255.0, 233.0 / 255.0);
+const vec3 CAUSTIC_COLOR = vec3(250.0 / 255.0, 1.0 / 255.0, 233.0 / 255.0);
+const vec3 CAUSTIC_COLOR_YELLOW = vec3(255.0 / 255.0, 0.0 / 255.0, .0 / 255.0);
+
 
 const vec3 abovewaterColor = COLOR_83CBEA;
 const vec3 underwaterColor = COLOR_B2DAEA;
 
-const float poolHeight = .4;
+const float poolHeight = .5;
 
 uniform vec3 light;
 uniform sampler2D tiles;
@@ -23,7 +25,10 @@ vec2 intersectCube(vec3 origin, vec3 ray, vec3 cubeMin, vec3 cubeMax) {
   vec3 t2 = max(tMin, tMax);
   float tNear = max(max(t1.x, t1.y), t1.z);
   float tFar = min(min(t2.x, t2.y), t2.z);
-  return vec2(tNear, tFar);
+
+  vec2 r1 = vec2(tNear, 1.);
+  vec2 r2 = vec2(0., tFar);
+  return vec2(tNear, tFar) * max(r1, r2);
 }
 
 vec2 _intersectCube(vec3 origin, vec3 ray, vec3 cubeMin, vec3 cubeMax) {
@@ -76,5 +81,5 @@ vec3 getWallColor(vec3 point) {
     // scale += diffuse * 0.5;
   }
   
-  return wallColor * scale;
+  return wallColor * scale * .67;
 }

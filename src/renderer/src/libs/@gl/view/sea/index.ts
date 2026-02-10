@@ -2,7 +2,7 @@ import { MathUtils, ShaderChunk, Texture, Vector2, Vector3 } from 'three'
 import { M0Renderer } from '../../core'
 import M0AbstractScene from '../AbstractScene'
 import Caustics from './classes/Caustics'
-// import Pool from './classes/Pool'
+import Pool from './classes/Pool'
 import Water from './classes/Water'
 import WaterSimulation from './classes/WaterSimulation'
 
@@ -20,7 +20,7 @@ export default class SeaScene extends M0AbstractScene {
   #waterSimulation: WaterSimulation
   #water: Water
   #caustics: Caustics
-  // #pool: Pool
+  #pool: Pool
 
   #light: Vector3
   #renderer: M0Renderer
@@ -39,7 +39,7 @@ export default class SeaScene extends M0AbstractScene {
 
     ShaderChunk['utils'] = utils
     this.#renderer = M0Renderer.getInstance()
-    this.#light = new Vector3(0.007559289460184544, 0.7559289460184544, -0.00779644730092272)
+    this.#light = new Vector3(0.007559289460184544, 1.2, 0.0779644730092272)
 
     this.#waterSimulation = new WaterSimulation(this.#renderer)
     this.#water = new Water(this.#renderer, this.#light, this.camera)
@@ -48,6 +48,7 @@ export default class SeaScene extends M0AbstractScene {
     this.#lastMouse.copy(this.viewport.mouseGL)
 
     // this.#pool = new Pool(this.#renderer, this.#light, this.camera)
+    this.#pool = new Pool(this.#renderer, this.#light, this.camera)
 
     /*
     for (let i = 0; i < 20; i++) {
@@ -66,7 +67,7 @@ export default class SeaScene extends M0AbstractScene {
     this.#pause = pause
     this.#resume = resume
 
-    this.#resume()
+    // this.#resume()
 
     const $store = useAppStore()
     watch(
@@ -130,7 +131,7 @@ export default class SeaScene extends M0AbstractScene {
 
     // this.#debug.update(causticTexture)
     this.#water.update(waterTexture, causticTexture)
-    // this.#pool.update(waterTexture, causticTexture)
+    this.#pool.update(waterTexture, causticTexture)
   }
 
   override resize(): void {

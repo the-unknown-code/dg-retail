@@ -14,7 +14,7 @@ void main() {
   vec4 info = texture2D(tDiffuse, coord);
 
   /* Add the drop to the height */
-  float drop = max(0.0, 1.0 - length(center * 0.5 + 0.5 - coord) / radius);
+  float drop = max(0.0, 1. - length(center * 0.5 + 0.5 - coord) / radius);
   drop = 0.5 - cos(drop * PI) * 0.5;
   info.r += drop * strength;
 

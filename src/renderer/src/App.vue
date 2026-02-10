@@ -8,7 +8,9 @@ import App from './components/app/index.vue'
 <template>
   <main>
     <Three />
+    <!--
     <App />
+    -->
   </main>
 </template>
 
