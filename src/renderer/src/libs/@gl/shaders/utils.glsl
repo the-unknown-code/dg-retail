@@ -81,5 +81,5 @@ vec3 getWallColor(vec3 point) {
     // scale += diffuse * 0.5;
   }
   
-  return wallColor * scale * .67;
+  return wallColor * scale * 1.1;
 }

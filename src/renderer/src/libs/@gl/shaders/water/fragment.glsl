@@ -76,8 +76,8 @@ void main() {
     // Map the y-component of the normal from [-1, 1] to [0, 1]
     float n = normal.y * 0.5 + 0.5;
     // Gradient: red at bottom (n=0), blue at top (n=1)
-    vec3 gradientColor = mix(vec3(12.0, .0, 0.0), vec3(0.0, 0.0, 0.0), n);
-    vec3 addedRefractedColor = mix(vec3(2.0, 1.0, 0.0), vec3(0.01, 0.01, 0.02), n);
+    vec3 gradientColor = mix(vec3(0.0, 1.8, 0.85), vec3(0.0, 0.0, 0.0), n);
+    vec3 addedRefractedColor = mix(vec3(2.1, 1.8, 0.7), vec3(0., 0., 0.), n);
 
     // gl_FragColor = vec4(gradientColor, 1.0);
     // return;
