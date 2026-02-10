@@ -23,7 +23,7 @@ vec3 getSurfaceRayColor(vec3 origin, vec3 ray, vec3 waterColor) {
     vec3 hit = origin + ray * t.y;
     if (hit.y < 7.0 / 12.0) {
       color = getWallColor(hit);
-      color = CAUSTIC_COLOR_YELLOW * 10.;
+      color += CAUSTIC_COLOR_YELLOW * 10.;
 
     } else {
       color = textureCube(sky, ray).rgb;
@@ -76,7 +76,7 @@ void main() {
     // Map the y-component of the normal from [-1, 1] to [0, 1]
     float n = normal.y * 0.5 + 0.5;
     // Gradient: red at bottom (n=0), blue at top (n=1)
-    vec3 gradientColor = mix(vec3(6.0, 6.0, 0.0), vec3(0.0, 0.0, 0.0), n);
+    vec3 gradientColor = mix(vec3(2.0, 2.0, 0.0), vec3(0.0, 0.0, 0.0), n);
     vec3 addedRefractedColor = mix(vec3(2.0, 1.0, 0.0), vec3(0.0, 0.0, 0.0), n);
 
     // gl_FragColor = vec4(gradientColor, 1.0);

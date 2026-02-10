@@ -1,7 +1,7 @@
 <script setup lang="ts">
 //import Versions from './components/Versions.vue'
 import Three from './components/three/index.vue'
-import App from './components/app/index.vue'
+// import App from './components/app/index.vue'
 //const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
 </script>
 
