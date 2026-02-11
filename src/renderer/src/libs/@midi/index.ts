@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useAppStore } from '@renderer/store'
 
-const DEVICE_NAME = 'D&G MACHINEZERO MIDI 1.1'
-const MANUFACTURER = 'MACHINEZERO'
+// const DEVICE_NAME = 'D&G MACHINEZERO MIDI 1.1'
+// const MANUFACTURER = 'MACHINEZERO'
 
 const STATUS = {
   CC: 176,
