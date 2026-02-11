@@ -31,7 +31,6 @@ const computedButton = computed(() => $store.midiData[60].value)
   display: flex;
   align-items: center;
   justify-content: center;
-  display: none;
 
   > div {
     position: relative;
