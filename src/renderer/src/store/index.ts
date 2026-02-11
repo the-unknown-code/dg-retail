@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 
 export const useAppStore = defineStore('app', {
   state: () => ({
-    appState: APP_STATE.MIXING,
+    appState: APP_STATE.START,
     midiFound: false,
     midiData: {
       1: { name: 'FADER', value: 0 },
