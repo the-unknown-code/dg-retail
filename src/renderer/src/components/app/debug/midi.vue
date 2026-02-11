@@ -17,6 +17,12 @@ const computedFader = computed(() => $store.midiData[1].value)
 const computedWheelLeft = computed(() => $store.midiData[2].value)
 const computedWheelRight = computed(() => $store.midiData[3].value)
 const computedButton = computed(() => $store.midiData[60].value)
+
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'm') {
+    document.querySelector('.midi')?.classList.toggle('is-visible')
+  }
+})
 </script>
 
 <style lang="scss" scoped>
@@ -31,6 +37,11 @@ const computedButton = computed(() => $store.midiData[60].value)
   display: flex;
   align-items: center;
   justify-content: center;
+  display: flex;
+
+  &.is-visible {
+    display: none;
+  }
 
   > div {
     position: relative;

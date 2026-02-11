@@ -1,7 +1,7 @@
 <template>
   <div id="gl" ref="$gl" :class="{ 'is-mixing': isMixing }">
     <div id="gl--gradient" />
-    <video src="/videos/caustics.mp4" autoplay muted loop />
+    <video type="video/webm" src="/videos/caustics.webm" autoplay muted loop />
   </div>
 </template>
 
@@ -96,7 +96,6 @@ onMounted(() => {
     transition: filter 2s ease-out;
   }
 
-  img,
   video {
     position: relative;
     width: 100%;
@@ -104,13 +103,6 @@ onMounted(() => {
     z-index: 10;
     object-fit: cover;
     mix-blend-mode: screen;
-    opacity: 0.15;
-    display: none !important;
-  }
-
-  video {
-    display: block !important;
-    z-index: 10;
     opacity: 1;
   }
 
