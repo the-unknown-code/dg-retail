@@ -22,19 +22,15 @@ export default class Midi {
 
   #onMidiReady(midi: MIDIAccess): void {
     for (const input of midi.inputs.values()) {
-      if (input.name === DEVICE_NAME && input.manufacturer === MANUFACTURER) {
-        this.#midiInput = input
-        this.#midiInput.onmidimessage = this.#onMessage.bind(this)
-        this.#store.midiFound = true
-        console.log('MIDI input connected:', input.name)
-      }
+      this.#midiInput = input
+      this.#midiInput.onmidimessage = this.#onMessage.bind(this)
+      this.#store.midiFound = true
+      console.log('MIDI input connected:', input.name)
     }
 
     for (const output of midi.outputs.values()) {
-      if (output.name === DEVICE_NAME && output.manufacturer === MANUFACTURER) {
-        this.#midiOutput = output
-        console.log('MIDI output connected:', output.name)
-      }
+      this.#midiOutput = output
+      console.log('MIDI output connected:', output.name)
     }
   }
 
@@ -47,17 +43,14 @@ export default class Midi {
   #onMessage(e: MIDIMessageEvent): void {
     //@ts-expect-error TODO: fix this
     const [status, id, value] = e.data
+    console.log('>', status, id, value)
 
-    if (status === STATUS.CC) {
+    if (id === 1 || id === 2 || id === 3) {
       this.#store.updateChannel(id, value)
     }
 
-    if (status === STATUS.NOTE_ON && id === 60) {
-      this.#store.updateChannel(id, 127)
-    }
-
-    if (status === STATUS.NOTE_OFF && id === 60) {
-      this.#store.updateChannel(id, 0)
+    if (id === 60) {
+      this.#store.updateChannel(id, value)
     }
   }
 }

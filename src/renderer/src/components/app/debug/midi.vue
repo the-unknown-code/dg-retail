@@ -4,24 +4,28 @@
     <div data-id="Wheel Left CC2">{{ computedWheelLeft }}</div>
     <div data-id="Wheel Right CC3">{{ computedWheelRight }}</div>
     <div data-id="Button CC60">{{ computedButton }}</div>
+    <div data-id="Connected?" :class="{ 'is-connected': midiFound }"></div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useAppStore } from '@renderer/store'
+import { tryOnMounted } from '@vueuse/core'
 import { computed } from 'vue'
 
 const $store = useAppStore()
-
+const midiFound = computed(() => $store.midiFound)
 const computedFader = computed(() => $store.midiData[1].value)
 const computedWheelLeft = computed(() => $store.midiData[2].value)
 const computedWheelRight = computed(() => $store.midiData[3].value)
 const computedButton = computed(() => $store.midiData[60].value)
 
-window.addEventListener('keydown', (e) => {
-  if (e.key === 'm') {
-    document.querySelector('.midi')?.classList.toggle('is-visible')
-  }
+tryOnMounted(() => {
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'm') {
+      document.querySelector('.midi')?.classList.toggle('is-visible')
+    }
+  })
 })
 </script>
 
@@ -65,6 +69,14 @@ window.addEventListener('keydown', (e) => {
     &:nth-child(2),
     &:nth-child(3) {
       background-color: #000044ee;
+    }
+
+    &:nth-child(5) {
+      background-color: #ff0000;
+    }
+
+    &.is-connected {
+      background-color: #00ff00;
     }
 
     &::before {
