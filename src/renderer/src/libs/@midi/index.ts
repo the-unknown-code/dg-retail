@@ -43,14 +43,10 @@ export default class Midi {
   #onMessage(e: MIDIMessageEvent): void {
     //@ts-expect-error TODO: fix this
     const [status, id, value] = e.data
-    console.log('>', status, id, value)
+    // console.log('>', status, id, value)
 
-    if (id === 1 || id === 2 || id === 3) {
-      this.#store.updateChannel(id, value)
-    }
-
-    if (id === 60) {
-      this.#store.updateChannel(id, value)
+    if (id === 1 || id === 2 || id === 3 || id === 60) {
+      this.#store.updateChannel(id, value, 0, 0)
     }
   }
 }

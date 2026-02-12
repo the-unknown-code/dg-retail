@@ -43,7 +43,7 @@ tryOnMounted(() => {
   justify-content: center;
   display: flex;
 
-  &.is-visible {
+  &:not(.is-visible) {
     display: none;
   }
 

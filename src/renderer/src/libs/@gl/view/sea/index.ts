@@ -7,14 +7,15 @@ import Water from './classes/Water'
 import WaterSimulation from './classes/WaterSimulation'
 
 import utils from '../../shaders/utils.glsl?raw'
-import { randomFloat } from '../../libs/Math'
+//import { randomFloat } from '../../libs/Math'
 import { useIntervalFn } from '@vueuse/core'
 import { random } from '@renderer/libs/@math'
 import { useAppStore } from '@renderer/store'
 import { APP_STATE } from '@renderer/libs/@global/const'
 import { watch } from 'vue'
+import { randomFloat } from '../../libs/Math'
 
-const THRESHOLD_PX = 1
+// const THRESHOLD_PX = 1
 
 export default class SeaScene extends M0AbstractScene {
   #waterSimulation: WaterSimulation
@@ -31,9 +32,12 @@ export default class SeaScene extends M0AbstractScene {
   #pause!: () => void
   #resume: () => void
 
+  #store: ReturnType<typeof useAppStore>
+
   constructor() {
     super()
 
+    this.#store = useAppStore()
     this.camera.position.set(0, 2.4, 0)
     this.camera.rotation.set(-Math.PI / 2, 0, 0)
 
@@ -49,23 +53,35 @@ export default class SeaScene extends M0AbstractScene {
 
     // this.#pool = new Pool(this.#renderer, this.#light, this.camera)
     this.#pool = new Pool(this.#renderer, this.#light, this.camera)
-
-    /*
-    for (let i = 0; i < 20; i++) {
-      this.#waterSimulation.addDrop(
-        Math.random() * 2 - 1,
-        Math.random() * 2 - 1,
-        Math.random() * 0.2 + 0.01,
-        i & 1 ? 0.05 : -0.05
-      )
-    }
-    */
-
     this.#addDrop = this.addDrop.bind(this)
 
     const { pause, resume } = useIntervalFn(this.#addDrop, 3200, { immediate: false })
     this.#pause = pause
     this.#resume = resume
+
+    watch(
+      () => this.#store.midiData[2].value,
+      () => {
+        this.#waterSimulation.addDrop(
+          this.#store.midiData[2].x,
+          this.#store.midiData[2].y,
+          randomFloat(0.02, 0.03) * MathUtils.clamp(this.viewport.speed, 0.85, 6.5),
+          randomFloat(0.02, 0.05)
+        )
+      }
+    )
+
+    watch(
+      () => this.#store.midiData[3].value,
+      () => {
+        this.#waterSimulation.addDrop(
+          this.#store.midiData[3].x,
+          this.#store.midiData[3].y,
+          randomFloat(0.02, 0.03) * MathUtils.clamp(this.viewport.speed, 0.85, 6.5),
+          randomFloat(0.02, 0.05)
+        )
+      }
+    )
 
     // this.#resume()
 
@@ -98,14 +114,15 @@ export default class SeaScene extends M0AbstractScene {
   override render(_time: number, _dt: number): void {
     super.render(_time, _dt)
 
+    /*
     const dxNDC = this.viewport.mouseGL.x - this.#lastMouse.x
     const dyNDC = this.viewport.mouseGL.y - this.#lastMouse.y
 
     const dxPx = dxNDC * (this.viewport.width / 2)
     const dyPx = dyNDC * (this.viewport.height / 2)
 
+    const THRESHOLD_PX = 1
     const distPxSq = dxPx * dxPx + dyPx * dyPx
-
     if (distPxSq > THRESHOLD_PX * THRESHOLD_PX) {
       this.#waterSimulation.addDrop(
         this.viewport.mouseGL.x,
@@ -116,6 +133,7 @@ export default class SeaScene extends M0AbstractScene {
 
       this.#lastMouse.copy(this.viewport.mouseGL)
     }
+    */
 
     this.#waterSimulation.stepSimulation()
     this.#waterSimulation.updateNormals()

@@ -5,6 +5,7 @@
     <App />
     -->
     <MidiDebug />
+    <ControllerUI />
   </main>
 </template>
 
@@ -12,6 +13,7 @@
 //import Versions from './components/Versions.vue'
 import Three from './components/three/index.vue'
 import MidiDebug from './components/app/debug/midi.vue'
+import ControllerUI from './components/app/controller/ui.vue'
 import Midi from './libs/@midi'
 // import App from './components/app/index.vue'
 //const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
