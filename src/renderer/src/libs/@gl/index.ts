@@ -34,7 +34,7 @@ export default class M0Application {
   createDebug(): void {
     this.#stats = new Stats()
     this.#stats.showPanel(0)
-    document.body.appendChild(this.#stats.dom)
+    // document.body.appendChild(this.#stats.dom)
   }
 
   async initialize(): Promise<void> {

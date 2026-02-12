@@ -397,7 +397,14 @@ watch(
   }
 )
 
-tryOnMounted(initialize)
+tryOnMounted(() => {
+  initialize()
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'u') {
+      document.querySelector('.controller-ui')?.classList.toggle('is-visible')
+    }
+  })
+})
 
 /* ------------------------------------------------------------------
    🎹 MIDI usage example
@@ -417,6 +424,13 @@ tryOnMounted(initialize)
   width: 100%;
   height: 100%;
   z-index: 2;
+  pointer-events: none;
+  visibility: hidden;
+
+  &.is-visible {
+    visibility: visible;
+    pointer-events: auto;
+  }
 
   .fader-container {
     position: absolute;
