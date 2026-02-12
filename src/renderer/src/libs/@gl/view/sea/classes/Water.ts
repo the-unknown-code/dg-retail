@@ -67,7 +67,7 @@ export default class Water {
   }
 
   resize(): void {
-    const PADDING = 80
+    const PADDING = 0
     const dist: number = this._camera.position.y
 
     // Calculate half-heights/widths in world units, then add padding in same units.

@@ -18,10 +18,6 @@ export default class Midi {
   constructor() {
     this.#store = useAppStore()
     navigator.requestMIDIAccess().then(this.#onMidiReady.bind(this))
-
-    setTimeout(() => {
-      this.#store.updateValue(60, 110)
-    }, 1000)
   }
 
   #onMidiReady(midi: MIDIAccess): void {

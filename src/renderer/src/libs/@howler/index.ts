@@ -2,11 +2,11 @@ import gsap from 'gsap/all'
 import { Howl, Howler } from 'howler'
 Howler.volume(1)
 
-import a1 from '../../../public/sounds/a1.mp3'
-import a2 from '../../../public/sounds/a2.mp3'
-import a3 from '../../../public/sounds/a3.mp3'
-import a4 from '../../../public/sounds/a4.mp3'
-import ambienceSound from '../../../public/sounds/ambience.mp3'
+import a1 from '/sounds/a1.mp3'
+import a2 from '/sounds/a2.mp3'
+import a3 from '/sounds/a3.mp3'
+import a4 from '/sounds/a4.mp3'
+import ambienceSound from '/sounds/ambience.mp3'
 
 const SOUNDS = [
   {

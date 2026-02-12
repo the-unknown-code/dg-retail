@@ -135,9 +135,9 @@ const createWheelController = (
 
     // send to store
     if (side === 'left') {
-      $store.updateChannel(2, state.value, ndcX * 0.75, ndcY, state.velocity)
+      $store.updateChannel(2, state.value, ndcX * 0.65, ndcY, state.velocity)
     } else {
-      $store.updateChannel(3, state.value, ndcX * 0.75, ndcY, state.velocity)
+      $store.updateChannel(3, state.value, ndcX * 0.65, ndcY, state.velocity)
     }
   }
 
@@ -306,21 +306,25 @@ const createAudioController = (): void => {
 
 const createFaderController = (): void => {
   if (!$faderContainer.value || !$faderDot.value) return
-  Draggable.create($faderDot.value, {
+
+  const container = $faderContainer.value
+  const dot = $faderDot.value
+
+  const travel = container.clientHeight - dot.clientHeight
+
+  // center = MIDI 64
+  gsap.set(dot, {
+    y: travel / 2
+  })
+
+  Draggable.create(dot, {
     type: 'y',
-    bounds: $faderContainer.value,
-    onDrag: function () {
-      // Get progress from top (0) to bottom (1)
-      const dot = $faderDot.value
-      const container = $faderContainer.value
-      if (!dot || !container) return
-      const dotRect = dot.getBoundingClientRect()
-      const containerRect = container.getBoundingClientRect()
-      // Clamp to [0, 1]
-      let progress = (dotRect.top - containerRect.top) / (containerRect.height - dotRect.height)
-      progress = gsap.utils.clamp(0, 1, progress)
-      $store.updateChannel(60, progress * 127, 0, 0, 0)
-      // You can emit or use progress as needed
+    bounds: container,
+
+    onDrag() {
+      const progress = this.y / travel
+      const midi = Math.round(progress * 127)
+      $store.updateChannel(60, midi, 0, 0, 0)
     }
   })
 }
@@ -333,17 +337,14 @@ const setFaderFromMidi = (value: number): void => {
   const container = $faderContainer.value
   const dot = $faderDot.value
 
-  const containerRect = container.getBoundingClientRect()
-  const dotRect = dot.getBoundingClientRect()
+  const travel = container.clientHeight - dot.clientHeight
 
-  const travel = containerRect.height - dotRect.height
-
-  // MIDI 0 = top, 127 = bottom
+  // MIDI: 0 = top, 127 = bottom
   const y = gsap.utils.mapRange(0, 127, 0, travel, v)
 
   gsap.to(dot, {
     y,
-    duration: 0.15,
+    duration: 0.12,
     ease: 'power2.out',
     overwrite: 'auto'
   })
@@ -429,12 +430,12 @@ tryOnMounted(initialize)
     &__dot {
       position: absolute;
       left: -32px;
-      top: 50%;
-      margin-top: -12px;
+      top: 0;
       width: 64px;
       height: 24px;
       background: #ff3b3b;
       border-radius: 24px;
+      transform: translateY(0);
     }
   }
 
