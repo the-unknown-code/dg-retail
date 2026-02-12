@@ -412,8 +412,8 @@ tryOnMounted(initialize)
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 420px;
-    height: 420px;
+    width: 300px;
+    height: 300px;
     border: 1px dashed #fff;
 
     &::before {
