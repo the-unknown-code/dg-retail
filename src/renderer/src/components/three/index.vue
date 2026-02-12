@@ -1,7 +1,7 @@
 <template>
   <div id="gl" ref="$gl" :class="{ 'is-mixing': isMixing }">
     <div id="gl--gradient" />
-    <video type="video/webm" src="/videos/caustics.webm" autoplay muted loop />
+    <video type="video/webm" src="/videos/caustics.mp4" autoplay muted loop />
   </div>
 </template>
 
@@ -81,9 +81,7 @@ onMounted(() => {
   height: 100%;
 
   &:not(.is-mixing) {
-    canvas {
-      filter: blur(4px);
-    }
+    filter: blur(4px);
   }
 
   canvas {
@@ -92,18 +90,18 @@ onMounted(() => {
     left: 0;
     width: 100%;
     height: 100%;
-    transform: scale(1.8);
+    transform: scale(1.3);
     transition: filter 2s ease-out;
   }
 
   video {
-    position: relative;
+    position: fixed;
     width: 100%;
     height: 100%;
-    z-index: 10;
+    z-index: 999;
     object-fit: cover;
-    mix-blend-mode: screen;
-    opacity: 1;
+    mix-blend-mode: luminosity;
+    opacity: 0.25;
   }
 
   #gl--gradient {

@@ -135,9 +135,9 @@ const createWheelController = (
 
     // send to store
     if (side === 'left') {
-      $store.updateChannel(2, state.value, ndcX * 0.65, ndcY, state.velocity)
+      $store.updateChannel(2, state.value, ndcX * 0.65, ndcY * 1.2, state.velocity)
     } else {
-      $store.updateChannel(3, state.value, ndcX * 0.65, ndcY, state.velocity)
+      $store.updateChannel(3, state.value, ndcX * 0.65, ndcY * 1.2, state.velocity)
     }
   }
 
@@ -497,16 +497,16 @@ tryOnMounted(() => {
 
   &--wheel {
     position: absolute;
-    width: 40%;
+    width: 50%;
     aspect-ratio: 1.5;
-    bottom: -10%;
+    bottom: -25%;
     transform: scaleY(1);
 
     &.left {
-      left: 5%;
+      left: 0%;
     }
     &.right {
-      right: 5%;
+      right: 0%;
     }
 
     .arc {

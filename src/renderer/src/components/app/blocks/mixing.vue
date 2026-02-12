@@ -38,7 +38,7 @@ const initialize = (): void => {
 
   gsap.to($graph.value, {
     width: 297,
-    duration: 6,
+    duration: 30,
     ease: 'none',
     onComplete: () => {
       props.callback?.()

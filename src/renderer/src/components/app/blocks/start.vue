@@ -25,15 +25,17 @@
 
 <script setup lang="ts">
 import gsap from 'gsap'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { random } from '@renderer/libs/@math'
 import { tryOnBeforeUnmount, tryOnMounted, useIntervalFn } from '@vueuse/core'
+import { useAppStore } from '@renderer/store'
 
 const props = defineProps<{
   callback: () => void
   qrCode: boolean
 }>()
 
+const $store = useAppStore()
 const $circle = ref<HTMLDivElement>()
 const canDraw = ref(true)
 const isStartPressed = ref(false)
@@ -100,22 +102,29 @@ const { resume, pause } = useIntervalFn(drawCircle, 1200, {
 
 const onPress = (e: KeyboardEvent): void => {
   if (e.key === 's' || e.key === 'S') {
+    if (isStartPressed.value) return
     drawCircle(true)
     isStartPressed.value = true
     props.callback?.()
   }
 }
 
-const onRelease = (e: KeyboardEvent): void => {
-  if (e.key === 's' || e.key === 'S') {
-    isStartPressed.value = false
-  }
-}
-
 const addListener = (): void => {
   window.addEventListener('keydown', onPress)
-  window.addEventListener('keyup', onRelease)
 }
+
+watch(
+  () => $store.midiData[60].input,
+  (value: number) => {
+    if (value > 0) {
+      if (isStartPressed.value) return
+
+      drawCircle(true)
+      isStartPressed.value = true
+      props.callback?.()
+    }
+  }
+)
 
 tryOnMounted(() => {
   addListener()
@@ -124,7 +133,6 @@ tryOnMounted(() => {
 
 tryOnBeforeUnmount(() => {
   window.removeEventListener('keydown', onPress)
-  window.removeEventListener('keyup', onRelease)
   pause()
 })
 </script>

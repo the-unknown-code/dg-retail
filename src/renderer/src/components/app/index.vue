@@ -55,7 +55,7 @@ const onMixing = (): void => {
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle at 50% 50%, #faf3e9 50%, var(--blue) 100%);
+    // background: radial-gradient(circle at 50% 50%, #faf3e9 50%, var(--blue) 100%);
     opacity: 0.5;
     z-index: -1;
   }

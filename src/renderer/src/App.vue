@@ -1,9 +1,7 @@
 <template>
   <main>
     <Three />
-    <!--
     <App />
-    -->
     <MidiDebug />
     <ControllerUI :soundCallback="soundCallback" />
   </main>
@@ -19,7 +17,8 @@ import Midi from './libs/@midi'
 import SoundManager from './libs/@howler'
 import { useAppStore } from './store'
 import { tryOnMounted } from '@vueuse/core'
-// import App from './components/app/index.vue'
+import App from './components/app/index.vue'
+import { APP_STATE } from './libs/@global/const'
 //const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
 
 const $store = useAppStore()
@@ -58,6 +57,7 @@ watch(
     quadrantValues.value.bottomRight
   ],
   (values) => {
+    if ($store.appState !== APP_STATE.MIXING) return
     sound.update({
       topLeft: values[0],
       topRight: values[1],
@@ -70,6 +70,7 @@ watch(
 watch(
   () => $store.midiData[1].input,
   (value) => {
+    if ($store.appState !== APP_STATE.MIXING) return
     sound.updateAmbience(1 - value / 127)
   }
 )
@@ -77,6 +78,7 @@ watch(
 watch(
   () => $store.midiData[1].value,
   (value) => {
+    if ($store.appState !== APP_STATE.MIXING) return
     sound.updateAmbience(1 - value / 127)
   }
 )
