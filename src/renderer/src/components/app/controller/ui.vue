@@ -324,7 +324,7 @@ const createFaderController = (): void => {
     onDrag() {
       const progress = this.y / travel
       const midi = Math.round(progress * 127)
-      $store.updateChannel(60, midi, 0, 0, 0)
+      $store.updateChannel(1, midi, 0, 0, 0)
     }
   })
 }
@@ -361,7 +361,7 @@ const initialize = (): void => {
 }
 
 watch(
-  () => $store.midiData[60].input,
+  () => $store.midiData[1].input,
   (value: number) => {
     setFaderFromMidi(value)
   }

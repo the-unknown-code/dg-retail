@@ -68,14 +68,14 @@ watch(
 )
 
 watch(
-  () => $store.midiData[60].input,
+  () => $store.midiData[1].input,
   (value) => {
     sound.updateAmbience(1 - value / 127)
   }
 )
 
 watch(
-  () => $store.midiData[60].value,
+  () => $store.midiData[1].value,
   (value) => {
     sound.updateAmbience(1 - value / 127)
   }
