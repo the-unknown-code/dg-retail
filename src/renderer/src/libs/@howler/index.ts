@@ -1,26 +1,32 @@
 import gsap from 'gsap/all'
 import { Howl, Howler } from 'howler'
-// Howler.autoUnlock = false
+Howler.volume(1)
+
+import a1 from '../../../public/sounds/a1.mp3'
+import a2 from '../../../public/sounds/a2.mp3'
+import a3 from '../../../public/sounds/a3.mp3'
+import a4 from '../../../public/sounds/a4.mp3'
+import ambienceSound from '../../../public/sounds/ambience.mp3'
 
 const SOUNDS = [
   {
     id: 'topLeft',
-    src: '/sounds/a1.mp3',
+    src: a1,
     instance: null as Howl | null
   },
   {
     id: 'topRight',
-    src: '/sounds/a2.mp3',
+    src: a2,
     instance: null as Howl | null
   },
   {
     id: 'bottomLeft',
-    src: '/sounds/a3.mp3',
+    src: a3,
     instance: null as Howl | null
   },
   {
     id: 'bottomRight',
-    src: '/sounds/a4.mp3',
+    src: a4,
     instance: null as Howl | null
   }
 ]
@@ -36,11 +42,12 @@ export default class SoundManager {
         autoplay: true,
         volume: 0
       })
+
       sound.instance.play()
     }
 
     ambience = new Howl({
-      src: ['/sounds/ambience.mp3'],
+      src: [ambienceSound],
       preload: true,
       loop: true,
       autoplay: true,

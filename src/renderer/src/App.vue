@@ -10,6 +10,7 @@
 </template>
 
 <script setup lang="ts">
+import { Howler } from 'howler'
 import { ref, watch } from 'vue'
 import Three from './components/three/index.vue'
 import MidiDebug from './components/app/debug/midi.vue'
@@ -17,6 +18,7 @@ import ControllerUI from './components/app/controller/ui.vue'
 import Midi from './libs/@midi'
 import SoundManager from './libs/@howler'
 import { useAppStore } from './store'
+import { tryOnMounted } from '@vueuse/core'
 // import App from './components/app/index.vue'
 //const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
 
@@ -78,6 +80,12 @@ watch(
     sound.updateAmbience(1 - value / 127)
   }
 )
+
+tryOnMounted(() => {
+  if (Howler.ctx && Howler.ctx.state === 'suspended') {
+    Howler.ctx.resume()
+  }
+})
 </script>
 
 <style lang="scss" scoped>

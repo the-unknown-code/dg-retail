@@ -5,6 +5,9 @@ import icon from '../../resources/icon.png?asset'
 
 function createWindow(): void {
   // Create the browser window.
+
+  app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required')
+
   const mainWindow = new BrowserWindow({
     width: 1280,
     height: 720,
@@ -14,6 +17,8 @@ function createWindow(): void {
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
+      contextIsolation: true,
+      nodeIntegration: false,
       sandbox: false
     }
   })

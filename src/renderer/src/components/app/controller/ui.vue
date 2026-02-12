@@ -319,9 +319,33 @@ const createFaderController = (): void => {
       // Clamp to [0, 1]
       let progress = (dotRect.top - containerRect.top) / (containerRect.height - dotRect.height)
       progress = gsap.utils.clamp(0, 1, progress)
-      $store.updateValue(60, progress * 127)
+      $store.updateChannel(60, progress * 127, 0, 0, 0)
       // You can emit or use progress as needed
     }
+  })
+}
+
+const setFaderFromMidi = (value: number): void => {
+  if (!$faderContainer.value || !$faderDot.value) return
+
+  const v = gsap.utils.clamp(0, 127, value)
+
+  const container = $faderContainer.value
+  const dot = $faderDot.value
+
+  const containerRect = container.getBoundingClientRect()
+  const dotRect = dot.getBoundingClientRect()
+
+  const travel = containerRect.height - dotRect.height
+
+  // MIDI 0 = top, 127 = bottom
+  const y = gsap.utils.mapRange(0, 127, 0, travel, v)
+
+  gsap.to(dot, {
+    y,
+    duration: 0.15,
+    ease: 'power2.out',
+    overwrite: 'auto'
   })
 }
 
@@ -334,6 +358,13 @@ const initialize = (): void => {
   createAudioController()
   createFaderController()
 }
+
+watch(
+  () => $store.midiData[60].input,
+  (value: number) => {
+    setFaderFromMidi(value)
+  }
+)
 
 watch(
   () => $store.midiData[2].input,
