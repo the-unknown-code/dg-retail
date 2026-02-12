@@ -1,6 +1,9 @@
 <template>
   <div class="controller-ui">
-    <div class="pin-audio" />
+    <div ref="$pinContainer" class="pin-container">
+      <div ref="$pinDot" class="pin-container__dot" />
+    </div>
+
     <div ref="$wheelLeft" class="controller-ui--wheel left">
       <!-- semicircle stroke -->
       <svg class="arc" viewBox="0 0 100 50" preserveAspectRatio="none">
@@ -47,6 +50,7 @@ import { tryOnMounted } from '@vueuse/core'
 import gsap from 'gsap'
 import { Draggable } from 'gsap/all'
 import { useAppStore } from '@renderer/store'
+import Tempus from 'tempus'
 
 const $store = useAppStore()
 
@@ -54,6 +58,9 @@ const $wheelLeft = ref<HTMLDivElement | null>(null)
 const $dotLeft = ref<HTMLDivElement | null>(null)
 const $wheelRight = ref<HTMLDivElement | null>(null)
 const $dotRight = ref<HTMLDivElement | null>(null)
+
+const $pinContainer = ref<HTMLDivElement | null>(null)
+const $pinDot = ref<HTMLDivElement | null>(null)
 
 // 🎛️ independent state per wheel
 const leftState = {
@@ -90,7 +97,7 @@ const createWheelController = (
     gsap.set(dotEl, { x: px, y: py })
 
     // angle → MIDI value
-    state.value = Number(gsap.utils.mapRange(Math.PI, 0, 0, 127, state.angle).toFixed(2))
+    state.value = Math.round(gsap.utils.mapRange(Math.PI, 0, 0, 127, state.angle))
 
     // 🔥 velocity (angular, radians/sec)
     const now = performance.now()
@@ -178,12 +185,114 @@ const createWheelController = (
     setFromMidiValue
 }
 
+/* --------------------------------------------------
+   Pin physics state
+-------------------------------------------------- */
+const pinState = {
+  x: 0,
+  y: 0,
+  vx: 0,
+  vy: 0
+}
+
+/* --------------------------------------------------
+   MIDI → velocity mapping
+-------------------------------------------------- */
+const DEADZONE = 2
+const MAX_SPEED = 8
+
+const midiToVelocity = (value: number): number => {
+  const delta = value - 64
+  if (Math.abs(delta) <= DEADZONE) return 0
+  return (delta / 63) * MAX_SPEED
+}
+
+/* --------------------------------------------------
+   Pac-Man wrap
+-------------------------------------------------- */
+const wrapPin = (): void => {
+  if (!$pinContainer.value) return
+
+  const rect = $pinContainer.value.getBoundingClientRect()
+  const halfW = rect.width / 2
+  const halfH = rect.height / 2
+
+  if (pinState.x > halfW) pinState.x = -halfW
+  if (pinState.x < -halfW) pinState.x = halfW
+
+  if (pinState.y > halfH) pinState.y = -halfH
+  if (pinState.y < -halfH) pinState.y = halfH
+}
+
+const renderPin = (): void => {
+  if (!$pinDot.value) return
+
+  gsap.set($pinDot.value, {
+    x: pinState.x,
+    y: pinState.y
+  })
+}
+
+const getQuadrantValues = (): {
+  topLeft: number
+  topRight: number
+  bottomLeft: number
+  bottomRight: number
+} => {
+  if (!$pinContainer.value) {
+    return {
+      topLeft: 0,
+      topRight: 0,
+      bottomLeft: 0,
+      bottomRight: 0
+    }
+  }
+
+  const rect = $pinContainer.value.getBoundingClientRect()
+  const halfW = rect.width / 2
+  const halfH = rect.height / 2
+
+  // normalize to [-1, 1]
+  const nx = gsap.utils.clamp(-1, 1, pinState.x / halfW)
+  const ny = gsap.utils.clamp(-1, 1, pinState.y / halfH)
+
+  // axis weights
+  const left = (1 - nx) * 0.5
+  const right = (1 + nx) * 0.5
+  const top = (1 - ny) * 0.5
+  const bottom = (1 + ny) * 0.5
+
+  return {
+    topLeft: top * left,
+    topRight: top * right,
+    bottomLeft: bottom * left,
+    bottomRight: bottom * right
+  }
+}
+
+const tick = (): void => {
+  pinState.x += pinState.vx
+  pinState.y += pinState.vy
+
+  const quadrantValues = getQuadrantValues()
+  console.log(quadrantValues)
+
+  wrapPin()
+  renderPin()
+}
+
+const createAudioController = (): void => {
+  if (!$pinContainer.value || !$pinDot.value) return
+  Tempus.add(tick, { priority: -1 })
+}
+
 // init both wheels
 const initialize = (): void => {
   if (!$wheelLeft.value || !$dotLeft.value || !$wheelRight.value || !$dotRight.value) return
 
   createWheelController($wheelLeft.value, $dotLeft.value, leftState, 'left')
   createWheelController($wheelRight.value, $dotRight.value, rightState, 'right')
+  createAudioController()
 }
 
 watch(
@@ -199,6 +308,20 @@ watch(
   (value: number) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ;($dotRight.value as any).__setFromMidiValue(value)
+  }
+)
+
+watch(
+  () => $store.midiData[2].value,
+  (value: number) => {
+    pinState.vx = midiToVelocity(value)
+  }
+)
+
+watch(
+  () => $store.midiData[3].value,
+  (value: number) => {
+    pinState.vy = -midiToVelocity(value)
   }
 )
 
@@ -223,14 +346,46 @@ tryOnMounted(initialize)
   height: 100%;
   z-index: 2;
 
-  .pin-audio {
+  .pin-container {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 32px;
-    height: 32px;
-    background: #ff3b3b;
-    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 420px;
+    height: 420px;
+    border: 1px dashed #fff;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+      width: 0;
+      height: 100%;
+      border-right: 1px dashed red;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 100%;
+      height: 0;
+      border-bottom: 1px dashed red;
+    }
+
+    &__dot {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 32px;
+      height: 32px;
+      background: red;
+      border-radius: 50%;
+      z-index: 1;
+    }
   }
 
   &--wheel {

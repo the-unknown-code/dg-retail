@@ -102,7 +102,7 @@ export default class SeaScene extends M0AbstractScene {
       randomFloat(-0.7, 0.7),
       randomFloat(0.95, 1),
       randomFloat(0.002, 0.03),
-      randomFloat(-0.035, 0.035)
+      randomFloat(-0.05, 0.05)
     )
   }
 
