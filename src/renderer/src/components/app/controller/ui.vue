@@ -52,6 +52,15 @@ import { Draggable } from 'gsap/all'
 import { useAppStore } from '@renderer/store'
 import Tempus from 'tempus'
 
+const props = defineProps<{
+  soundCallback: (quadrantValues: {
+    topLeft: number
+    topRight: number
+    bottomLeft: number
+    bottomRight: number
+  }) => void
+}>()
+
 const $store = useAppStore()
 
 const $wheelLeft = ref<HTMLDivElement | null>(null)
@@ -275,7 +284,7 @@ const tick = (): void => {
   pinState.y += pinState.vy
 
   const quadrantValues = getQuadrantValues()
-  console.log(quadrantValues)
+  props.soundCallback(quadrantValues)
 
   wrapPin()
   renderPin()
