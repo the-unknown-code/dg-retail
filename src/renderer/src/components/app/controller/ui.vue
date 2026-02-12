@@ -1,5 +1,9 @@
 <template>
   <div class="controller-ui">
+    <div ref="$faderContainer" class="fader-container">
+      <div ref="$faderDot" class="fader-container__dot" />
+    </div>
+
     <div ref="$pinContainer" class="pin-container">
       <div ref="$pinDot" class="pin-container__dot" />
     </div>
@@ -67,6 +71,9 @@ const $wheelLeft = ref<HTMLDivElement | null>(null)
 const $dotLeft = ref<HTMLDivElement | null>(null)
 const $wheelRight = ref<HTMLDivElement | null>(null)
 const $dotRight = ref<HTMLDivElement | null>(null)
+
+const $faderContainer = ref<HTMLDivElement | null>(null)
+const $faderDot = ref<HTMLDivElement | null>(null)
 
 const $pinContainer = ref<HTMLDivElement | null>(null)
 const $pinDot = ref<HTMLDivElement | null>(null)
@@ -295,6 +302,29 @@ const createAudioController = (): void => {
   Tempus.add(tick, { priority: -1 })
 }
 
+// FADER
+
+const createFaderController = (): void => {
+  if (!$faderContainer.value || !$faderDot.value) return
+  Draggable.create($faderDot.value, {
+    type: 'y',
+    bounds: $faderContainer.value,
+    onDrag: function () {
+      // Get progress from top (0) to bottom (1)
+      const dot = $faderDot.value
+      const container = $faderContainer.value
+      if (!dot || !container) return
+      const dotRect = dot.getBoundingClientRect()
+      const containerRect = container.getBoundingClientRect()
+      // Clamp to [0, 1]
+      let progress = (dotRect.top - containerRect.top) / (containerRect.height - dotRect.height)
+      progress = gsap.utils.clamp(0, 1, progress)
+      $store.updateValue(60, progress * 127)
+      // You can emit or use progress as needed
+    }
+  })
+}
+
 // init both wheels
 const initialize = (): void => {
   if (!$wheelLeft.value || !$dotLeft.value || !$wheelRight.value || !$dotRight.value) return
@@ -302,6 +332,7 @@ const initialize = (): void => {
   createWheelController($wheelLeft.value, $dotLeft.value, leftState, 'left')
   createWheelController($wheelRight.value, $dotRight.value, rightState, 'right')
   createAudioController()
+  createFaderController()
 }
 
 watch(
@@ -354,6 +385,27 @@ tryOnMounted(initialize)
   width: 100%;
   height: 100%;
   z-index: 2;
+
+  .fader-container {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: 2px;
+    height: 150px;
+    background-color: white;
+
+    &__dot {
+      position: absolute;
+      left: -32px;
+      top: 50%;
+      margin-top: -12px;
+      width: 64px;
+      height: 24px;
+      background: #ff3b3b;
+      border-radius: 24px;
+    }
+  }
 
   .pin-container {
     position: absolute;
