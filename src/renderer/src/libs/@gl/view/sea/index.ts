@@ -9,7 +9,6 @@ import WaterSimulation from './classes/WaterSimulation'
 import utils from '../../shaders/utils.glsl?raw'
 //import { randomFloat } from '../../libs/Math'
 import { useIntervalFn } from '@vueuse/core'
-import { random } from '@renderer/libs/@math'
 import { useAppStore } from '@renderer/store'
 import { APP_STATE } from '@renderer/libs/@global/const'
 import { watch } from 'vue'
@@ -55,7 +54,7 @@ export default class SeaScene extends M0AbstractScene {
     this.#pool = new Pool(this.#renderer, this.#light, this.camera)
     this.#addDrop = this.addDrop.bind(this)
 
-    const { pause, resume } = useIntervalFn(this.#addDrop, 3200, { immediate: false })
+    const { pause, resume } = useIntervalFn(this.#addDrop, 1200, { immediate: false })
     this.#pause = pause
     this.#resume = resume
 
@@ -65,7 +64,7 @@ export default class SeaScene extends M0AbstractScene {
         this.#waterSimulation.addDrop(
           this.#store.midiData[2].x,
           this.#store.midiData[2].y,
-          randomFloat(0.02, 0.03) * MathUtils.clamp(this.viewport.speed, 0.85, 6.5),
+          randomFloat(0.02, 0.03) * MathUtils.clamp(this.#store.midiData[2].velocity, 0.85, 6.5),
           randomFloat(0.02, 0.05)
         )
       }
@@ -77,13 +76,13 @@ export default class SeaScene extends M0AbstractScene {
         this.#waterSimulation.addDrop(
           this.#store.midiData[3].x,
           this.#store.midiData[3].y,
-          randomFloat(0.02, 0.03) * MathUtils.clamp(this.viewport.speed, 0.85, 6.5),
+          randomFloat(0.02, 0.03) * MathUtils.clamp(this.#store.midiData[3].velocity, 0.85, 6.5),
           randomFloat(0.02, 0.05)
         )
       }
     )
 
-    // this.#resume()
+    this.#resume()
 
     const $store = useAppStore()
     watch(
@@ -100,10 +99,10 @@ export default class SeaScene extends M0AbstractScene {
 
   addDrop(): void {
     this.#waterSimulation.addDrop(
-      Math.random() * 2 - 1,
-      Math.random() * 2 - 1,
-      Math.random() * 0.2 + 0.01,
-      random(-0.25, 0.25)
+      randomFloat(-0.7, 0.7),
+      randomFloat(0.95, 1),
+      randomFloat(0.002, 0.03),
+      randomFloat(-0.035, 0.035)
     )
   }
 

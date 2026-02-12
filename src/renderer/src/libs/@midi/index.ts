@@ -46,7 +46,7 @@ export default class Midi {
     // console.log('>', status, id, value)
 
     if (id === 1 || id === 2 || id === 3 || id === 60) {
-      this.#store.updateChannel(id, value, 0, 0)
+      this.#store.updateValue(id, value)
     }
   }
 }
