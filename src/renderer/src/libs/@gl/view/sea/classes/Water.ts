@@ -13,6 +13,8 @@ import {
 import vertexShader from '../../../shaders/water/vertex.glsl?raw'
 import fragmentShader from '../../../shaders/water/fragment.glsl?raw'
 import { M0Renderer, M0Store } from '@renderer/libs/@gl/core'
+import { useAppStore } from '@renderer/store'
+import { watch } from 'vue'
 
 export default class Water {
   _geometry: PlaneGeometry
@@ -21,6 +23,7 @@ export default class Water {
   _mesh: Mesh
   _camera: PerspectiveCamera
 
+  #pinia: ReturnType<typeof useAppStore>
   #store: M0Store
   #renderer: M0Renderer
 
@@ -28,6 +31,7 @@ export default class Water {
     this._camera = camera
     this.#renderer = renderer
 
+    this.#pinia = useAppStore()
     this.#store = M0Store.getInstance()
 
     this._geometry = new PlaneGeometry(2, 2, 512, 512)
@@ -36,6 +40,7 @@ export default class Water {
         light: { value: light },
         tiles: { value: this.#store.get('tile') },
         sky: { value: this.#store.get('env') },
+        fader: { value: 1.0 },
         water: { value: null },
         elevationScale: { value: 1 },
         causticTex: { value: null },
@@ -46,6 +51,20 @@ export default class Water {
     })
 
     this._mesh = new Mesh(this._geometry, this._shader)
+
+    watch(
+      () => this.#pinia.midiData[1].value,
+      () => {
+        this._shader.uniforms.fader.value = 1 - this.#pinia.midiData[1].value / 127
+      }
+    )
+
+    watch(
+      () => this.#pinia.midiData[1].input,
+      () => {
+        this._shader.uniforms.fader.value = this.#pinia.midiData[1].input
+      }
+    )
   }
 
   update(waterTexture: Texture, causticTexture: Texture): void {

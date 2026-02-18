@@ -4,6 +4,7 @@ precision highp int;
 #include <utils>
 
 uniform float underwater;
+uniform float fader;
 uniform samplerCube sky;
 
 varying vec3 eye;
@@ -18,13 +19,14 @@ vec3 getSurfaceRayColor(vec3 origin, vec3 ray, vec3 waterColor) {
   if (ray.y < 0.0) {
     vec2 t = intersectCube(origin, ray, vec3(-1.0, -poolHeight, -1.0), vec3(1.0, 2.0, 1.0));
     color = getWallColor(origin + ray * t.y);
+
   } else {
     vec2 t = intersectCube(origin, ray, vec3(-1.0, -poolHeight, -1.0), vec3(1.0, 2.0, 1.0));
     vec3 hit = origin + ray * t.y;
-    if (hit.y < 7.0 / 12.0) {
+    if (hit.y < 1.0 / 12.0) {
       color = getWallColor(hit);
       // color += CAUSTIC_COLOR_YELLOW * 10.;
-
+  
     } else {
       color = textureCube(sky, ray).rgb;
       color += .01 * vec3(pow(max(0.0, dot(light, ray)), 20.0)) * vec3(10.0, 8.0, 6.0);
@@ -67,6 +69,7 @@ void main() {
     vec3 refractedColor = getSurfaceRayColor(pos, refractedRay, vec3(1.0)) * vec3(0.8, 1.0, 1.1);
 
     gl_FragColor = vec4(mix(reflectedColor, refractedColor, (1.0 - fresnel) * length(refractedRay)), 1.0);
+  
   } else {
     vec3 reflectedRay = reflect(incomingRay, normal);
     vec3 refractedRay = refract(incomingRay, normal, IOR_AIR / IOR_WATER);
@@ -76,18 +79,41 @@ void main() {
     // Map the y-component of the normal from [-1, 1] to [0, 1]
     float n = normal.y * 0.5 + 0.5;
     // Gradient: red at bottom (n=0), blue at top (n=1)
-    vec3 gradientColor = mix(vec3(0.0, 1.8, 0.85), vec3(0.0, 0.0, 0.0), n);
-    vec3 addedRefractedColor = mix(vec3(2.1, 1.8, 0.7), vec3(0., 0., 0.), n);
+    // TRAMONTO
+      vec3 gradientColor = mix(vec3(1.0, 1., 0.85), vec3(0.0, 0.0, 0.0), n);
+    //vec3 gradientColor = mix(vec3(2.0, 1., 0.85), vec3(2.0, 0.0, 0.0), n);
+
+      vec3 addedRefractedColor = mix(vec3(2.1, 1.8, 0.7), vec3(0., 0., 0.), n);
+    //vec3 addedRefractedColor = mix(vec3(4.2, 1., 0.07), vec3(0.024, 0.02, 0.025), n);
 
     // gl_FragColor = vec4(gradientColor, 1.0);
     // return;
 
+    vec3 finalGradientColor = mix(
+      mix(vec3(2.0, 1., 0.85), vec3(2.0, 0.0, 0.0), n),
+      mix(vec3(1.0, 1., 0.85), vec3(0.0, 0.0, 0.0), n),
+      fader
+    );
+
+
+    vec3 finalAddedRefractedColor = mix(
+      mix(vec3(4.2, 1., 0.07), vec3(0.024, 0.02, 0.025), n),
+      mix(vec3(2.1, 1.8, 0.7), vec3(0., 0., 0.), n),
+      fader
+    );
+
+    vec3 finalUnderwaterColor = mix(
+      COLOR_83CBEA_DUSK,
+      COLOR_B2DAEA,
+      fader
+    );
+
 
     vec3 reflectedColor = getSurfaceRayColor(pos, reflectedRay, underwaterColor);
-    vec3 reflectedColor2 = getSurfaceRayColor(pos, -reflectedRay, underwaterColor) + gradientColor;
+    vec3 reflectedColor2 = getSurfaceRayColor(pos, -reflectedRay, underwaterColor) + finalGradientColor;
 
     vec3 refractedColor = getSurfaceRayColor(pos, refractedRay, COLOR_B2DAEA);
-    vec3 refractedColor2 = getSurfaceRayColor(pos * vec3(1.0, 1.4, 1.0), refractedRay, COLOR_83CBEA) + addedRefractedColor;
+    vec3 refractedColor2 = getSurfaceRayColor(pos * vec3(1.0, .4, 1.0), refractedRay, finalUnderwaterColor) + finalAddedRefractedColor;
 
     gl_FragColor = vec4(mix(refractedColor2, mix(reflectedColor, reflectedColor2, fresnel), fresnel), 1.0);
   }

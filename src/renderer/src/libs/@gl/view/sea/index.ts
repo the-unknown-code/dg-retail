@@ -42,7 +42,7 @@ export default class SeaScene extends M0AbstractScene {
 
     ShaderChunk['utils'] = utils
     this.#renderer = M0Renderer.getInstance()
-    this.#light = new Vector3(0.007559289460184544, 1.2, 0.0779644730092272)
+    this.#light = new Vector3(0.07559289460184544, 1.2, 0.0779644730092272)
 
     this.#waterSimulation = new WaterSimulation(this.#renderer)
     this.#water = new Water(this.#renderer, this.#light, this.camera)
@@ -86,7 +86,7 @@ export default class SeaScene extends M0AbstractScene {
       }
     )
 
-    this.#resume()
+    // this.#resume()
 
     const $store = useAppStore()
     watch(
@@ -105,8 +105,8 @@ export default class SeaScene extends M0AbstractScene {
     this.#waterSimulation.addDrop(
       randomFloat(-0.7, 0.7),
       randomFloat(0.95, 1),
-      randomFloat(0.002, 0.03),
-      randomFloat(-0.05, 0.05)
+      randomFloat(0.0002, 0.003),
+      randomFloat(-0.015, 0.015)
     )
   }
 

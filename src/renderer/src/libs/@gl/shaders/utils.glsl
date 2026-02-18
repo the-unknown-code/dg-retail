@@ -2,6 +2,8 @@ const float IOR_AIR = 1.05;
 const float IOR_WATER = 1.333;
 
 const vec3 COLOR_83CBEA = vec3(131.0 / 255.0, 203.0 / 255.0, 234.0 / 255.0);
+const vec3 COLOR_83CBEA_DUSK = vec3(10.0 / 255.0, 80.0 / 255.0, 100.0 / 255.0);
+
 const vec3 COLOR_B2DAEA = vec3(178.0 / 255.0, 218.0 / 255.0, 234.0 / 255.0);
 const vec3 CAUSTIC_COLOR = vec3(250.0 / 255.0, 1.0 / 255.0, 233.0 / 255.0);
 const vec3 CAUSTIC_COLOR_YELLOW = vec3(255.0 / 255.0, 0.0 / 255.0, .0 / 255.0);
@@ -72,7 +74,7 @@ vec3 getWallColor(vec3 point) {
   vec4 info = texture2D(water, point.xz * 0.5 + 0.5);
   if (point.y < info.r) {
     vec4 caustic = texture2D(causticTex, 0.75 * (point.xz - point.y * refractedLight.xz / refractedLight.y) * 0.5 + 0.5);
-    scale += diffuse * caustic.r * 2.0 * caustic.r;
+    scale += diffuse * caustic.r * 2. * caustic.r;
   } else {
     /* shadow for the rim of the pool */
     vec2 t = intersectCube(point, refractedLight, vec3(-1.0, -poolHeight, -1.0), vec3(1.0, 2.0, 1.0));

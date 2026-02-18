@@ -40,6 +40,7 @@ export default class M0Application {
   async initialize(): Promise<void> {
     await this.#loader.preload(MANIFEST)
     this.#manager.initialize()
+    this.#renderer.addPostProcessing()
     this.resize()
   }
 
