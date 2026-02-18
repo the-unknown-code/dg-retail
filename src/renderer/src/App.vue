@@ -1,9 +1,9 @@
 <template>
   <main>
     <Three />
-    <App />
+    <!--<App />-->
     <MidiDebug />
-    <ControllerUI :soundCallback="soundCallback" />
+    <ControllerUI :sound-callback="soundCallback" />
   </main>
 </template>
 
@@ -17,7 +17,7 @@ import Midi from './libs/@midi'
 import SoundManager from './libs/@howler'
 import { useAppStore } from './store'
 import { tryOnMounted } from '@vueuse/core'
-import App from './components/app/index.vue'
+// import App from './components/app/index.vue'
 import { APP_STATE } from './libs/@global/const'
 //const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
 

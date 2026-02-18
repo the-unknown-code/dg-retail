@@ -1,5 +1,9 @@
 <template>
   <div class="controller-ui">
+    <div ref="$spawnAreaL" class="spawn-area">
+      <div ref="$spawnDotL" class="spawn-area--dot" />
+    </div>
+
     <div ref="$faderContainer" class="fader-container">
       <div ref="$faderDot" class="fader-container__dot" />
     </div>
@@ -78,6 +82,9 @@ const $faderDot = ref<HTMLDivElement | null>(null)
 const $pinContainer = ref<HTMLDivElement | null>(null)
 const $pinDot = ref<HTMLDivElement | null>(null)
 
+const $spawnAreaL = ref<HTMLDivElement | null>(null)
+const $spawnDotL = ref<HTMLDivElement | null>(null)
+
 // 🎛️ independent state per wheel
 const leftState = {
   angle: Math.PI / 2,
@@ -125,19 +132,21 @@ const createWheelController = (
     lastTime = now
 
     // 🔥 global dot position (viewport space)
-    const dotRect = dotEl.getBoundingClientRect()
-    const centerX = dotRect.left + dotRect.width / 2
-    const centerY = dotRect.top + dotRect.height / 2
+    // const dotRect = dotEl.getBoundingClientRect()
+    //const centerX = dotRect.left + dotRect.width / 2
+    //const centerY = dotRect.top + dotRect.height / 2
 
     // normalize to WebGL NDC (window-based)
-    const ndcX = (centerX / window.innerWidth) * 2 - 1
-    const ndcY = (centerY / window.innerHeight) * 2 - 1
+    // const ndcX = (centerX / window.innerWidth) * 2 - 1
+    // const ndcY = (centerY / window.innerHeight) * 2 - 1
+
+    const ndc = getDotNDC($spawnDotL.value as HTMLElement)
 
     // send to store
     if (side === 'left') {
-      $store.updateChannel(2, state.value, ndcX * 0.65, ndcY * 1.2, state.velocity)
+      $store.updateChannel(2, state.value, ndc.x, ndc.y, state.velocity)
     } else {
-      $store.updateChannel(3, state.value, ndcX * 0.65, ndcY * 1.2, state.velocity)
+      $store.updateChannel(3, state.value, -ndc.x, -ndc.y, state.velocity)
     }
   }
 
@@ -350,6 +359,109 @@ const setFaderFromMidi = (value: number): void => {
   })
 }
 
+const spawnState = {
+  t: 0, // 0 → 1 loop
+  speed: 0.0006 // radians-per-ms feel
+}
+
+const getDotNDC = (el: HTMLElement): { x: number; y: number } => {
+  const rect = el.getBoundingClientRect()
+
+  const cx = rect.left + rect.width * 0.5
+  const cy = rect.top + rect.height * 0.5
+
+  return {
+    x: (cx / window.innerWidth) * 2 - 1,
+    y: (cy / window.innerHeight) * 2 - 1
+  }
+}
+
+const getSpawnPosition = (t: number, w: number, h: number, r: number): { x: number; y: number } => {
+  const p = t % 1
+
+  const bottomLen = w - r * 2
+  const leftLen = h - r * 2
+  const topLen = w - r * 2
+  const arcLen = Math.PI * r * 1.5 // three quarter-circle total
+
+  const totalLen = bottomLen + leftLen + topLen + arcLen
+  let d = p * totalLen
+
+  // ───────────────── bottom (right → left)
+  if (d < bottomLen) {
+    return {
+      x: w - r - d,
+      y: h
+    }
+  }
+  d -= bottomLen
+
+  // ◜ bottom-left curve
+  if (d < (Math.PI * r) / 2) {
+    const a = d / r
+    return {
+      x: r - r * Math.cos(a),
+      y: h - r * Math.sin(a)
+    }
+  }
+  d -= (Math.PI * r) / 2
+
+  // │ left (bottom → top)
+  if (d < leftLen) {
+    return {
+      x: 0,
+      y: h - r - d
+    }
+  }
+  d -= leftLen
+
+  // ◝ top-left curve
+  if (d < (Math.PI * r) / 2) {
+    const a = d / r
+    return {
+      x: r * Math.sin(a),
+      y: r - r * Math.cos(a)
+    }
+  }
+  d -= (Math.PI * r) / 2
+
+  // ─────────────── top (left → right)
+  if (d < topLen) {
+    return {
+      x: r + d,
+      y: 0
+    }
+  }
+  d -= topLen
+
+  // ◞ top-right curve → back to bottom-right
+  const a = d / r
+  return {
+    x: w - r + r * Math.cos(a),
+    y: r * Math.sin(a)
+  }
+}
+
+const tickSpawnDot = (_t: number, _dt: number): void => {
+  const container = $spawnAreaL.value
+  const dot = $spawnDotL.value
+  if (!container || !dot) return
+
+  spawnState.t += spawnState.speed * _dt * 0.15
+
+  const w = container.clientWidth
+  const h = container.clientHeight
+  const r = 0 // corner radius
+
+  const { x, y } = getSpawnPosition(spawnState.t, w, h, r)
+
+  gsap.set(dot, { x, y })
+}
+
+const createSpawnController = (): void => {
+  Tempus.add(tickSpawnDot, { priority: -2 })
+}
+
 // init both wheels
 const initialize = (): void => {
   if (!$wheelLeft.value || !$dotLeft.value || !$wheelRight.value || !$dotRight.value) return
@@ -358,6 +470,7 @@ const initialize = (): void => {
   createWheelController($wheelRight.value, $dotRight.value, rightState, 'right')
   createAudioController()
   createFaderController()
+  createSpawnController()
 }
 
 watch(
@@ -432,6 +545,32 @@ tryOnMounted(() => {
     pointer-events: auto;
   }
 
+  .spawn-area {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50vw;
+    height: 100vh;
+    z-index: 1;
+    pointer-events: none;
+
+    svg {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+
+    &--dot {
+      position: absolute;
+      left: -15px;
+      top: -15px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #f00;
+    }
+  }
+
   .fader-container {
     position: absolute;
     bottom: 30px;
@@ -440,6 +579,7 @@ tryOnMounted(() => {
     width: 2px;
     height: 150px;
     background-color: white;
+    z-index: 50;
 
     &__dot {
       position: absolute;
