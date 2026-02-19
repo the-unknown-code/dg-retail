@@ -1,77 +1,68 @@
-import gsap from 'gsap/all'
-import { Howl, Howler } from 'howler'
-Howler.volume(1)
+// import gsap from 'gsap/all'
+import { Howl } from 'howler'
 
-import a1 from '/sounds/a1.mp3'
-import a2 from '/sounds/a2.mp3'
-import a3 from '/sounds/a3.mp3'
-import a4 from '/sounds/a4.mp3'
-import ambienceSound from '/sounds/ambience.mp3'
+const SOUND_GRID = {
+  1: { label: 'B3', color: '#ffb3f4', instance: null as Howl | null },
+  2: { label: 'B3_75-25_B4', color: '#efc6fe', instance: null as Howl | null },
+  3: { label: 'B3_25-75_B4', color: '#e2ceff', instance: null as Howl | null },
+  4: { label: 'B4', color: '#c9daf8', instance: null as Howl | null },
+  5: { label: 'B1_25-75_B3', color: '#fdcddd', instance: null as Howl | null },
+  6: { label: 'B3-75_B1-25_B4-25', color: '#ffffff', instance: null as Howl | null },
+  7: { label: 'B4-75_B2-25_B3-25', color: '#fffeff', instance: null as Howl | null },
+  8: { label: 'B2_25-75_B4', color: '#c9ffff', instance: null as Howl | null },
+  9: { label: 'B1_75-25_B3', color: '#fccdc7', instance: null as Howl | null },
+  10: { label: 'B1-75_B2-25_B4-25', color: '#ffffff', instance: null as Howl | null },
+  11: { label: 'B2-75_B1-25_B3-25', color: '#ffffff', instance: null as Howl | null },
+  12: { label: 'B2_75-25_B4', color: '#c0ffd0', instance: null as Howl | null },
+  13: { label: 'B1', color: '#f5c5c5', instance: null as Howl | null },
+  14: { label: 'B1_75-25_B2', color: '#ffe6cd', instance: null as Howl | null },
+  15: { label: 'B1_25-75_B2', color: '#fdffce', instance: null as Howl | null },
+  16: { label: 'B2', color: '#b6d7a8', instance: null as Howl | null }
+}
 
-const SOUNDS = [
-  {
-    id: 'topLeft',
-    src: a1,
-    instance: null as Howl | null
-  },
-  {
-    id: 'topRight',
-    src: a2,
-    instance: null as Howl | null
-  },
-  {
-    id: 'bottomLeft',
-    src: a3,
-    instance: null as Howl | null
-  },
-  {
-    id: 'bottomRight',
-    src: a4,
-    instance: null as Howl | null
-  }
-]
-
-let ambience = null as Howl | null
 export default class SoundManager {
+  private currentIndex: number | null = null
+
   constructor() {
-    for (const sound of SOUNDS) {
+    for (const sound of Object.values(SOUND_GRID)) {
       sound.instance = new Howl({
-        src: [sound.src],
+        src: [`/sounds/${sound.label}.ogg`],
         preload: true,
         loop: true,
-        autoplay: true,
+        autoplay: false,
         volume: 0
       })
-
-      sound.instance.play()
     }
 
-    ambience = new Howl({
-      src: [ambienceSound],
-      preload: true,
-      loop: true,
-      autoplay: true,
-      volume: 0.5
+    // Howler.ctx.resume()
+  }
+
+  playSound(index: number): void {
+    console.log('playSound', index)
+    if (this.currentIndex === index) return // already playing, do nothing
+
+    const next = SOUND_GRID[index]?.instance
+    if (!next) return
+
+    // Fade out and stop all other playing sounds
+    Object.entries(SOUND_GRID).forEach(([i, sound]) => {
+      if (Number(i) !== index && sound.instance) {
+        const s = sound.instance
+        if (s.playing()) {
+          s.fade(s.volume(), 0, 500)
+          s.once('fade', () => s.stop()) // stop after fade completes
+        }
+      }
     })
 
-    ambience.play()
-    Howler.ctx.resume()
-  }
-
-  update(values: {
-    topLeft: number
-    topRight: number
-    bottomLeft: number
-    bottomRight: number
-  }): void {
-    for (const sound of SOUNDS) {
-      const volume = gsap.utils.mapRange(0.25, 1, 0.05, 0.35, values[sound.id])
-      sound.instance?.volume(volume)
+    // Start and fade in the new sound
+    if (!next.playing()) {
+      next.volume(0)
+      next.play()
     }
-  }
 
-  updateAmbience(volume: number): void {
-    if (!ambience) return
-    ambience.volume(volume)
+    next.fade(next.volume(), 1, 500)
+
+    this.currentIndex = index
   }
 }

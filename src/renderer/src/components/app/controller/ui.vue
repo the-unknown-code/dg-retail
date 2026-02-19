@@ -1,5 +1,5 @@
 <template>
-  <div class="controller-ui">
+  <div class="controller-ui is-visible">
     <div ref="$spawnAreaL" class="spawn-area">
       <div ref="$spawnDotL" class="spawn-area--dot" />
     </div>
@@ -8,9 +8,11 @@
       <div ref="$faderDot" class="fader-container__dot" />
     </div>
 
+    <!--
     <div ref="$pinContainer" class="pin-container">
       <div ref="$pinDot" class="pin-container__dot" />
     </div>
+    -->
 
     <div ref="$wheelLeft" class="controller-ui--wheel left">
       <!-- semicircle stroke -->
@@ -60,15 +62,6 @@ import { Draggable } from 'gsap/all'
 import { useAppStore } from '@renderer/store'
 import Tempus from 'tempus'
 
-const props = defineProps<{
-  soundCallback: (quadrantValues: {
-    topLeft: number
-    topRight: number
-    bottomLeft: number
-    bottomRight: number
-  }) => void
-}>()
-
 const $store = useAppStore()
 
 const $wheelLeft = ref<HTMLDivElement | null>(null)
@@ -79,8 +72,10 @@ const $dotRight = ref<HTMLDivElement | null>(null)
 const $faderContainer = ref<HTMLDivElement | null>(null)
 const $faderDot = ref<HTMLDivElement | null>(null)
 
+/*
 const $pinContainer = ref<HTMLDivElement | null>(null)
 const $pinDot = ref<HTMLDivElement | null>(null)
+*/
 
 const $spawnAreaL = ref<HTMLDivElement | null>(null)
 const $spawnDotL = ref<HTMLDivElement | null>(null)
@@ -230,85 +225,6 @@ const midiToVelocity = (value: number): number => {
   const delta = value - 64
   if (Math.abs(delta) <= DEADZONE) return 0
   return (delta / 63) * MAX_SPEED
-}
-
-/* --------------------------------------------------
-   Pac-Man wrap
--------------------------------------------------- */
-const wrapPin = (): void => {
-  if (!$pinContainer.value) return
-
-  const rect = $pinContainer.value.getBoundingClientRect()
-  const halfW = rect.width / 2
-  const halfH = rect.height / 2
-
-  if (pinState.x > halfW) pinState.x = -halfW
-  if (pinState.x < -halfW) pinState.x = halfW
-
-  if (pinState.y > halfH) pinState.y = -halfH
-  if (pinState.y < -halfH) pinState.y = halfH
-}
-
-const renderPin = (): void => {
-  if (!$pinDot.value) return
-
-  gsap.set($pinDot.value, {
-    x: pinState.x,
-    y: pinState.y
-  })
-}
-
-const getQuadrantValues = (): {
-  topLeft: number
-  topRight: number
-  bottomLeft: number
-  bottomRight: number
-} => {
-  if (!$pinContainer.value) {
-    return {
-      topLeft: 0,
-      topRight: 0,
-      bottomLeft: 0,
-      bottomRight: 0
-    }
-  }
-
-  const rect = $pinContainer.value.getBoundingClientRect()
-  const halfW = rect.width / 2
-  const halfH = rect.height / 2
-
-  // normalize to [-1, 1]
-  const nx = gsap.utils.clamp(-1, 1, pinState.x / halfW)
-  const ny = gsap.utils.clamp(-1, 1, pinState.y / halfH)
-
-  // axis weights
-  const left = (1 - nx) * 0.5
-  const right = (1 + nx) * 0.5
-  const top = (1 - ny) * 0.5
-  const bottom = (1 + ny) * 0.5
-
-  return {
-    topLeft: top * left,
-    topRight: top * right,
-    bottomLeft: bottom * left,
-    bottomRight: bottom * right
-  }
-}
-
-const tick = (): void => {
-  pinState.x += pinState.vx
-  pinState.y += pinState.vy
-
-  const quadrantValues = getQuadrantValues()
-  props.soundCallback(quadrantValues)
-
-  wrapPin()
-  renderPin()
-}
-
-const createAudioController = (): void => {
-  if (!$pinContainer.value || !$pinDot.value) return
-  Tempus.add(tick, { priority: -1 })
 }
 
 // FADER
@@ -468,7 +384,7 @@ const initialize = (): void => {
 
   createWheelController($wheelLeft.value, $dotLeft.value, leftState, 'left')
   createWheelController($wheelRight.value, $dotRight.value, rightState, 'right')
-  createAudioController()
+  // createAudioController()
   createFaderController()
   createSpawnController()
 }

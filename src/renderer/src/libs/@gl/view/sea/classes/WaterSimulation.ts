@@ -56,7 +56,7 @@ export default class WaterSimulation {
 
     this._normalShader = new ShaderMaterial({
       uniforms: {
-        delta: { value: [1 / 256, 1 / 256] }, // TODO: Remove this useless uniform and hardcode it in shaders?
+        delta: { value: [1 / 512, 1 / 512] }, // TODO: Remove this useless uniform and hardcode it in shaders?
         tDiffuse: { value: null }
       },
       vertexShader,

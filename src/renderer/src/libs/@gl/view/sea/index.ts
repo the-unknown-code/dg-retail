@@ -2,7 +2,7 @@ import { MathUtils, ShaderChunk, Texture, Vector2, Vector3 } from 'three'
 import { M0Renderer } from '../../core'
 import M0AbstractScene from '../AbstractScene'
 import Caustics from './classes/Caustics'
-import Pool from './classes/Pool'
+// import Pool from './classes/Pool'
 import Water from './classes/Water'
 import WaterSimulation from './classes/WaterSimulation'
 
@@ -20,7 +20,7 @@ export default class SeaScene extends M0AbstractScene {
   #waterSimulation: WaterSimulation
   #water: Water
   #caustics: Caustics
-  #pool: Pool
+  // #pool: Pool
 
   #light: Vector3
   #renderer: M0Renderer
@@ -51,7 +51,7 @@ export default class SeaScene extends M0AbstractScene {
     this.#lastMouse.copy(this.viewport.mouseGL)
 
     // this.#pool = new Pool(this.#renderer, this.#light, this.camera)
-    this.#pool = new Pool(this.#renderer, this.#light, this.camera)
+    // this.#pool = new Pool(this.#renderer, this.#light, this.camera)
     this.#addDrop = this.addDrop.bind(this)
 
     const { pause, resume } = useIntervalFn(this.#addDrop, 1200, { immediate: false })
@@ -66,7 +66,7 @@ export default class SeaScene extends M0AbstractScene {
         this.#waterSimulation.addDrop(
           this.#store.midiData[2].x,
           this.#store.midiData[2].y,
-          randomFloat(0.04, 0.08) * MathUtils.clamp(this.#store.midiData[2].velocity, 0.35, 1.2),
+          randomFloat(0.04, 0.08) * MathUtils.clamp(this.#store.midiData[2].velocity, 0.35, 1.6),
           randomFloat(0.02, 0.08)
         )
       }
@@ -80,7 +80,7 @@ export default class SeaScene extends M0AbstractScene {
         this.#waterSimulation.addDrop(
           this.#store.midiData[3].x,
           this.#store.midiData[3].y,
-          randomFloat(0.04, 0.08) * MathUtils.clamp(this.#store.midiData[3].velocity, 0.35, 1.2),
+          randomFloat(0.04, 0.08) * MathUtils.clamp(this.#store.midiData[3].velocity, 0.35, 1.6),
           randomFloat(0.02, 0.08)
         )
       }
@@ -152,7 +152,7 @@ export default class SeaScene extends M0AbstractScene {
 
     // this.#debug.update(causticTexture)
     this.#water.update(waterTexture, causticTexture)
-    this.#pool.update(waterTexture, causticTexture)
+    // this.#pool.update(waterTexture, causticTexture)
   }
 
   override resize(): void {
