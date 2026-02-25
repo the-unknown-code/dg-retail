@@ -392,7 +392,7 @@ const initialize = (): void => {
 watch(
   () => $store.midiData[1].input,
   (value: number) => {
-    setFaderFromMidi(value)
+    $store.updateChannel(1, value, 0, 0, 0)
   }
 )
 
