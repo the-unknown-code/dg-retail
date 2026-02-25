@@ -57,7 +57,7 @@ const bounds = {
   y: window.innerHeight / 2 - PIN_SIZE / 2
 }
 
-const updateBounds = () => {
+const updateBounds = (): void => {
   bounds.x = window.innerWidth / 2 - PIN_SIZE / 2
   bounds.y = window.innerHeight / 2 - PIN_SIZE / 2
 }
