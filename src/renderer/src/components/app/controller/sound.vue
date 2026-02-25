@@ -51,25 +51,40 @@ const currentGridIndex = ref<number | null>(null)
 const DEAD_ZONE = 3
 const PIN_SIZE = 32
 
+// bounds updated on resize
+const bounds = {
+  x: window.innerWidth / 2 - PIN_SIZE / 2,
+  y: window.innerHeight / 2 - PIN_SIZE / 2
+}
+
+const updateBounds = () => {
+  bounds.x = window.innerWidth / 2 - PIN_SIZE / 2
+  bounds.y = window.innerHeight / 2 - PIN_SIZE / 2
+}
+
+const updatePinPosition = (): void => {
+  if (!$pin.value) return
+  $pin.value.style.transform = `translate(${pinState.x}px, ${pinState.y}px)`
+}
+
 const getGridIndex = (): number | null => {
   const w = window.innerWidth
   const h = window.innerHeight
 
-  // Absolute center of the pin
   const centerX = w / 2 + pinState.x
   const centerY = h / 2 + pinState.y
 
-  // 4 corners in priority order: top-left, top-right, bottom-right, bottom-left
   const corners = [
-    { x: centerX - PIN_SIZE / 2, y: centerY - PIN_SIZE / 2 }, // top-left
-    { x: centerX + PIN_SIZE / 2, y: centerY - PIN_SIZE / 2 }, // top-right
-    { x: centerX + PIN_SIZE / 2, y: centerY + PIN_SIZE / 2 }, // bottom-right
-    { x: centerX - PIN_SIZE / 2, y: centerY + PIN_SIZE / 2 } // bottom-left
+    { x: centerX - PIN_SIZE / 2, y: centerY - PIN_SIZE / 2 },
+    { x: centerX + PIN_SIZE / 2, y: centerY - PIN_SIZE / 2 },
+    { x: centerX + PIN_SIZE / 2, y: centerY + PIN_SIZE / 2 },
+    { x: centerX - PIN_SIZE / 2, y: centerY + PIN_SIZE / 2 }
   ]
 
   for (const corner of corners) {
     const col = Math.floor((corner.x / w) * 4)
     const row = Math.floor((corner.y / h) * 4)
+
     if (col >= 0 && col <= 3 && row >= 0 && row <= 3) {
       return row * 4 + col + 1
     }
@@ -82,19 +97,16 @@ const applyMovement = (rawValue: number, axis: 'x' | 'y'): void => {
   const delta = rawValue - 64
   if (Math.abs(delta) <= DEAD_ZONE) return
 
-  const speed = (delta / 64) * 12
-  pinState[axis] = Math.max(
-    -window.innerWidth / 2,
-    Math.min(window.innerWidth / 2, pinState[axis] + speed)
-  )
+  const speed = (delta / 64) * 36
+
+  if (axis === 'x') {
+    pinState.x = Math.max(-bounds.x, Math.min(bounds.x, pinState.x + speed))
+  } else {
+    pinState.y = Math.max(-bounds.y, Math.min(bounds.y, pinState.y + speed))
+  }
 
   updatePinPosition()
   currentGridIndex.value = getGridIndex()
-}
-
-const updatePinPosition = (): void => {
-  if (!$pin.value) return
-  $pin.value.style.transform = `translate(${pinState.x}px, ${pinState.y}px)`
 }
 
 watch(
@@ -112,7 +124,11 @@ watch(currentGridIndex, (value) => {
 })
 
 tryOnMounted(() => {
+  updateBounds()
+  updatePinPosition()
   currentGridIndex.value = getGridIndex()
+
+  window.addEventListener('resize', updateBounds)
 
   window.addEventListener('keydown', (e) => {
     if (e.key === 's') {

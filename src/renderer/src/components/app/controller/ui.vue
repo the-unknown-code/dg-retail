@@ -397,6 +397,13 @@ watch(
 )
 
 watch(
+  () => $store.midiData[1].value,
+  (value: number) => {
+    setFaderFromMidi(value)
+  }
+)
+
+watch(
   () => $store.midiData[2].input,
   (value: number) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

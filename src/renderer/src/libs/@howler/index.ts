@@ -22,6 +22,7 @@ const SOUND_GRID = {
 
 export default class SoundManager {
   private currentIndex: number | null = null
+  private currentSeek: number = 0
 
   constructor() {
     for (const sound of Object.values(SOUND_GRID)) {
@@ -49,7 +50,8 @@ export default class SoundManager {
       if (Number(i) !== index && sound.instance) {
         const s = sound.instance
         if (s.playing()) {
-          s.fade(s.volume(), 0, 500)
+          this.currentSeek = s.seek() as number
+          s.fade(s.volume(), 0, 1500)
           s.once('fade', () => s.stop()) // stop after fade completes
         }
       }
@@ -59,6 +61,12 @@ export default class SoundManager {
     if (!next.playing()) {
       next.volume(0)
       next.play()
+      next.fade(next.volume(), 1, 1500)
+
+      if (this.currentSeek > 0) {
+        console.log('seek', this.currentSeek)
+        next.seek(this.currentSeek)
+      }
     }
 
     next.fade(next.volume(), 1, 500)
