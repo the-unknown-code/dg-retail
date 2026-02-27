@@ -80,6 +80,7 @@ onMounted(() => {
   left: 0;
   width: 100%;
   height: 100%;
+  overflow: hidden;
 
   &:not(.is-mixing):not(.is-null) {
     filter: blur(4px);

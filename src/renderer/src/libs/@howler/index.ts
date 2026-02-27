@@ -39,7 +39,6 @@ export default class SoundManager {
   }
 
   playSound(index: number): void {
-    console.log('playSound', index)
     if (this.currentIndex === index) return // already playing, do nothing
 
     const next = SOUND_GRID[index]?.instance
@@ -64,7 +63,6 @@ export default class SoundManager {
       next.fade(next.volume(), 1, 1500)
 
       if (this.currentSeek > 0) {
-        console.log('seek', this.currentSeek)
         next.seek(this.currentSeek)
       }
     }

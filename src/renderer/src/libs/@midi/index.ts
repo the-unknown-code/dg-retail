@@ -20,7 +20,7 @@ export default class Midi {
 
   constructor() {
     this.#store = useAppStore()
-    navigator.requestMIDIAccess().then(this.#onMidiReady.bind(this))
+    navigator.requestMIDIAccess && navigator.requestMIDIAccess().then(this.#onMidiReady.bind(this))
   }
 
   #onMidiReady(midi: MIDIAccess): void {

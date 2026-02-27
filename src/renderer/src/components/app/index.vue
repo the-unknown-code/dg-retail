@@ -11,6 +11,7 @@
       <Mixing v-else-if="$store.appState === APP_STATE.MIXING" :callback="onMixing" />
     </transition>
     <Sound />
+    <IpadController v-if="$store.isIpad" />
   </div>
 </template>
 
@@ -21,6 +22,7 @@ import Start from './blocks/start.vue'
 import OnBoarding from './blocks/onBoarding.vue'
 import Mixing from './blocks/mixing.vue'
 import Sound from './blocks/sound.vue'
+import IpadController from './blocks/ipad-controller.vue'
 import { APP_STATE } from '@renderer/libs/@global/const'
 
 const $store = useAppStore()

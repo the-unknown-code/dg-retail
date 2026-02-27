@@ -1,5 +1,5 @@
 const float IOR_AIR = 1.05;
-const float IOR_WATER = 1.333;
+const float IOR_WATER = 1.2333;
 
 const vec3 COLOR_83CBEA = vec3(131.0 / 255.0, 203.0 / 255.0, 234.0 / 255.0);
 const vec3 COLOR_83CBEA_DUSK = vec3(10.0 / 255.0, 80.0 / 255.0, 100.0 / 255.0);

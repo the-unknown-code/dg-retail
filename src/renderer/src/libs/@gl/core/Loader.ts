@@ -41,13 +41,11 @@ export default class M0Loader {
   }
 
   async loadTexture(item: ManifestItem): Promise<void> {
-    console.log('loadTexture', item)
     const texture = (await this.#textureLoader.loadAsync(item.src as string)) as Texture
     this.#store.set(item.id, texture)
   }
 
   async loadCubeTexture(item: ManifestItem): Promise<void> {
-    console.log('loadCubeTexture', item)
     const cubeTexture = (await this.#cubeTextureLoader.loadAsync(
       item.src as string[]
     )) as CubeTexture

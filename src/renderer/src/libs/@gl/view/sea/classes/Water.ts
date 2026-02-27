@@ -34,7 +34,7 @@ export default class Water {
     this.#pinia = useAppStore()
     this.#store = M0Store.getInstance()
 
-    this._geometry = new PlaneGeometry(2, 2, 512, 512)
+    this._geometry = new PlaneGeometry(2, 2, 1024, 1024)
     this._shader = new ShaderMaterial({
       uniforms: {
         light: { value: light },
@@ -42,7 +42,7 @@ export default class Water {
         sky: { value: this.#store.get('env') },
         fader: { value: 1.0 },
         water: { value: null },
-        elevationScale: { value: 1.5 },
+        elevationScale: { value: 1 },
         causticTex: { value: null },
         underwater: { value: false }
       },

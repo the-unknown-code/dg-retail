@@ -1,6 +1,6 @@
 <template>
   <div class="sound">
-    <div class="sound__content">
+    <div v-if="!$store.isIpad" class="sound__content">
       <p>VIBY</p>
       <p>PARTY</p>
       <p>CHILL</p>

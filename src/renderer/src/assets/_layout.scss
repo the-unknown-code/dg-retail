@@ -1,6 +1,13 @@
+html,
 body {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vh;
+  height: 100vw;
   font-family: 'Futura Cyrillic', sans-serif;
   color: var(--blue);
+  overscroll-behavior: none;
 
   * {
     user-select: none !important;

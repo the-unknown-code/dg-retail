@@ -64,8 +64,6 @@ export default class SeaScene extends M0AbstractScene {
         if (this.#store.appState !== APP_STATE.MIXING && this.#store.appState !== APP_STATE.NULL)
           return
 
-        console.log(this.#store.midiData[2].x, this.#store.midiData[2].y)
-
         this.#waterSimulation.addDrop(
           this.#store.midiData[2].x,
           this.#store.midiData[2].y,
