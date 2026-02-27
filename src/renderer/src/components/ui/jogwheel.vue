@@ -1,6 +1,7 @@
 <template>
   <div class="ui-jogwheel">
     <svg
+      ref="$jogwheel"
       width="261"
       height="261"
       viewBox="0 0 261 261"
@@ -197,7 +198,125 @@
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { tryOnMounted } from '@vueuse/core'
+import { ref, watch } from 'vue'
+import { gsap } from 'gsap'
+import { Draggable } from 'gsap/all'
+import { useAppStore } from '@renderer/store'
+
+const props = defineProps({
+  id: {
+    type: String,
+    required: false,
+    default: '1'
+  }
+})
+
+const $store = useAppStore()
+const $jogwheel = ref<SVGElement | null>(null)
+
+const MIDI_CENTER = 64
+const MIDI_MIN = 0
+const MIDI_MAX = 127
+const DEGREES_PER_MIDI = 2 // how many degrees = 1 midi step, tune this for sensitivity
+
+const midiValue = ref(MIDI_CENTER)
+const velocity = ref(0)
+
+const proxy = { progress: 0 }
+let draggableInstance: Draggable | null = null
+let startRotation = 0
+let startMidi = MIDI_CENTER
+let lastAngle = 0
+let lastTime = performance.now()
+
+/*
+const updateVelocity = (currentRotation: number): void => {
+  const now = performance.now()
+  const dt = Math.max(1, now - lastTime)
+  const da = currentRotation - lastAngle
+  velocity.value = da / (dt / 1000)
+  lastAngle = currentRotation
+  lastTime = now
+}
+
+*/
+
+const computeMidi = (rotation: number): number => {
+  const delta = rotation - startRotation
+  const newMidi = startMidi + delta / DEGREES_PER_MIDI
+  return Math.round(Math.min(MIDI_MAX, Math.max(MIDI_MIN, newMidi)))
+}
+
+const initialize = (): void => {
+  if (!$jogwheel.value) return
+  ;[draggableInstance] = Draggable.create($jogwheel.value, {
+    type: 'rotation',
+    inertia: true,
+    allowNativeTouchScrolling: true,
+    onDragStart() {
+      gsap.killTweensOf(proxy)
+      // always snapshot current rotation and current midi at drag start
+      startRotation = this.rotation
+      startMidi = midiValue.value
+      lastAngle = this.rotation
+      lastTime = performance.now()
+    },
+    onDrag() {
+      midiValue.value = computeMidi(this.rotation)
+      //updateVelocity(this.rotation)
+    },
+    onThrowUpdate() {
+      midiValue.value = computeMidi(this.rotation)
+      //updateVelocity(this.rotation)
+    },
+    onThrowComplete() {
+      velocity.value = 0
+      resetToCenter()
+    },
+    onDragEnd() {
+      if (!this.isThrowing) {
+        velocity.value = 0
+        resetToCenter()
+      }
+    }
+  })
+}
+
+const resetToCenter = (): void => {
+  if (!draggableInstance || !$jogwheel.value) return
+
+  return
+  const startValue = midiValue.value
+  proxy.progress = 0
+
+  gsap.to(proxy, {
+    progress: 1,
+    duration: 0.8,
+    ease: 'power2.out',
+    onUpdate() {
+      midiValue.value = Math.round(startValue + (MIDI_CENTER - startValue) * proxy.progress)
+    },
+    onComplete: () => {
+      midiValue.value = MIDI_CENTER
+      // rebase start values to current draggable rotation so next drag is correct
+      startRotation = draggableInstance!.rotation
+      startMidi = MIDI_CENTER
+      lastAngle = draggableInstance!.rotation
+    }
+  })
+}
+
+watch(midiValue, (value) => {
+  console.log(props.id, value)
+  $store.updateValue(props.id as never, value)
+})
+
+tryOnMounted(() => {
+  initialize()
+})
+</script>
 
 <style lang="scss" scoped>
 .ui-jogwheel {

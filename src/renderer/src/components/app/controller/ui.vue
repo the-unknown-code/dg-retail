@@ -1,5 +1,5 @@
 <template>
-  <div class="controller-ui is-visible">
+  <div class="controller-ui">
     <div ref="$spawnAreaL" class="spawn-area">
       <div ref="$spawnDotL" class="spawn-area--dot" />
     </div>

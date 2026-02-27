@@ -104,12 +104,21 @@
         </defs>
       </svg>
     </div>
+    <div class="ipad-controller__ui">
+      <div>
+        <Jogwheel id="2" />
+        <Fader />
+        <Jogwheel id="3" />
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useElementSize } from '@vueuse/core'
+import Jogwheel from '../../ui/jogwheel.vue'
+import Fader from '../../ui/fader.vue'
 
 const $svg = ref<HTMLDivElement | null>(null)
 const { height } = useElementSize($svg)
@@ -126,6 +135,48 @@ const { height } = useElementSize($svg)
   display: flex;
   align-items: flex-end;
 
+  &__ui {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    transform: translateY(40%);
+
+    > div {
+      position: relative;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      &:deep(.ui-jogwheel),
+      &:deep(.ui-fader) {
+        width: auto;
+
+        svg {
+          width: 100%;
+          height: auto;
+          display: block;
+        }
+      }
+
+      &:deep(.ui-jogwheel) {
+        position: relative;
+        width: 520px;
+        aspect-ratio: 1;
+      }
+
+      &:deep(.ui-fader) {
+        position: relative;
+        width: 121px;
+        aspect-ratio: 1;
+        transform: translateY(-50%);
+      }
+    }
+  }
+
   &__background {
     position: absolute;
     top: 0;
@@ -136,6 +187,7 @@ const { height } = useElementSize($svg)
     flex-direction: column;
     align-items: flex-end;
     justify-content: space-between;
+    pointer-events: none;
 
     > div {
       position: relative;
@@ -179,7 +231,7 @@ const { height } = useElementSize($svg)
     max-width: 100vw;
 
     path {
-      fill: #0087c188;
+      fill: #ffffff33;
     }
   }
 }

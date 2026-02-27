@@ -87,6 +87,7 @@ watch(
   align-items: center;
   justify-content: center;
   mix-blend-mode: lighten;
+  pointer-events: none;
 
   p {
     position: absolute;
