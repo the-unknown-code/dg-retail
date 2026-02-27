@@ -219,7 +219,7 @@ const $jogwheel = ref<SVGElement | null>(null)
 const MIDI_CENTER = 64
 const MIDI_MIN = 0
 const MIDI_MAX = 127
-const DEGREES_PER_MIDI = 2 // how many degrees = 1 midi step, tune this for sensitivity
+const DEGREES_PER_MIDI = 5 // how many degrees = 1 midi step, tune this for sensitivity
 
 const midiValue = ref(MIDI_CENTER)
 const velocity = ref(0)
@@ -246,7 +246,7 @@ const updateVelocity = (currentRotation: number): void => {
 const computeMidi = (rotation: number): number => {
   const delta = rotation - startRotation
   const newMidi = startMidi + delta / DEGREES_PER_MIDI
-  return Math.round(Math.min(MIDI_MAX, Math.max(MIDI_MIN, newMidi)))
+  return Math.min(MIDI_MAX, Math.max(MIDI_MIN, newMidi))
 }
 
 const initialize = (): void => {
@@ -254,7 +254,6 @@ const initialize = (): void => {
   ;[draggableInstance] = Draggable.create($jogwheel.value, {
     type: 'rotation',
     inertia: true,
-    allowNativeTouchScrolling: true,
     onDragStart() {
       gsap.killTweensOf(proxy)
       // always snapshot current rotation and current midi at drag start
@@ -287,7 +286,7 @@ const initialize = (): void => {
 const resetToCenter = (): void => {
   if (!draggableInstance || !$jogwheel.value) return
 
-  return
+  /*
   const startValue = midiValue.value
   proxy.progress = 0
 
@@ -306,6 +305,7 @@ const resetToCenter = (): void => {
       lastAngle = draggableInstance!.rotation
     }
   })
+    */
 }
 
 watch(midiValue, (value) => {
