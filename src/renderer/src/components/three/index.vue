@@ -1,5 +1,5 @@
 <template>
-  <div id="gl" ref="$gl" :class="{ 'is-mixing': isMixing }">
+  <div id="gl" ref="$gl" :class="{ 'is-mixing': isMixing, 'is-null': isNull }">
     <div id="gl--gradient" />
     <video type="video/webm" src="/videos/caustics.mp4" autoplay muted loop />
   </div>
@@ -18,6 +18,7 @@ const $gl = ref<HTMLCanvasElement>()
 let $three: M0Application
 const scope = effectScope()
 const isMixing = ref($store.appState === APP_STATE.MIXING)
+const isNull = ref($store.appState === APP_STATE.NULL)
 
 const resize = useDebounceFn((): void => {
   if (!$three) return
@@ -80,7 +81,7 @@ onMounted(() => {
   width: 100%;
   height: 100%;
 
-  &:not(.is-mixing) {
+  &:not(.is-mixing):not(.is-null) {
     filter: blur(4px);
   }
 

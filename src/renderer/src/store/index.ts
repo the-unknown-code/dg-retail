@@ -17,7 +17,8 @@ export type MidiData = Record<MidiChannelId, MidiChannel>
 export const useAppStore = defineStore('app', {
   state: () => ({
     electron: typeof window !== 'undefined' && !!window.process?.versions?.electron,
-    appState: APP_STATE.MIXING,
+    appState: APP_STATE.NULL,
+    pinState: { x: 0, y: 0 },
     midiFound: false,
     midiData: {
       1: { name: 'FADER', input: 0, value: 0, x: 0, y: 0, velocity: 0 },

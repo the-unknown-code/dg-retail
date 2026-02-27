@@ -1,5 +1,5 @@
 <template>
-  <div class="controller-sound is-visible">
+  <div class="controller-sound">
     <div class="controller-sound__grid">
       <div
         v-for="i in 16"
@@ -105,6 +105,7 @@ const applyMovement = (rawValue: number, axis: 'x' | 'y'): void => {
     pinState.y = Math.max(-bounds.y, Math.min(bounds.y, pinState.y + speed))
   }
 
+  $store.pinState = { ...pinState }
   updatePinPosition()
   currentGridIndex.value = getGridIndex()
 }

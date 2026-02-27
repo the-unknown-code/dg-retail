@@ -1,7 +1,7 @@
 <template>
   <main>
     <Three />
-    <!--<App />-->
+    <App />
     <MidiDebug />
     <ControllerUI />
     <ControllerSound :sound-callback="soundCallback" />
@@ -10,6 +10,7 @@
 
 <script setup lang="ts">
 import { Howler } from 'howler'
+import { tryOnMounted } from '@vueuse/core'
 // import { ref, watch } from 'vue'
 import Three from './components/three/index.vue'
 import MidiDebug from './components/app/debug/midi.vue'
@@ -18,8 +19,7 @@ import ControllerSound from './components/app/controller/sound.vue'
 import Midi from './libs/@midi'
 import SoundManager from './libs/@howler'
 // import { useAppStore } from './store'
-import { tryOnMounted } from '@vueuse/core'
-// import App from './components/app/index.vue'
+import App from './components/app/index.vue'
 // import { APP_STATE } from './libs/@global/const'
 //const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
 
@@ -30,24 +30,6 @@ const sound = new SoundManager()
 const soundCallback = (index: number | null): void => {
   sound.playSound(index as number)
 }
-
-/*
-watch(
-  () => $store.midiData[1].input,
-  (value) => {
-    if ($store.appState !== APP_STATE.MIXING) return
-    sound.updateAmbience(1 - value / 127)
-  }
-)
-
-watch(
-  () => $store.midiData[1].value,
-  (value) => {
-    if ($store.appState !== APP_STATE.MIXING) return
-    sound.updateAmbience(1 - value / 127)
-  }
-)
-*/
 
 tryOnMounted(() => {
   if (Howler.ctx && Howler.ctx.state === 'suspended') {

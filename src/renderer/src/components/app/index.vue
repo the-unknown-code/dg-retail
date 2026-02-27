@@ -10,6 +10,7 @@
       <OnBoarding v-else-if="$store.appState === APP_STATE.ONBOARDING" />
       <Mixing v-else-if="$store.appState === APP_STATE.MIXING" :callback="onMixing" />
     </transition>
+    <Sound />
   </div>
 </template>
 
@@ -19,6 +20,7 @@ import Header from './blocks/header.vue'
 import Start from './blocks/start.vue'
 import OnBoarding from './blocks/onBoarding.vue'
 import Mixing from './blocks/mixing.vue'
+import Sound from './blocks/sound.vue'
 import { APP_STATE } from '@renderer/libs/@global/const'
 
 const $store = useAppStore()

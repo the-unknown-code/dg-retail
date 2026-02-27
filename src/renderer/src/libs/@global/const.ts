@@ -3,6 +3,7 @@ export const EVENTS = {
 }
 
 export const APP_STATE = {
+  NULL: 'null',
   START: 'start',
   ONBOARDING: 'onboarding',
   MIXING: 'mixing',

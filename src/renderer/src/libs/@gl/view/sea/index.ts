@@ -61,7 +61,8 @@ export default class SeaScene extends M0AbstractScene {
     watch(
       () => this.#store.midiData[2].value,
       () => {
-        if (this.#store.appState !== APP_STATE.MIXING) return
+        if (this.#store.appState !== APP_STATE.MIXING && this.#store.appState !== APP_STATE.NULL)
+          return
 
         this.#waterSimulation.addDrop(
           this.#store.midiData[2].x,
@@ -75,7 +76,8 @@ export default class SeaScene extends M0AbstractScene {
     watch(
       () => this.#store.midiData[3].value,
       () => {
-        if (this.#store.appState !== APP_STATE.MIXING) return
+        if (this.#store.appState !== APP_STATE.MIXING && this.#store.appState !== APP_STATE.NULL)
+          return
 
         this.#waterSimulation.addDrop(
           this.#store.midiData[3].x,
@@ -92,7 +94,7 @@ export default class SeaScene extends M0AbstractScene {
     watch(
       () => $store.appState,
       () => {
-        if ($store.appState === APP_STATE.MIXING) {
+        if ($store.appState === APP_STATE.MIXING || $store.appState === APP_STATE.NULL) {
           this.#pause()
         } else {
           this.#resume()
