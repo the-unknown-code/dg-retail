@@ -10,7 +10,7 @@
         {{ SOUND_GRID[i] ? SOUND_GRID[i].label : '' }}
       </div>
     </div>
-    <div ref="$pin" id="pin" />
+    <div id="pin" ref="$pin" />
   </div>
 </template>
 

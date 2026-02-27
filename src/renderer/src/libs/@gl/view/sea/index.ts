@@ -64,11 +64,13 @@ export default class SeaScene extends M0AbstractScene {
         if (this.#store.appState !== APP_STATE.MIXING && this.#store.appState !== APP_STATE.NULL)
           return
 
+        console.log(this.#store.midiData[2].x, this.#store.midiData[2].y)
+
         this.#waterSimulation.addDrop(
           this.#store.midiData[2].x,
           this.#store.midiData[2].y,
           randomFloat(0.04, 0.08) * MathUtils.clamp(this.#store.midiData[2].velocity, 0.35, 1.6),
-          randomFloat(0.02, 0.08)
+          randomFloat(0.02, 0.04)
         )
       }
     )
@@ -83,7 +85,7 @@ export default class SeaScene extends M0AbstractScene {
           this.#store.midiData[3].x,
           this.#store.midiData[3].y,
           randomFloat(0.04, 0.08) * MathUtils.clamp(this.#store.midiData[3].velocity, 0.35, 1.6),
-          randomFloat(0.02, 0.08)
+          randomFloat(0.02, 0.04)
         )
       }
     )

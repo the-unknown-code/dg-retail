@@ -135,14 +135,29 @@ const createWheelController = (
     // const ndcX = (centerX / window.innerWidth) * 2 - 1
     // const ndcY = (centerY / window.innerHeight) * 2 - 1
 
-    const ndc = getDotNDC($spawnDotL.value as HTMLElement)
+    /*
+    const $dot = document.getElementById('dot')
+    const ndc = getDotNDC($dot as HTMLElement)
+    */
 
+    const ndc = {
+      x: 2 * ($store.pinState.x / window.innerWidth),
+      y: 2 * -($store.pinState.y / window.innerHeight)
+    }
+
+    ndc.y *= 0.9
+    ndc.x *= 0.9
+
+    $store.updateChannel(side === 'left' ? 2 : 3, state.value, ndc.x, -ndc.y, state.velocity)
+
+    /*
     // send to store
     if (side === 'left') {
-      $store.updateChannel(2, state.value, ndc.x, ndc.y, state.velocity)
+      $store.updateChannel(2, state.value, ndc.x, -ndc.y, state.velocity)
     } else {
-      $store.updateChannel(3, state.value, -ndc.x, -ndc.y, state.velocity)
+      $store.updateChannel(3, state.value, ndc.x, -ndc.y, state.velocity)
     }
+      */
   }
 
   // 🔁 MIDI → UI (animated)
@@ -280,6 +295,7 @@ const spawnState = {
   speed: 0.0006 // radians-per-ms feel
 }
 
+/*
 const getDotNDC = (el: HTMLElement): { x: number; y: number } => {
   const rect = el.getBoundingClientRect()
 
@@ -291,6 +307,7 @@ const getDotNDC = (el: HTMLElement): { x: number; y: number } => {
     y: (cy / window.innerHeight) * 2 - 1
   }
 }
+*/
 
 const getSpawnPosition = (t: number, w: number, h: number, r: number): { x: number; y: number } => {
   const p = t % 1
