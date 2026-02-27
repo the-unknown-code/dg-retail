@@ -228,8 +228,8 @@ const proxy = { progress: 0 }
 let draggableInstance: Draggable | null = null
 let startRotation = 0
 let startMidi = MIDI_CENTER
-let lastAngle = 0
-let lastTime = performance.now()
+//let lastAngle = 0
+// let lastTime = performance.now()
 
 /*
 const updateVelocity = (currentRotation: number): void => {
@@ -259,8 +259,8 @@ const initialize = (): void => {
       // always snapshot current rotation and current midi at drag start
       startRotation = this.rotation
       startMidi = midiValue.value
-      lastAngle = this.rotation
-      lastTime = performance.now()
+      //lastAngle = this.rotation
+      //lastTime = performance.now()
     },
     onDrag() {
       midiValue.value = computeMidi(this.rotation)
