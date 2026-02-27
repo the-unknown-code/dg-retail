@@ -16,7 +16,7 @@ export default class Midi {
   #store: ReturnType<typeof useAppStore>
 
   #lastMessageTime = 0
-  #THROTTLE_MS = 80
+  #THROTTLE_MS = 150
 
   constructor() {
     this.#store = useAppStore()
