@@ -58,6 +58,7 @@ export default class SeaScene extends M0AbstractScene {
     this.#pause = pause
     this.#resume = resume
 
+    /*
     watch(
       () => this.#store.midiData[2].value,
       () => {
@@ -65,9 +66,9 @@ export default class SeaScene extends M0AbstractScene {
           return
 
         this.#waterSimulation.addDrop(
-          this.#store.midiData[2].x,
-          this.#store.midiData[2].y,
-          randomFloat(0.03, 0.06) * MathUtils.clamp(this.#store.midiData[2].velocity, 0.135, 1.6),
+          this.#store.pinState.nx,
+          this.#store.pinState.ny,
+          randomFloat(0.03, 0.06) * MathUtils.clamp(this.#store.pinState.vx, 0.135, 1.6),
           randomFloat(0.01, 0.03)
         )
       }
@@ -80,9 +81,22 @@ export default class SeaScene extends M0AbstractScene {
           return
 
         this.#waterSimulation.addDrop(
-          this.#store.midiData[3].x,
-          this.#store.midiData[3].y,
-          randomFloat(0.03, 0.06) * MathUtils.clamp(this.#store.midiData[3].velocity, 0.35, 1.6),
+          this.#store.pinState.nx,
+          this.#store.pinState.ny,
+          randomFloat(0.03, 0.06) * MathUtils.clamp(this.#store.pinState.vy, 0.35, 1.6),
+          randomFloat(0.01, 0.03)
+        )
+      }
+    )
+    */
+
+    watch(
+      () => this.#store.pinState,
+      (o) => {
+        this.#waterSimulation.addDrop(
+          o.nx,
+          o.ny,
+          randomFloat(0.03, 0.06) * MathUtils.clamp(Math.max(o.vx, o.vy), 0.135, 1.6),
           randomFloat(0.01, 0.03)
         )
       }

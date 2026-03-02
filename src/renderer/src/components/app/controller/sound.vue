@@ -45,7 +45,7 @@ const SOUND_GRID = {
 const $store = useAppStore()
 const $pin = ref<HTMLDivElement | null>(null)
 
-const pinState = { x: 0, y: 0 }
+const pinState = { x: 0, y: 0, vx: 0, vy: 0, nx: 0, ny: 0 }
 const currentGridIndex = ref<number | null>(null)
 
 // const DEAD_ZONE = 3
@@ -104,6 +104,10 @@ const applyMovement = (rawValue: number, axis: 'x' | 'y'): void => {
   } else {
     pinState.y = Math.max(-bounds.y, Math.min(bounds.y, pinState.y + speed))
   }
+
+  // Calculate normalized coordinates nx and ny from -1 to 1
+  pinState.nx = pinState.x / bounds.x
+  pinState.ny = pinState.y / bounds.y
 
   $store.pinState = { ...pinState }
   updatePinPosition()

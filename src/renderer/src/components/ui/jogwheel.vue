@@ -198,83 +198,98 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import { tryOnMounted } from '@vueuse/core'
-import gsap, { Draggable, InertiaPlugin } from 'gsap/all'
-import { clamp } from 'three/src/math/MathUtils.js'
+import gsap from 'gsap'
+import { Draggable } from 'gsap/all'
 import { useAppStore } from '@renderer/store'
 
 const $store = useAppStore()
 const $jogwheel = ref<HTMLDivElement | null>(null)
 const props = defineProps({
-  id: {
-    type: String,
-    required: false,
-    default: '1'
-  }
+  id: { type: String, required: false, default: '1' },
+  axis: { type: String as () => 'x' | 'y', required: false, default: 'x' }
 })
 
-let startRotation = 0
-let currentRotation = 0
-const directionRef = ref(0)
-const midiValue = ref(64)
-const calculateValue = (r: number, v: number, d: number): void => {
-  const step = Math.abs((Math.abs(r) - Math.abs(startRotation)) / 10) * v
-  midiValue.value += step * d
-  midiValue.value = clamp(midiValue.value, 0, 127)
+const state = {
+  lastAngle: 0,
+  lastTime: performance.now(),
+  velocity: 0
 }
 
-const onDragUpdate = (r: number, d: number): void => {
-  currentRotation = r
+const applySpeed = (speed: number): void => {
+  const pinState = { ...$store.pinState }
+  const bounds = {
+    x: window.innerWidth / 2 - 16,
+    y: window.innerHeight / 2 - 16
+  }
 
-  const velocity = Math.abs(
-    InertiaPlugin.getVelocity($jogwheel.value as Element, 'rotation') / 1000
-  )
+  if (props.id === '2') {
+    pinState.x = Math.max(-bounds.x, Math.min(bounds.x, pinState.x + speed))
+    pinState.vx = Math.abs(speed) / 10
+  } else {
+    pinState.y = Math.max(-bounds.y, Math.min(bounds.y, pinState.y + speed))
+    pinState.vy = Math.abs(speed) / 10
+  }
 
-  directionRef.value = d
-  calculateValue(r, velocity, d)
+  pinState.nx = pinState.x / bounds.x
+  pinState.ny = pinState.y / bounds.y
+
+  $store.pinState = pinState
 }
 
 const initialize = (): void => {
   if (!$jogwheel.value) return
-  Draggable.create($jogwheel.value, {
+  const el = $jogwheel.value
+
+  const getCenter = (): { cx: number; cy: number } => {
+    const rect = el.getBoundingClientRect()
+    return { cx: rect.left + rect.width / 2, cy: rect.top + rect.height / 2 }
+  }
+
+  Draggable.create(el, {
     type: 'rotation',
-    inertia: true,
-    dragResistance: 0.75,
-    onStart() {
-      gsap.killTweensOf(this)
-      startRotation = this.rotation
+    inertia: false,
+    dragResistance: 0.1,
+    onPress(e) {
+      gsap.killTweensOf(state)
+      const { cx, cy } = getCenter()
+      const touch = e.touches ? e.touches[0] : e
+      state.lastAngle = Math.atan2(touch.clientY - cy, touch.clientX - cx)
+      state.lastTime = performance.now()
+      state.velocity = 0
     },
-    onDrag() {
-      const direction = this.getDirection('rotation') === 'clockwise' ? 1 : -1
-      onDragUpdate(this.rotation, direction)
+
+    onDrag(e) {
+      const { cx, cy } = getCenter()
+      const touch = e.touches ? e.touches[0] : e
+      const now = performance.now()
+      const dt = Math.max(1, now - state.lastTime)
+      const currentAngle = Math.atan2(touch.clientY - cy, touch.clientX - cx)
+
+      let da = currentAngle - state.lastAngle
+      if (da > Math.PI) da -= Math.PI * 2
+      if (da < -Math.PI) da += Math.PI * 2
+
+      state.velocity = da / (dt / 1000)
+      applySpeed((state.velocity / Math.PI) * 12)
+
+      state.lastAngle = currentAngle
+      state.lastTime = now
     },
-    onThrowUpdate() {
-      const direction = this.getDirection('rotation') === 'clockwise' ? 1 : -1
-      onDragUpdate(this.rotation, direction)
-    },
-    onThrowComplete() {
-      const progress = { value: midiValue.value }
-      gsap.to(progress, {
-        value: 64,
-        duration: 0.5,
-        ease: 'power2.out',
+
+    onRelease() {
+      gsap.to(state, {
+        velocity: 0,
+        duration: 0.8, // coast duration
+        ease: 'power2.out', // feel — try 'power3.out' for snappier stop
         onUpdate: () => {
-          midiValue.value = progress.value
+          applySpeed((state.velocity / Math.PI) * 12)
         }
       })
     }
   })
 }
-
-watch(directionRef, () => {
-  startRotation = currentRotation
-})
-
-watch(midiValue, (value) => {
-  // console.log(directionRef.value, midiValue.value)
-  $store.updateValue(props.id as never, value)
-})
 
 tryOnMounted(() => {
   initialize()
