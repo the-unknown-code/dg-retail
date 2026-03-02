@@ -1,14 +1,15 @@
 <template>
   <div class="ui-fader">
     <svg
+      ref="$svg"
       width="169"
       height="215"
       viewBox="0 0 169 215"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <g filter="url(#filter0_d_197_193)">
-        <g filter="url(#filter1_d_197_193)">
+      <g transform="scale(1, 1)" filter="url(#filter0_d_197_193)">
+        <g ref="$fader" filter="url(#filter1_d_197_193)">
           <rect
             x="42"
             y="85.4099"
@@ -19,6 +20,7 @@
             stroke-width="4"
             stroke-linecap="round"
             shape-rendering="crispEdges"
+            fill="white"
           />
         </g>
         <path d="M87 189H83V120H87V189Z" fill="white" />
@@ -168,7 +170,34 @@
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { tryOnMounted } from '@vueuse/core'
+import { Draggable } from 'gsap/all'
+import { ref } from 'vue'
+import { useAppStore } from '@renderer/store'
+
+const $store = useAppStore()
+const $svg = ref<HTMLDivElement | null>(null)
+const $fader = ref<HTMLDivElement | null>(null)
+
+const initialize = (): void => {
+  if (!$fader.value) return
+
+  Draggable.create($fader.value, {
+    type: 'y',
+    bounds: $svg.value,
+    onDrag() {
+      const bounds = this.maxY - this.minY
+      const midi = Math.round(((this.y - this.minY) / bounds) * 127)
+      $store.updateChannel(1, midi, 0, 0, 0)
+    }
+  })
+}
+
+tryOnMounted(() => {
+  initialize()
+})
+</script>
 
 <style lang="scss" scoped>
 .ui-fader {
