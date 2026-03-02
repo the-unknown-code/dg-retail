@@ -38,7 +38,7 @@ gsap.to(led, {
   yoyo: true,
   onUpdate: () => {
     //@ts-expect-error TODO: fix this
-    emitter.emit(EVENTS.MIDI_LED, 99, Math.floor(led.value))
+    emitter.emit(EVENTS.MIDI_LED, { id: 99, value: Math.floor(led.value) })
   }
 })
 
