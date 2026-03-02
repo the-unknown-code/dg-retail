@@ -137,7 +137,8 @@ const { height } = useElementSize($svg)
 
   &__ui {
     position: relative;
-    width: 100%;
+    width: calc(100% - 256px);
+    margin: 0 auto;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -164,7 +165,7 @@ const { height } = useElementSize($svg)
 
       &:deep(.ui-jogwheel) {
         position: relative;
-        width: 520px;
+        width: 420px;
         aspect-ratio: 1;
       }
 
@@ -231,7 +232,7 @@ const { height } = useElementSize($svg)
     max-width: 100vw;
 
     path {
-      fill: #ffffff33;
+      fill: #ffffff11;
     }
   }
 }

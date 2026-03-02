@@ -15,8 +15,8 @@ export default class Midi {
   #midiOutput: MIDIOutput | undefined
   #store: ReturnType<typeof useAppStore>
 
-  #lastMessageTime = 0
-  #THROTTLE_MS = 150
+  //#lastMessageTime = 0
+  //#THROTTLE_MS = 150
 
   constructor() {
     this.#store = useAppStore()
@@ -44,9 +44,9 @@ export default class Midi {
   }
 
   #onMessage(e: MIDIMessageEvent): void {
-    const now = performance.now()
-    if (now - this.#lastMessageTime < this.#THROTTLE_MS) return
-    this.#lastMessageTime = now
+    // const now = performance.now()
+    //if (now - this.#lastMessageTime < this.#THROTTLE_MS) return
+    // this.#lastMessageTime = now
 
     //@ts-expect-error TODO: fix this
     const [status, id, value] = e.data

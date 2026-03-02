@@ -48,7 +48,7 @@ const $pin = ref<HTMLDivElement | null>(null)
 const pinState = { x: 0, y: 0 }
 const currentGridIndex = ref<number | null>(null)
 
-const DEAD_ZONE = 3
+// const DEAD_ZONE = 3
 const PIN_SIZE = 32
 
 // bounds updated on resize
@@ -95,7 +95,7 @@ const getGridIndex = (): number | null => {
 
 const applyMovement = (rawValue: number, axis: 'x' | 'y'): void => {
   const delta = rawValue - 64
-  if (Math.abs(delta) <= DEAD_ZONE) return
+  // if (Math.abs(delta) <= DEAD_ZONE) return
 
   const speed = (delta / 64) * 36
 

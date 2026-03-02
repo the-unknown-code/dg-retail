@@ -1,14 +1,13 @@
 <template>
-  <div class="ui-jogwheel">
+  <div ref="$jogwheel" class="ui-jogwheel">
     <svg
-      ref="$jogwheel"
       width="261"
       height="261"
       viewBox="0 0 261 261"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <g filter="url(#filter0_d_197_266)">
+      <g filter="url(#filter0_d_197_194)">
         <circle
           cx="90.5"
           cy="90.5"
@@ -34,10 +33,10 @@
         cy="64.8071"
         r="64.8071"
         transform="matrix(1 0 0 -1 65.6926 195.307)"
-        fill="url(#paint0_radial_197_266)"
+        fill="url(#paint0_radial_197_194)"
         fill-opacity="0.6"
       />
-      <g filter="url(#filter1_d_197_266)">
+      <g filter="url(#filter1_d_197_194)">
         <circle
           cx="64.8071"
           cy="64.8071"
@@ -48,7 +47,7 @@
           stroke-linecap="round"
         />
       </g>
-      <g filter="url(#filter2_f_197_266)">
+      <g filter="url(#filter2_f_197_194)">
         <circle
           cx="64.8071"
           cy="64.8071"
@@ -59,7 +58,7 @@
           stroke-linecap="round"
         />
       </g>
-      <g filter="url(#filter3_f_197_266)">
+      <g filter="url(#filter3_f_197_194)">
         <circle
           cx="90.5"
           cy="90.5"
@@ -71,7 +70,7 @@
         />
       </g>
       <mask
-        id="mask0_197_266"
+        id="mask0_197_194"
         style="mask-type: alpha"
         maskUnits="userSpaceOnUse"
         x="41"
@@ -80,26 +79,26 @@
         height="180"
       >
         <path
-          d="M107.451 43.836C155.196 31.0429 204.272 59.377 217.065 107.122C229.858 154.867 201.524 203.943 153.779 216.736C106.034 229.53 56.9578 201.195 44.1646 153.45C31.3713 105.705 59.7055 56.6293 107.451 43.836ZM130.5 62.0001C92.6682 62.0003 61.9995 92.6687 61.9995 130.5C61.9995 168.331 92.6682 199 130.5 199C168.331 199 198.999 168.332 199 130.5C199 92.6686 168.331 62.0001 130.5 62.0001Z"
+          d="M107.45 43.8355C155.195 31.0423 204.271 59.3766 217.065 107.122C229.858 154.867 201.524 203.942 153.779 216.736C106.034 229.529 56.9576 201.196 44.1642 153.451C31.3709 105.706 59.7051 56.6288 107.45 43.8355ZM130.5 61.9996C92.6688 61.9996 62.0003 92.6683 62.0001 130.5C62.0001 168.331 92.6686 199 130.5 199C168.332 199 199 168.331 199 130.5C199 92.6683 168.331 61.9997 130.5 61.9996Z"
           fill="white"
         />
       </mask>
-      <g mask="url(#mask0_197_266)">
+      <g mask="url(#mask0_197_194)">
         <path
           opacity="0.8"
-          d="M132.22 128.768L167.415 44.0215L167.908 44.227L168.402 44.4315L133.446 128.6L198.323 63.7256L199.078 64.4809L133.821 129.738H134.207L219.119 94.6578L219.323 95.1513L219.527 95.6458L137.005 129.738H226.236V130.807H134.42L134.231 130.884L219.579 166.328L219.374 166.822L219.169 167.315L134.597 132.193L198.774 196.37L198.395 196.747L198.017 197.125L133.77 132.878L168.661 217.332L168.168 217.535L167.674 217.74L132.22 131.924V225.89H131.152V134.126L95.8765 219.07L95.383 218.865L94.8895 218.66L130.395 133.162L65.3647 198.193L64.6093 197.438L129.003 133.044L44.7561 167.85L44.5516 167.356L44.3481 166.863L130.974 131.074L131.152 130.895V130.807H36.0684V129.738H128.686L43.5448 94.3803L43.9537 93.3933L130.033 129.14L64.4726 63.5806L64.8503 63.2029L65.229 62.8252L130.736 128.332L95.5603 43.1889L96.0538 42.9855L96.5473 42.781L131.152 126.541V36.7913H132.22V128.768Z"
+          d="M132.22 128.768L167.415 44.0215L167.908 44.227L168.402 44.4315L133.446 128.6L198.323 63.7255L199.078 64.4809L133.821 129.738H134.207L219.119 94.6578L219.323 95.1513L219.527 95.6458L137.005 129.738H226.236V130.807H134.42L134.231 130.884L219.579 166.328L219.374 166.822L219.169 167.315L134.597 132.193L198.774 196.37L198.395 196.747L198.017 197.125L133.77 132.878L168.661 217.332L168.168 217.535L167.674 217.74L132.22 131.924V225.89H131.152V134.126L95.8765 219.07L95.383 218.865L94.8895 218.66L130.395 133.162L65.3647 198.193L64.6093 197.438L129.003 133.043L44.7561 167.85L44.5516 167.356L44.3481 166.863L130.974 131.074L131.152 130.895V130.807H36.0684V129.738H128.686L43.5448 94.3803L43.9537 93.3933L130.033 129.14L64.4726 63.5805L64.8503 63.2028L65.229 62.8251L130.736 128.332L95.5603 43.1889L96.0538 42.9854L96.5473 42.781L131.152 126.54V36.7913H132.22V128.768Z"
           fill="white"
         />
         <path
           opacity="0.8"
-          d="M132.7 129.138L184.032 53.0744L184.475 53.3739L184.918 53.6724L133.935 129.217L210.408 78.5272L210.999 79.4176L134.076 130.407L134.454 130.483L224.644 112.975L224.745 113.499L224.847 114.024L137.196 131.039L224.648 148.77L224.435 149.817L134.45 131.573L134.25 131.611L210.853 183.308L210.554 183.751L210.255 184.194L134.348 132.967L184.493 208.616L184.047 208.911L183.602 209.206L133.402 133.473L150.816 223.177L150.292 223.278L149.768 223.38L132.073 132.231L113.401 224.323L112.354 224.111L130.588 134.177L79.1371 210.417L78.6942 210.118L78.2512 209.819L130.037 133.082L53.382 183.894L52.7918 183.004L128.697 132.689L39.2138 150.06L39.1115 149.536L39.0102 149.012L131.02 131.15L131.23 131.01L131.248 130.923L38.06 112.03L38.2723 110.983L129.043 129.386L52.6255 77.8154L53.2224 76.9294L130.482 129.068L79.2561 51.7883L79.7013 51.4932L80.1475 51.1983L131.331 128.415L113.776 37.9806L114.3 37.8793L114.824 37.7769L132.095 126.742L149.929 38.7828L150.976 38.9951L132.7 129.138Z"
+          d="M132.7 129.138L184.032 53.0744L184.474 53.3739L184.917 53.6724L133.934 129.217L210.408 78.5272L210.998 79.4176L134.075 130.407L134.454 130.483L224.644 112.975L224.745 113.499L224.847 114.024L137.196 131.039L224.647 148.77L224.435 149.817L134.45 131.573L134.25 131.611L210.853 183.308L210.554 183.751L210.255 184.194L134.348 132.967L184.493 208.616L184.047 208.911L183.601 209.206L133.401 133.473L150.816 223.177L150.292 223.278L149.767 223.38L132.073 132.231L113.401 224.323L112.354 224.111L130.588 134.177L79.1369 210.417L78.6941 210.118L78.2511 209.819L130.037 133.082L53.3819 183.894L52.7917 183.004L128.697 132.689L39.2137 150.06L39.1114 149.536L39.01 149.012L131.02 131.15L131.23 131.01L131.248 130.923L38.0599 112.03L38.2722 110.983L129.043 129.386L52.6253 77.8154L53.2223 76.9294L130.481 129.068L79.256 51.7883L79.7012 51.4932L80.1474 51.1983L131.331 128.415L113.776 37.9806L114.3 37.8793L114.824 37.7769L132.095 126.742L149.929 38.7828L150.976 38.9951L132.7 129.138Z"
           fill="white"
           fill-opacity="0.8"
         />
       </g>
       <defs>
         <filter
-          id="filter0_d_197_266"
+          id="filter0_d_197_194"
           x="0"
           y="0"
           width="261"
@@ -121,16 +120,16 @@
             type="matrix"
             values="0 0 0 0 0.298039 0 0 0 0 0.72549 0 0 0 0 0.909804 0 0 0 0.6 0"
           />
-          <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_197_266" />
+          <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_197_194" />
           <feBlend
             mode="normal"
             in="SourceGraphic"
-            in2="effect1_dropShadow_197_266"
+            in2="effect1_dropShadow_197_194"
             result="shape"
           />
         </filter>
         <filter
-          id="filter1_d_197_266"
+          id="filter1_d_197_194"
           x="41.6926"
           y="41.6929"
           width="177.614"
@@ -148,16 +147,16 @@
           <feOffset />
           <feGaussianBlur stdDeviation="10" />
           <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" />
-          <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_197_266" />
+          <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_197_194" />
           <feBlend
             mode="normal"
             in="SourceGraphic"
-            in2="effect1_dropShadow_197_266"
+            in2="effect1_dropShadow_197_194"
             result="shape"
           />
         </filter>
         <filter
-          id="filter2_f_197_266"
+          id="filter2_f_197_194"
           x="41.6926"
           y="41.6929"
           width="177.614"
@@ -167,10 +166,10 @@
         >
           <feFlood flood-opacity="0" result="BackgroundImageFix" />
           <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
-          <feGaussianBlur stdDeviation="10" result="effect1_foregroundBlur_197_266" />
+          <feGaussianBlur stdDeviation="10" result="effect1_foregroundBlur_197_194" />
         </filter>
         <filter
-          id="filter3_f_197_266"
+          id="filter3_f_197_194"
           x="16"
           y="16"
           width="229"
@@ -180,10 +179,10 @@
         >
           <feFlood flood-opacity="0" result="BackgroundImageFix" />
           <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
-          <feGaussianBlur stdDeviation="10" result="effect1_foregroundBlur_197_266" />
+          <feGaussianBlur stdDeviation="10" result="effect1_foregroundBlur_197_194" />
         </filter>
         <radialGradient
-          id="paint0_radial_197_266"
+          id="paint0_radial_197_194"
           cx="0"
           cy="0"
           r="1"
@@ -199,12 +198,14 @@
 </template>
 
 <script setup lang="ts">
-import { tryOnMounted } from '@vueuse/core'
 import { ref, watch } from 'vue'
-import { gsap } from 'gsap'
-import { Draggable } from 'gsap/all'
+import { tryOnMounted } from '@vueuse/core'
+import gsap, { Draggable, InertiaPlugin } from 'gsap/all'
+import { clamp } from 'three/src/math/MathUtils.js'
 import { useAppStore } from '@renderer/store'
 
+const $store = useAppStore()
+const $jogwheel = ref<HTMLDivElement | null>(null)
 const props = defineProps({
   id: {
     type: String,
@@ -213,103 +214,65 @@ const props = defineProps({
   }
 })
 
-const $store = useAppStore()
-const $jogwheel = ref<SVGElement | null>(null)
-
-const MIDI_CENTER = 64
-const MIDI_MIN = 0
-const MIDI_MAX = 127
-const DEGREES_PER_MIDI = 5 // how many degrees = 1 midi step, tune this for sensitivity
-
-const midiValue = ref(MIDI_CENTER)
-const velocity = ref(0)
-
-const proxy = { progress: 0 }
-let draggableInstance: Draggable | null = null
 let startRotation = 0
-let startMidi = MIDI_CENTER
-//let lastAngle = 0
-// let lastTime = performance.now()
-
-/*
-const updateVelocity = (currentRotation: number): void => {
-  const now = performance.now()
-  const dt = Math.max(1, now - lastTime)
-  const da = currentRotation - lastAngle
-  velocity.value = da / (dt / 1000)
-  lastAngle = currentRotation
-  lastTime = now
+let currentRotation = 0
+const directionRef = ref(0)
+const midiValue = ref(64)
+const calculateValue = (r: number, v: number, d: number): void => {
+  const step = Math.abs((Math.abs(r) - Math.abs(startRotation)) / 10) * v
+  midiValue.value += step * d
+  midiValue.value = clamp(midiValue.value, 0, 127)
 }
 
-*/
+const onDragUpdate = (r: number, d: number): void => {
+  currentRotation = r
 
-const computeMidi = (rotation: number): number => {
-  const delta = rotation - startRotation
-  const newMidi = startMidi + delta / DEGREES_PER_MIDI
-  return Math.min(MIDI_MAX, Math.max(MIDI_MIN, newMidi))
+  const velocity = Math.abs(
+    InertiaPlugin.getVelocity($jogwheel.value as Element, 'rotation') / 1000
+  )
+
+  directionRef.value = d
+  calculateValue(r, velocity, d)
 }
 
 const initialize = (): void => {
   if (!$jogwheel.value) return
-  ;[draggableInstance] = Draggable.create($jogwheel.value, {
+  Draggable.create($jogwheel.value, {
     type: 'rotation',
     inertia: true,
-    onDragStart() {
-      gsap.killTweensOf(proxy)
-      // always snapshot current rotation and current midi at drag start
+    dragResistance: 0.75,
+    onStart() {
+      gsap.killTweensOf(this)
       startRotation = this.rotation
-      startMidi = midiValue.value
-      //lastAngle = this.rotation
-      //lastTime = performance.now()
     },
     onDrag() {
-      midiValue.value = computeMidi(this.rotation)
-      //updateVelocity(this.rotation)
+      const direction = this.getDirection('rotation') === 'clockwise' ? 1 : -1
+      onDragUpdate(this.rotation, direction)
     },
     onThrowUpdate() {
-      midiValue.value = computeMidi(this.rotation)
-      //updateVelocity(this.rotation)
+      const direction = this.getDirection('rotation') === 'clockwise' ? 1 : -1
+      onDragUpdate(this.rotation, direction)
     },
     onThrowComplete() {
-      velocity.value = 0
-      resetToCenter()
-    },
-    onDragEnd() {
-      if (!this.isThrowing) {
-        velocity.value = 0
-        resetToCenter()
-      }
+      const progress = { value: midiValue.value }
+      gsap.to(progress, {
+        value: 64,
+        duration: 0.5,
+        ease: 'power2.out',
+        onUpdate: () => {
+          midiValue.value = progress.value
+        }
+      })
     }
   })
 }
 
-const resetToCenter = (): void => {
-  if (!draggableInstance || !$jogwheel.value) return
-
-  /*
-  const startValue = midiValue.value
-  proxy.progress = 0
-
-  gsap.to(proxy, {
-    progress: 1,
-    duration: 0.8,
-    ease: 'power2.out',
-    onUpdate() {
-      midiValue.value = Math.round(startValue + (MIDI_CENTER - startValue) * proxy.progress)
-    },
-    onComplete: () => {
-      midiValue.value = MIDI_CENTER
-      // rebase start values to current draggable rotation so next drag is correct
-      startRotation = draggableInstance!.rotation
-      startMidi = MIDI_CENTER
-      lastAngle = draggableInstance!.rotation
-    }
-  })
-    */
-}
+watch(directionRef, () => {
+  startRotation = currentRotation
+})
 
 watch(midiValue, (value) => {
-  console.log(props.id, value)
+  // console.log(directionRef.value, midiValue.value)
   $store.updateValue(props.id as never, value)
 })
 
@@ -323,5 +286,14 @@ tryOnMounted(() => {
   position: relative;
   width: 100%;
   height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  svg {
+    position: absolute;
+    transform: scale(1.43);
+    pointer-events: none;
+  }
 }
 </style>

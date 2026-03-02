@@ -14,7 +14,9 @@
 
 <script setup lang="ts">
 import { useAppStore } from '@renderer/store'
-import { useTimeoutFn } from '@vueuse/core'
+import { tryOnBeforeUnmount, useTimeoutFn } from '@vueuse/core'
+import Tempus from 'tempus'
+import { lerp } from 'three/src/math/MathUtils.js'
 import { ref, watch } from 'vue'
 
 const $store = useAppStore()
@@ -24,8 +26,22 @@ const reset = (): void => {
   if (!$dot.value) return
   $dot.value.classList.remove('is-active')
 }
-const { start, stop } = useTimeoutFn(reset, 1000, { immediate: false })
 
+const position = { ...$store.pinState }
+const { start, stop } = useTimeoutFn(reset, 1000, { immediate: false })
+const cb = Tempus.add(
+  () => {
+    if (!$dot.value) return
+    const x = lerp(position.x, $store.pinState.x, 0.5)
+    const y = lerp(position.y, $store.pinState.y, 0.5)
+    position.x = x
+    position.y = y
+    $dot.value.style.transform = `translate(${x}px, ${y}px)`
+  },
+  { priority: -1 }
+)
+
+/*
 watch(
   () => $store.pinState,
   (value) => {
@@ -33,6 +49,7 @@ watch(
     $dot.value.style.transform = `translate(${value.x}px, ${value.y}px)`
   }
 )
+  */
 
 watch(
   () => $store.midiData[2].value,
@@ -53,6 +70,10 @@ watch(
     start()
   }
 )
+
+tryOnBeforeUnmount(() => {
+  cb?.()
+})
 </script>
 
 <style lang="scss" scoped>
