@@ -18,7 +18,7 @@ const midiFound = computed(() => $store.midiFound)
 const computedFader = computed(() => $store.midiData[1].value)
 const computedWheelLeft = computed(() => $store.midiData[2].value)
 const computedWheelRight = computed(() => $store.midiData[3].value)
-const computedButton = computed(() => $store.midiData[60].value)
+const computedButton = computed(() => $store.midiData[60].input)
 
 tryOnMounted(() => {
   window.addEventListener('keydown', (e) => {
