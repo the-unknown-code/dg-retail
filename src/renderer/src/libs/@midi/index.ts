@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useAppStore } from '@renderer/store'
+import { inject } from 'vue'
+import { EVENTS } from '../@gl/libs/Const'
 
 // const DEVICE_NAME = 'D&G MACHINEZERO MIDI 1.1'
 // const MANUFACTURER = 'MACHINEZERO'
@@ -21,6 +23,11 @@ export default class Midi {
   constructor() {
     this.#store = useAppStore()
     navigator.requestMIDIAccess && navigator.requestMIDIAccess().then(this.#onMidiReady.bind(this))
+
+    const emitter = inject('emitter')
+
+    //@ts-expect-error TODO: fix this
+    emitter.on(EVENTS.MIDI_LED, this.#sendCC.bind(this))
   }
 
   #onMidiReady(midi: MIDIAccess): void {
@@ -37,7 +44,6 @@ export default class Midi {
     }
   }
 
-  //@ts-expect-error TODO: fix this
   // eslint-disable-next-line no-unused-private-class-members
   #sendCC(id: number, value: number): void {
     this.#midiOutput?.send([STATUS.CC, id, value])

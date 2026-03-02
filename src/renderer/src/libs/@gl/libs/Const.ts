@@ -3,3 +3,7 @@ export enum AssetType {
   CUBE_TEXTURE = 'cube_texture',
   FONT = 'font'
 }
+
+export enum EVENTS {
+  MIDI_LED = 'midi:led'
+}
