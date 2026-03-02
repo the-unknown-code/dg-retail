@@ -1,7 +1,7 @@
 <template>
   <div id="gl" ref="$gl" :class="{ 'is-mixing': isMixing, 'is-null': isNull }">
     <div id="gl--gradient" />
-    <video type="video/webm" src="/videos/caustics.mp4" autoplay muted loop />
+    <video type="video/webm" src="/videos/caustics.mp4" autoplay muted loop playsinline />
   </div>
 </template>
 
