@@ -227,7 +227,9 @@ const pinState = {
   x: 0,
   y: 0,
   vx: 0,
-  vy: 0
+  vy: 0,
+  nx: 0,
+  ny: 0
 }
 
 /* --------------------------------------------------
@@ -239,7 +241,7 @@ const MAX_SPEED = 8
 const midiToVelocity = (value: number): number => {
   const delta = value - 64
   if (Math.abs(delta) <= DEADZONE) return 0
-  return (delta / 63) * MAX_SPEED
+  return Math.abs((delta / 63) * MAX_SPEED)
 }
 
 // FADER
@@ -440,13 +442,15 @@ watch(
   () => $store.midiData[2].value,
   (value: number) => {
     pinState.vx = midiToVelocity(value)
+    $store.pinState = { ...$store.pinState, vx: pinState.vx }
   }
 )
 
 watch(
   () => $store.midiData[3].value,
   (value: number) => {
-    pinState.vy = -midiToVelocity(value)
+    pinState.vy = midiToVelocity(value)
+    $store.pinState = { ...$store.pinState, vy: pinState.vy }
   }
 )
 

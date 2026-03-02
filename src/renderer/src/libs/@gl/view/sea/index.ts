@@ -27,6 +27,9 @@ export default class SeaScene extends M0AbstractScene {
 
   #lastMouse: Vector2 = new Vector2(0, 0)
 
+  #lastMessageTime = 0
+  #THROTTLE_MS = 30
+
   #addDrop: () => void
   #pause!: () => void
   #resume: () => void
@@ -92,12 +95,18 @@ export default class SeaScene extends M0AbstractScene {
 
     watch(
       () => this.#store.pinState,
+
       (o) => {
+        const now = performance.now()
+        if (now - this.#lastMessageTime < this.#THROTTLE_MS) return
+        this.#lastMessageTime = now
+
+        console.log(randomFloat(0.03, 0.06) * MathUtils.clamp(Math.max(o.vx, o.vy), 0.135, 1.6))
         this.#waterSimulation.addDrop(
           o.nx,
           o.ny,
-          randomFloat(0.03, 0.06) * MathUtils.clamp(Math.max(o.vx, o.vy), 0.135, 1.6),
-          randomFloat(0.01, 0.03)
+          randomFloat(0.05, 0.085) * MathUtils.clamp(Math.max(o.vx, o.vy), 0.135, 1.6),
+          randomFloat(0.01, 0.03) + Math.max(o.vx, o.vy) / 1000
         )
       }
     )
