@@ -16,6 +16,12 @@ import { randomFloat } from '../../libs/Math'
 
 // const THRESHOLD_PX = 1
 
+function getQueryParam(name: string): string | null {
+  if (typeof window === 'undefined') return null
+  const params = new URLSearchParams(window.location.search)
+  return params.get(name)
+}
+
 export default class SeaScene extends M0AbstractScene {
   #waterSimulation: WaterSimulation
   #water: Water
@@ -28,7 +34,7 @@ export default class SeaScene extends M0AbstractScene {
   #lastMouse: Vector2 = new Vector2(0, 0)
 
   #lastMessageTime = 0
-  #THROTTLE_MS = 30
+  #THROTTLE_MS = 1
 
   #addDrop: () => void
   #pause!: () => void
@@ -61,55 +67,59 @@ export default class SeaScene extends M0AbstractScene {
     this.#pause = pause
     this.#resume = resume
 
-    /*
-    watch(
-      () => this.#store.midiData[2].value,
-      () => {
-        if (this.#store.appState !== APP_STATE.MIXING && this.#store.appState !== APP_STATE.NULL)
-          return
+    const iPad = getQueryParam('ipad') === '1'
 
-        this.#waterSimulation.addDrop(
-          this.#store.pinState.nx,
-          this.#store.pinState.ny,
-          randomFloat(0.03, 0.06) * MathUtils.clamp(this.#store.pinState.vx, 0.135, 1.6),
-          randomFloat(0.01, 0.03)
-        )
-      }
-    )
+    if (!iPad) {
+      watch(
+        () => this.#store.midiData[2].value,
+        () => {
+          if (this.#store.appState !== APP_STATE.MIXING && this.#store.appState !== APP_STATE.NULL)
+            return
 
-    watch(
-      () => this.#store.midiData[3].value,
-      () => {
-        if (this.#store.appState !== APP_STATE.MIXING && this.#store.appState !== APP_STATE.NULL)
-          return
+          const o = this.#store.pinState
+          console.log(o)
+          this.#waterSimulation.addDrop(
+            o.nx,
+            o.ny,
+            randomFloat(0.05, 0.085) + MathUtils.clamp(Math.max(o.vx, o.vy), 0.01, 2),
+            randomFloat(0.01, 0.03) + Math.max(o.vx, o.vy) / 1000
+          )
+        }
+      )
 
-        this.#waterSimulation.addDrop(
-          this.#store.pinState.nx,
-          this.#store.pinState.ny,
-          randomFloat(0.03, 0.06) * MathUtils.clamp(this.#store.pinState.vy, 0.35, 1.6),
-          randomFloat(0.01, 0.03)
-        )
-      }
-    )
-    */
+      watch(
+        () => this.#store.midiData[3].value,
+        () => {
+          if (this.#store.appState !== APP_STATE.MIXING && this.#store.appState !== APP_STATE.NULL)
+            return
 
-    watch(
-      () => this.#store.pinState,
+          const o = this.#store.pinState
+          this.#waterSimulation.addDrop(
+            o.nx,
+            o.ny,
+            randomFloat(0.05, 0.085) + MathUtils.clamp(Math.max(o.vx, o.vy), 0.01, 2) / 100,
+            randomFloat(0.01, 0.03) + Math.max(o.vx, o.vy) / 1000
+          )
+        }
+      )
+    } else {
+      watch(
+        () => this.#store.pinState,
 
-      (o) => {
-        const now = performance.now()
-        if (now - this.#lastMessageTime < this.#THROTTLE_MS) return
-        this.#lastMessageTime = now
+        (o) => {
+          const now = performance.now()
+          if (now - this.#lastMessageTime < this.#THROTTLE_MS) return
+          this.#lastMessageTime = now
 
-        console.log(randomFloat(0.03, 0.06) * MathUtils.clamp(Math.max(o.vx, o.vy), 0.135, 1.6))
-        this.#waterSimulation.addDrop(
-          o.nx,
-          o.ny,
-          randomFloat(0.05, 0.085) * MathUtils.clamp(Math.max(o.vx, o.vy), 0.135, 1.6),
-          randomFloat(0.01, 0.03) + Math.max(o.vx, o.vy) / 1000
-        )
-      }
-    )
+          this.#waterSimulation.addDrop(
+            o.nx,
+            o.ny,
+            randomFloat(0.05, 0.085) + MathUtils.clamp(Math.max(o.vx, o.vy), 0.01, 2) / 100,
+            randomFloat(0.01, 0.03) + Math.max(o.vx, o.vy) / 1000
+          )
+        }
+      )
+    }
 
     // this.#resume()
 
