@@ -38,7 +38,7 @@ export default class SeaScene extends M0AbstractScene {
 
   #addDrop: () => void
   #pause!: () => void
-  #resume: () => void
+  // #resume: () => void
 
   #store: ReturnType<typeof useAppStore>
 
@@ -51,7 +51,7 @@ export default class SeaScene extends M0AbstractScene {
 
     ShaderChunk['utils'] = utils
     this.#renderer = M0Renderer.getInstance()
-    this.#light = new Vector3(0.07559289460184544, 1.2, 0.0779644730092272)
+    this.#light = new Vector3(0.0755928946018454, 1.15, 0.0779644730092272)
 
     this.#waterSimulation = new WaterSimulation(this.#renderer)
     this.#water = new Water(this.#renderer, this.#light, this.camera)
@@ -63,9 +63,9 @@ export default class SeaScene extends M0AbstractScene {
     // this.#pool = new Pool(this.#renderer, this.#light, this.camera)
     this.#addDrop = this.addDrop.bind(this)
 
-    const { pause, resume } = useIntervalFn(this.#addDrop, 1200, { immediate: false })
+    const { pause } = useIntervalFn(this.#addDrop, 1200, { immediate: false })
     this.#pause = pause
-    this.#resume = resume
+    // this.#resume = resume
 
     const iPad = getQueryParam('ipad') === '1'
 
@@ -77,11 +77,14 @@ export default class SeaScene extends M0AbstractScene {
             return
 
           const o = this.#store.pinState
-          console.log(o)
+          const scale = 1.5
+          const nx = o.nx / scale
+          const ny = o.ny / scale
+
           this.#waterSimulation.addDrop(
-            o.nx,
-            o.ny,
-            randomFloat(0.05, 0.085) + MathUtils.clamp(Math.max(o.vx, o.vy), 0.01, 2),
+            nx,
+            ny,
+            randomFloat(0.015, 0.05) + MathUtils.clamp(Math.max(o.vx, o.vy), 0.01, 2) / 50,
             randomFloat(0.01, 0.03) + Math.max(o.vx, o.vy) / 1000
           )
         }
@@ -94,10 +97,13 @@ export default class SeaScene extends M0AbstractScene {
             return
 
           const o = this.#store.pinState
+          const scale = 1.5
+          const nx = o.nx / scale
+          const ny = o.ny / scale
           this.#waterSimulation.addDrop(
-            o.nx,
-            o.ny,
-            randomFloat(0.05, 0.085) + MathUtils.clamp(Math.max(o.vx, o.vy), 0.01, 2) / 100,
+            nx,
+            ny,
+            randomFloat(0.015, 0.05) + MathUtils.clamp(Math.max(o.vx, o.vy), 0.01, 2) / 50,
             randomFloat(0.01, 0.03) + Math.max(o.vx, o.vy) / 1000
           )
         }
@@ -123,7 +129,9 @@ export default class SeaScene extends M0AbstractScene {
 
     // this.#resume()
 
+    /*
     const $store = useAppStore()
+
     watch(
       () => $store.appState,
       () => {
@@ -134,6 +142,7 @@ export default class SeaScene extends M0AbstractScene {
         }
       }
     )
+    */
   }
 
   addDrop(): void {
@@ -152,7 +161,6 @@ export default class SeaScene extends M0AbstractScene {
   override render(_time: number, _dt: number): void {
     super.render(_time, _dt)
 
-    /*
     const dxNDC = this.viewport.mouseGL.x - this.#lastMouse.x
     const dyNDC = this.viewport.mouseGL.y - this.#lastMouse.y
 
@@ -161,17 +169,20 @@ export default class SeaScene extends M0AbstractScene {
 
     const THRESHOLD_PX = 1
     const distPxSq = dxPx * dxPx + dyPx * dyPx
+    const scale = 1.5
+    const nx = this.viewport.mouseGL.x / scale
+    const ny = this.viewport.mouseGL.y / scale
+
     if (distPxSq > THRESHOLD_PX * THRESHOLD_PX) {
       this.#waterSimulation.addDrop(
-        this.viewport.mouseGL.x,
-        this.viewport.mouseGL.y,
-        randomFloat(0.02, 0.03) * MathUtils.clamp(this.viewport.speed, 0.85, 6.5),
-        randomFloat(0.02, 0.05)
+        nx,
+        ny,
+        randomFloat(0.015, 0.035) + MathUtils.clamp(this.viewport.speed, 0.01, 2) / 100,
+        randomFloat(0.01, 0.03)
       )
 
       this.#lastMouse.copy(this.viewport.mouseGL)
     }
-    */
 
     this.#waterSimulation.stepSimulation()
     this.#waterSimulation.updateNormals()

@@ -5,5 +5,6 @@ export enum AssetType {
 }
 
 export enum EVENTS {
-  MIDI_LED = 'midi:led'
+  MIDI_LED = 'midi:led',
+  JOGWHEEL_FX = 'jogwheel:fx'
 }

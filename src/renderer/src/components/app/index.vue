@@ -12,6 +12,7 @@
     </transition>
     <Sound />
     <IpadController v-if="$store.isIpad" />
+    <JogwheelFx />
   </div>
 </template>
 
@@ -23,6 +24,7 @@ import OnBoarding from './blocks/onBoarding.vue'
 import Mixing from './blocks/mixing.vue'
 import Sound from './blocks/sound.vue'
 import IpadController from './blocks/ipad-controller.vue'
+import JogwheelFx from './blocks/jogwheel-fx.vue'
 import { APP_STATE } from '@renderer/libs/@global/const'
 
 const $store = useAppStore()

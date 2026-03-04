@@ -7,7 +7,7 @@
       <p>JAZZY</p>
     </div>
     <div id="dot" ref="$dot">
-      <img src="/assets/sound-dot.png" />
+      <div />
     </div>
   </div>
 </template>
@@ -92,10 +92,6 @@ tryOnBeforeUnmount(() => {
   }
 }
 
-#dot img {
-  animation: pulse 2.5s infinite ease-in-out;
-}
-
 .sound {
   position: fixed;
   top: 0;
@@ -109,12 +105,13 @@ tryOnBeforeUnmount(() => {
   justify-content: center;
   mix-blend-mode: lighten;
   pointer-events: none;
+  z-index: 9999;
 
   p {
     position: absolute;
     font-size: 20px;
     text-shadow: 0px 4px 10px 0px #0087c166;
-    padding: 32px;
+    padding: 64px;
 
     &:nth-child(1) {
       top: 0%;
@@ -136,15 +133,34 @@ tryOnBeforeUnmount(() => {
 
   #dot {
     position: absolute;
-    opacity: 0.35;
     transition: opacity 0.5s ease-in-out;
+    width: 24px;
+    height: 24px;
 
     &.is-active {
-      opacity: 1;
+      > div {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
 
-    img {
-      position: relative;
+    > div {
+      position: absolute;
+      transition: opacity 0.5s ease-in-out;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 1px solid #fff;
+      opacity: 0;
+      background-color: #ffffff11;
+      backdrop-filter: blur(5px);
+      box-shadow:
+        0 0 16px 4px #fff,
+        0 0 32px 12px rgba(130, 227, 252, 0.5);
+      transform: scale(0.5);
+      transition:
+        transform 0.5s ease-out,
+        opacity 0.5s ease-out;
     }
   }
 }

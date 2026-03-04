@@ -92,7 +92,7 @@ onMounted(() => {
     left: 0;
     width: 100%;
     height: 100%;
-    transform: scale(1.3);
+    transform: scale(1.5);
     transition: filter 2s ease-out;
   }
 
@@ -116,7 +116,7 @@ onMounted(() => {
     animation: rotateGradient 30s linear infinite;
     z-index: 2;
     mix-blend-mode: overlay;
-    opacity: 0.7;
+    opacity: 1;
   }
 }
 </style>

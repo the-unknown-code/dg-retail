@@ -17,8 +17,8 @@
   align-items: center;
 
   img {
-    width: 20vw;
-    transform: translateY(-24%);
+    width: 18vw;
+    transform: translateY(0%);
   }
 }
 </style>
