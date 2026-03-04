@@ -28,7 +28,7 @@ const reset = (): void => {
 }
 
 const position = { ...$store.pinState }
-const { start, stop } = useTimeoutFn(reset, 1000, { immediate: false })
+const { start, stop } = useTimeoutFn(reset, 100, { immediate: false })
 const cb = Tempus.add(
   () => {
     if (!$dot.value) return
