@@ -84,8 +84,8 @@ export default class SeaScene extends M0AbstractScene {
           this.#waterSimulation.addDrop(
             nx,
             ny,
-            randomFloat(0.015, 0.05) + MathUtils.clamp(Math.max(o.vx, o.vy), 0.01, 2) / 50,
-            randomFloat(0.01, 0.03) + Math.max(o.vx, o.vy) / 1000
+            randomFloat(0.025, 0.065) + MathUtils.clamp(Math.max(o.vx, o.vy), 0.01, 2) / 50,
+            randomFloat(0.03, 0.03) + Math.max(o.vx, o.vy) / 1000
           )
         }
       )
@@ -103,8 +103,8 @@ export default class SeaScene extends M0AbstractScene {
           this.#waterSimulation.addDrop(
             nx,
             ny,
-            randomFloat(0.015, 0.05) + MathUtils.clamp(Math.max(o.vx, o.vy), 0.01, 2) / 50,
-            randomFloat(0.01, 0.03) + Math.max(o.vx, o.vy) / 1000
+            randomFloat(0.025, 0.065) + MathUtils.clamp(Math.max(o.vx, o.vy), 0.01, 2) / 50,
+            randomFloat(0.03, 0.03) + Math.max(o.vx, o.vy) / 1000
           )
         }
       )
