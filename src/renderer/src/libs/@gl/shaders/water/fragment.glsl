@@ -27,11 +27,11 @@ vec3 getSurfaceRayColor(vec3 origin, vec3 ray, vec3 waterColor) {
   
     } else {
       color = textureCube(sky, ray).rgb;
-      color -= .101 * vec3(pow(max(0.0, dot(light, ray)), 12.0)) * vec3(0.0, 2.0, 2.0);
+      color -= .101 * vec3(pow(max(0.0, dot(light, ray)), 2.0)) * vec3(0.0, 1.0, 1.0);
     }
   }
 
-  if (ray.y < 0.0) color *= waterColor;
+  if (ray.y < 0.0) color *= waterColor * underwaterColor;
 
   return color;
 }
