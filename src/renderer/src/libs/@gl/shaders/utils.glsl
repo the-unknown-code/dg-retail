@@ -5,7 +5,7 @@ const vec3 COLOR_83CBEA = vec3(131.0 / 255.0, 203.0 / 255.0, 234.0 / 255.0);
 const vec3 COLOR_83CBEA_DUSK = vec3(10.0 / 255.0, 80.0 / 255.0, 100.0 / 255.0);
 
 const vec3 COLOR_B2DAEA = vec3(178.0 / 255.0, 218.0 / 255.0, 234.0 / 255.0);
-const vec3 CAUSTIC_COLOR = vec3(250.0 / 255.0, 1.0 / 255.0, 233.0 / 255.0);
+const vec3 CAUSTIC_COLOR = vec3(1.0 / 255.0, 1.0 / 255.0, 233.0 / 255.0);
 const vec3 CAUSTIC_COLOR_YELLOW = vec3(255.0 / 255.0, 0.0 / 255.0, .0 / 255.0);
 
 
