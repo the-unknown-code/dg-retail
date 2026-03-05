@@ -1,39 +1,43 @@
 <template>
   <div class="start">
     <div ref="$circle" class="circle"></div>
-    <button :class="{ 'is-pressed': isStartPressed }">
-      <img src="/assets/button.webp" alt="start" draggable="false" />
-      <template v-if="!qrCode">
-        <p>Start</p>
-      </template>
-      <template v-else>
-        <img class="qr" src="/assets/qr-code.png" alt="qr-code" draggable="false" />
-      </template>
-    </button>
-    <div class="start__footer">
-      <template v-if="!qrCode">
-        <p>PRESS START TO CREATE YOUR LIGHT BLUE SOUND WAVE</p>
-        <p>اضغط على زر البدء لإنشاء موجة صوتية زرقاء فاتحة</p>
-      </template>
-      <template v-else>
-        <p>thank you! scan the qr code to download your light blue playlist</p>
-        <p>مسح الكود الثنائي لإنشاء موجة صوتية زرقاء فاتحة</p>
-      </template>
+
+    <div class="language">
+      <div
+        v-for="(language, index) in LANGUAGES"
+        :key="language"
+        :class="['language--item', { 'is-active': activeLanguage === index }]"
+      >
+        <span>{{ language }}</span>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import gsap from 'gsap'
-import { ref, watch } from 'vue'
-import { random } from '@renderer/libs/@math'
+import { ref, watch, inject } from 'vue'
 import { tryOnBeforeUnmount, tryOnMounted, useIntervalFn } from '@vueuse/core'
 import { useAppStore } from '@renderer/store'
+import { EVENTS } from '@renderer/libs/@gl/libs/Const'
 
 const props = defineProps<{
   callback: () => void
   qrCode: boolean
 }>()
+
+const activeLanguage = ref(0)
+const LANGUAGES = [
+  'English',
+  'Italiano',
+  'DEUTSCH',
+  'ESPAÑOL',
+  'عربي',
+  'FRANÇAIS',
+  'PORTUGUÊS',
+  '中国人',
+  '日本語'
+]
 
 const $store = useAppStore()
 const $circle = ref<HTMLDivElement>()
@@ -42,7 +46,7 @@ const isStartPressed = ref(false)
 /* ----------------------------------
    PERFORMANCE CONSTANTS
 ---------------------------------- */
-const MAX_ACTIVE = 6
+const MAX_ACTIVE = 99
 
 /* ----------------------------------
    ELEMENT POOL
@@ -65,25 +69,23 @@ const releaseCircle = (el: HTMLDivElement): void => {
 /* ----------------------------------
    DRAW FUNCTION
 ---------------------------------- */
-const drawCircle = (force: boolean = false): void => {
+const drawCircle = (): void => {
   if (!canDraw.value || !$circle.value) return
   if ($circle.value.children.length >= MAX_ACTIVE) return
 
   const el = getCircle()
   $circle.value.appendChild(el)
 
-  const duration = force ? 1 : random(2.5, 7)
-
   gsap.fromTo(
     el,
     {
-      scale: 0.2,
+      width: '2%',
       opacity: 0.5
     },
     {
-      scale: random(8, 12),
+      width: '200%',
       opacity: 0,
-      duration,
+      duration: 12,
       ease: 'power2.out',
       onComplete: () => {
         el.remove()
@@ -101,9 +103,9 @@ const { resume, pause } = useIntervalFn(drawCircle, 1200, {
 })
 
 const onPress = (e: KeyboardEvent): void => {
-  if (e.key === 's' || e.key === 'S') {
+  if (e.key === 'x' || e.key === 'X') {
     if (isStartPressed.value) return
-    drawCircle(true)
+    drawCircle()
     isStartPressed.value = true
     props.callback?.()
   }
@@ -113,18 +115,55 @@ const addListener = (): void => {
   window.addEventListener('keydown', onPress)
 }
 
+const canChange = ref(true)
+
+watch(
+  () => [$store.midiData[2].value, $store.midiData[3].value],
+  ([val2, val3]: number[]) => {
+    const CENTER = 64
+    const DEADZONE = 4
+    const value = val2 !== 64 ? val2 : val3 // use whichever moved
+
+    if (!canChange.value) return
+
+    if (value > CENTER + DEADZONE) {
+      activeLanguage.value = (activeLanguage.value + 1) % LANGUAGES.length
+      canChange.value = false
+      setTimeout(() => (canChange.value = true), 400)
+    } else if (value < CENTER - DEADZONE) {
+      activeLanguage.value = (activeLanguage.value - 1 + LANGUAGES.length) % LANGUAGES.length
+      canChange.value = false
+      setTimeout(() => (canChange.value = true), 400)
+    }
+  }
+)
+
 watch(
   () => $store.midiData[60].input,
   (value: number) => {
     if (value > 0) {
       if (isStartPressed.value) return
 
-      drawCircle(true)
+      drawCircle()
       isStartPressed.value = true
       props.callback?.()
     }
   }
 )
+
+const emitter = inject('emitter')
+const led = { value: 0 }
+gsap.to(led, {
+  value: 127,
+  duration: 2,
+  ease: 'none',
+  repeat: -1,
+  yoyo: true,
+  onUpdate: () => {
+    //@ts-expect-error TODO: fix this
+    emitter.emit(EVENTS.MIDI_LED, { id: 99, value: Math.floor(led.value) })
+  }
+})
 
 tryOnMounted(() => {
   addListener()
@@ -132,19 +171,107 @@ tryOnMounted(() => {
 })
 
 tryOnBeforeUnmount(() => {
+  gsap.killTweensOf(led)
+
+  //@ts-expect-error TODO: fix this
+  emitter?.emit(EVENTS.MIDI_LED, { id: 100, value: 0 })
   window.removeEventListener('keydown', onPress)
   pause()
 })
 </script>
 
 <style lang="scss" scoped>
+.svg-filters {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
 .start {
-  position: relative;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   flex-grow: 1;
+  z-index: 99;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--blue);
+    opacity: 0.3;
+  }
+
+  .language {
+    position: relative;
+    display: flex;
+    gap: 8px;
+
+    &--item {
+      position: relative;
+      white-space: nowrap;
+      text-transform: uppercase;
+      font-size: 14px;
+      padding: 8px 24px;
+      border-radius: 32px;
+      isolation: isolate;
+      background-color: rgba(255, 255, 255, 0.35);
+
+      // Outer ring — thin bright border catches light at top
+      border: 0.5px solid rgba(255, 255, 255, 0.39);
+      box-shadow:
+        0 1px 0 0 rgba(255, 255, 255, 1) inset,
+        // top specular
+        0 -1px 0 0 rgba(255, 255, 255, 0.3) inset,
+        // bottom inner
+        0 4px 24px rgba(0, 0, 0, 0.08),
+        // soft drop shadow
+        0 1px 3px rgba(0, 0, 0, 0.12);
+
+      &.is-active {
+        background-color: var(--blue);
+        border: 0.5px solid rgba(255, 255, 255, 0.09);
+
+        box-shadow:
+          0 1px 0 0 rgba(255, 255, 255, 0.5) inset,
+          // top specular
+          0 -1px 0 0 rgba(255, 255, 255, 0.3) inset,
+          // bottom inner
+          0 4px 24px rgba(0, 0, 0, 0.08),
+          // soft drop shadow
+          0 1px 3px rgba(0, 0, 0, 0.12);
+
+        span {
+          color: white;
+          text-shadow: unset;
+        }
+      }
+
+      span {
+        position: relative;
+        z-index: 2;
+        // Match the blue text color from your screenshot
+        color: rgba(30, 120, 180, 0.9);
+        text-shadow: 0 1px 4px rgba(255, 255, 255, 0.5);
+      }
+    }
+
+    span {
+      position: relative;
+      z-index: 1;
+    }
+  }
 
   .circle {
     position: absolute;
@@ -163,10 +290,12 @@ tryOnBeforeUnmount(() => {
       position: absolute;
       width: 10%;
       aspect-ratio: 1;
-      border: 1px solid rgba(255, 255, 255, 0.85);
-      background-color: rgba(255, 255, 255, 0.4);
+      border: 1px solid #ffffff;
       border-radius: 50%;
-      opacity: 0;
+      background-color: #ffffff55;
+      box-shadow:
+        0 0 8px 2px #ffffff33,
+        0 0 16px 2px rgba(15, 130, 159, 0.5);
     }
   }
 

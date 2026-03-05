@@ -20,7 +20,7 @@ void main() {
   vec2 t = intersectCube(
     newPos,
     -refractedLight,
-    vec3(-111.0, -poolHeight * 100., -111.0),
+    vec3(-111.0, -poolHeight * 200., -111.0),
     vec3(1.0, 2.0, 1.0)
   );
 

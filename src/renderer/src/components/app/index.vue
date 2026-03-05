@@ -10,6 +10,7 @@
       <OnBoarding v-else-if="$store.appState === APP_STATE.ONBOARDING" />
       <Mixing v-else-if="$store.appState === APP_STATE.MIXING" :callback="onMixing" />
     </transition>
+    <Start v-if="storeVisible" :callback="onStart" :qr-code="false" />
     <Sound />
     <IpadController v-if="$store.isIpad" />
     <JogwheelFx />
@@ -17,6 +18,7 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useAppStore } from '@renderer/store'
 import Header from './blocks/header.vue'
 import Start from './blocks/start.vue'
@@ -28,12 +30,10 @@ import JogwheelFx from './blocks/jogwheel-fx.vue'
 import { APP_STATE } from '@renderer/libs/@global/const'
 
 const $store = useAppStore()
+const storeVisible = ref(true)
 
 const onStart = (): void => {
-  $store.start()
-  setTimeout(() => {
-    $store.appState = APP_STATE.MIXING
-  }, 5000)
+  storeVisible.value = false
 }
 
 const onMixing = (): void => {

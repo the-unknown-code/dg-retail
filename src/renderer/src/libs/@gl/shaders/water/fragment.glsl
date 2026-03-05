@@ -69,6 +69,7 @@ void main() {
     gl_FragColor = vec4(mix(reflectedColor, refractedColor, (1.0 - fresnel) * length(refractedRay)), 1.0);
   
   } else {
+    
     vec3 reflectedRay = reflect(incomingRay, normal);
     vec3 refractedRay = refract(incomingRay, normal, IOR_AIR / IOR_WATER);
     float fresnel = mix(0.025, 1.0, pow(1.0 - dot(normal, -incomingRay), 2.));

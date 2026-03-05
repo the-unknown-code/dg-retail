@@ -20,27 +20,10 @@ import Midi from './libs/@midi'
 import SoundManager from './libs/@howler'
 // import { useAppStore } from './store'
 import App from './components/app/index.vue'
-import { inject } from 'vue'
-import gsap from 'gsap/all'
-import { EVENTS } from './libs/@gl/libs/Const'
 // import { APP_STATE } from './libs/@global/const'
 //const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
 
 // const $store = useAppStore()
-
-const emitter = inject('emitter')
-const led = { value: 0 }
-gsap.to(led, {
-  value: 127,
-  duration: 2,
-  ease: 'none',
-  repeat: -1,
-  yoyo: true,
-  onUpdate: () => {
-    //@ts-expect-error TODO: fix this
-    emitter.emit(EVENTS.MIDI_LED, { id: 99, value: Math.floor(led.value) })
-  }
-})
 
 new Midi()
 const sound = new SoundManager()

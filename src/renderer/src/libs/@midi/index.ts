@@ -47,7 +47,7 @@ export default class Midi {
   // eslint-disable-next-line no-unused-private-class-members
   #sendCC({ id, value }: { id: number; value: number }): void {
     // console.log('SENDING CC', id, value)
-    this.#midiOutput?.send([STATUS.NOTE_ON, id, value])
+    this.#midiOutput?.send([id === 99 ? STATUS.NOTE_ON : STATUS.NOTE_OFF, id, value])
   }
 
   #onMessage(e: MIDIMessageEvent): void {
