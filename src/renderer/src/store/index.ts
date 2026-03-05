@@ -27,6 +27,7 @@ export const useAppStore = defineStore('app', {
     pinState: { x: 0, y: 0, vx: 0, vy: 0, nx: 0, ny: 0 },
     isIpad: getQueryParam('ipad') === '1',
     midiFound: false,
+    scale: 1.24,
     midiData: {
       1: { name: 'FADER', input: 0, value: 0, x: 0, y: 0, velocity: 0 },
       2: { name: 'WHEEL_L', input: 0, value: 0, x: 0, y: 0, velocity: 0 },

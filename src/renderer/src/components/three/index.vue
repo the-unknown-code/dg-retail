@@ -1,5 +1,10 @@
 <template>
-  <div id="gl" ref="$gl" :class="{ 'is-mixing': isMixing, 'is-null': isNull }">
+  <div
+    id="gl"
+    ref="$gl"
+    :class="{ 'is-mixing': isMixing, 'is-null': isNull }"
+    :style="{ '--scale': $store.scale }"
+  >
     <div id="gl--gradient" />
     <video type="video/webm" src="/videos/caustics.mp4" autoplay muted loop playsinline />
   </div>
@@ -92,7 +97,7 @@ onMounted(() => {
     left: 0;
     width: 100%;
     height: 100%;
-    transform: scale(1.5);
+    transform: scale(var(--scale));
     transition: filter 2s ease-out;
   }
 
@@ -100,9 +105,9 @@ onMounted(() => {
     position: fixed;
     width: 100%;
     height: 100%;
-    z-index: 999;
+    z-index: 9;
     object-fit: cover;
-    mix-blend-mode: luminosity;
+    mix-blend-mode: darken;
     opacity: 0.25;
   }
 
@@ -112,7 +117,7 @@ onMounted(() => {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(var(--angle), #faf3e9, var(--blue) 50%);
+    background: linear-gradient(var(--angle), #faf3e9, var(--blue) 30%);
     animation: rotateGradient 30s linear infinite;
     z-index: 2;
     mix-blend-mode: overlay;
