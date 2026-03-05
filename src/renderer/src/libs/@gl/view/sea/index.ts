@@ -38,7 +38,7 @@ export default class SeaScene extends M0AbstractScene {
 
   #addDrop: () => void
   #pause!: () => void
-  // #resume: () => void
+  #resume!: () => void
 
   #store: ReturnType<typeof useAppStore>
 
@@ -63,9 +63,9 @@ export default class SeaScene extends M0AbstractScene {
     // this.#pool = new Pool(this.#renderer, this.#light, this.camera)
     this.#addDrop = this.addDrop.bind(this)
 
-    const { pause } = useIntervalFn(this.#addDrop, 1200, { immediate: false })
+    const { pause, resume } = useIntervalFn(this.#addDrop, 1200, { immediate: false })
     this.#pause = pause
-    // this.#resume = resume
+    this.#resume = resume
 
     const $store = useAppStore()
     const iPad = getQueryParam('ipad') === '1'
@@ -85,7 +85,7 @@ export default class SeaScene extends M0AbstractScene {
           this.#waterSimulation.addDrop(
             nx,
             ny,
-            randomFloat(0.06, 0.08) * MathUtils.clamp(this.#store.midiData[2].velocity, 0.135, 1.6),
+            randomFloat(0.03, 0.05) * MathUtils.clamp(this.#store.midiData[2].velocity, 0.135, 1.6),
             randomFloat(0.01, 0.03)
           )
         }
@@ -104,7 +104,7 @@ export default class SeaScene extends M0AbstractScene {
           this.#waterSimulation.addDrop(
             nx,
             ny,
-            randomFloat(0.06, 0.08) * MathUtils.clamp(this.#store.midiData[3].velocity, 0.135, 1.6),
+            randomFloat(0.03, 0.05) * MathUtils.clamp(this.#store.midiData[3].velocity, 0.135, 1.6),
             randomFloat(0.01, 0.03)
           )
         }
@@ -128,7 +128,7 @@ export default class SeaScene extends M0AbstractScene {
       )
     }
 
-    // this.#resume()
+    this.#resume()
 
     /*
     const $store = useAppStore()
@@ -147,11 +147,21 @@ export default class SeaScene extends M0AbstractScene {
   }
 
   addDrop(): void {
+    const $store = useAppStore()
+    const x = randomFloat(-1, 1)
+    const y = randomFloat(-1, 1)
+    const scale = $store.scale
+
     this.#waterSimulation.addDrop(
-      randomFloat(-0.7, 0.7),
-      randomFloat(0.95, 1),
-      randomFloat(0.0002, 0.003),
-      randomFloat(-0.015, 0.015)
+      x * scale,
+      y * scale,
+      randomFloat(0.12, 0.19) *
+        MathUtils.clamp(
+          Math.max(this.#store.midiData[2].velocity, this.#store.midiData[3].velocity),
+          0.135,
+          1.6
+        ),
+      randomFloat(0.05, 0.09)
     )
   }
 
