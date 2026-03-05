@@ -16,7 +16,7 @@
     <JogwheelFx />
   </div>
 </template>
-
+a
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useAppStore } from '@renderer/store'
@@ -30,7 +30,7 @@ import JogwheelFx from './blocks/jogwheel-fx.vue'
 import { APP_STATE } from '@renderer/libs/@global/const'
 
 const $store = useAppStore()
-const storeVisible = ref(true)
+const storeVisible = ref(false)
 
 const onStart = (): void => {
   storeVisible.value = false

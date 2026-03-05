@@ -107,8 +107,8 @@ onMounted(() => {
     height: 100%;
     z-index: 9;
     object-fit: cover;
-    mix-blend-mode: darken;
-    opacity: 0.25;
+    mix-blend-mode: overlay;
+    opacity: 0.35;
   }
 
   #gl--gradient {
@@ -117,7 +117,7 @@ onMounted(() => {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(var(--angle), #faf3e9, var(--blue) 30%);
+    background: linear-gradient(var(--angle), #faf3e9, var(--blue) 40%);
     animation: rotateGradient 30s linear infinite;
     z-index: 2;
     mix-blend-mode: overlay;
