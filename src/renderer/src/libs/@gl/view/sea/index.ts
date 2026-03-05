@@ -121,8 +121,8 @@ export default class SeaScene extends M0AbstractScene {
           this.#waterSimulation.addDrop(
             o.nx,
             o.ny,
-            (randomFloat(0.03, 0.06) * MathUtils.clamp(Math.max(o.vx, o.vy), 0.01, 2)) / 50,
-            randomFloat(0.01, 0.03)
+            randomFloat(0.025, 0.05) + MathUtils.clamp(Math.max(o.vx, o.vy), 0.01, 2) / 100,
+            randomFloat(0.01, 0.03) + Math.max(o.vx, o.vy) / 2000
           )
         }
       )
@@ -162,6 +162,7 @@ export default class SeaScene extends M0AbstractScene {
   override render(_time: number, _dt: number): void {
     super.render(_time, _dt)
 
+    /*
     const $store = useAppStore()
     const dxNDC = this.viewport.mouseGL.x - this.#lastMouse.x
     const dyNDC = this.viewport.mouseGL.y - this.#lastMouse.y
@@ -180,6 +181,8 @@ export default class SeaScene extends M0AbstractScene {
 
       this.#lastMouse.copy(this.viewport.mouseGL)
     }
+
+    */
 
     this.#waterSimulation.stepSimulation()
     this.#waterSimulation.updateNormals()

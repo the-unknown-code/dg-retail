@@ -105,6 +105,7 @@ tryOnMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+  pointer-events: none;
 
   > div {
     position: relative;

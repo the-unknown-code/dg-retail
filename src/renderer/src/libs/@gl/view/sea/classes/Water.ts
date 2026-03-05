@@ -42,7 +42,7 @@ export default class Water {
         sky: { value: this.#store.get('env') },
         fader: { value: 1.0 },
         water: { value: null },
-        elevationScale: { value: 2 },
+        elevationScale: { value: 1 },
         causticTex: { value: null },
         underwater: { value: false }
       },
