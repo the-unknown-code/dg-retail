@@ -6,7 +6,8 @@
     :style="{ '--scale': $store.scale }"
   >
     <div id="gl--gradient" />
-    <video type="video/mp4" src="/videos/caustics_test.mp4" autoplay muted loop playsinline />
+    <video class="lines" type="video/mp4" src="/videos/lines.mp4" autoplay muted loop playsinline />
+    <video class="caustics" type="video/mp4" src="/videos/caustics.mp4" autoplay muted loop playsinline />
   </div>
 </template>
 
@@ -54,17 +55,21 @@ scope.run(() => {
   })
 })
 const PARAMS = {
-  opacity: 0.15,
-  blendMode: 'plus-lighter',
+  causticsOpacity: 0.15,
+  linesOpacity: 0.15,
+  causticsBlendMode: 'plus-lighter',
+  linesBlendMode: 'plus-lighter',
   gradientRadius: 100,
   gradientOpacity: .2,
   gradientColor: { r: 1, g: 1, b: 1 }
 }
 
-const updateVars = (): void => {
+const updateVars = (): void => {  
   if(!$gl.value) return
-  $gl.value.style.setProperty('--opacity', String(PARAMS.opacity))
-  $gl.value.style.setProperty('--blend', PARAMS.blendMode)
+  $gl.value.style.setProperty('--caustics-opacity', String(PARAMS.causticsOpacity))
+  $gl.value.style.setProperty('--lines-opacity', String(PARAMS.linesOpacity))
+  $gl.value.style.setProperty('--caustics-blend', PARAMS.causticsBlendMode)
+  $gl.value.style.setProperty('--lines-blend', PARAMS.linesBlendMode)
   $gl.value.style.setProperty('--gradient-radius', `${String(PARAMS.gradientRadius)}%`)
   $gl.value.style.setProperty('--gradient-opacity', String(PARAMS.gradientOpacity))
   $gl.value.style.setProperty('--gradient-color', `rgb(${PARAMS.gradientColor.r * 255}, ${PARAMS.gradientColor.g * 255}, ${PARAMS.gradientColor.b * 255})`)
@@ -78,13 +83,15 @@ const addTweakpane = (): void => {
     expanded: true
   })
 
-  folder.addBinding(PARAMS, 'opacity', {
+  folder.addBinding(PARAMS, 'causticsOpacity', {
     min: 0,
     max: 1,
     step: 0.01
   })
 
-  folder.addBinding(PARAMS, 'blendMode', {
+ 
+
+  folder.addBinding(PARAMS, 'causticsBlendMode', {
     options: {
       'plus-lighter': 'plus-lighter',
       'normal': 'normal',
@@ -106,10 +113,44 @@ const addTweakpane = (): void => {
     }
   })
 
-  folder.on('change', () => {
-    if(!$gl.value) return
-    updateVars()
+  folder.addBlade({
+  view: 'separator',
+});
+
+  folder.addBinding(PARAMS, 'linesOpacity', { 
+    min: 0,
+    max: 1,
+    step: 0.01
   })
+
+
+  folder.addBinding(PARAMS, 'linesBlendMode', {
+    options: {
+      'plus-lighter': 'plus-lighter',
+      'normal': 'normal',
+      'multiply': 'multiply',
+      'screen': 'screen',
+      'overlay': 'overlay',
+      'darken': 'darken',
+      'lighten': 'lighten',
+      'color-dodge': 'color-dodge',
+      'color-burn': 'color-burn',
+      'hard-light': 'hard-light',
+      'soft-light': 'soft-light',
+      'difference': 'difference',
+      'exclusion': 'exclusion',
+      'hue': 'hue',
+      'saturation': 'saturation',
+      'color': 'color',
+      'luminosity': 'luminosity'
+    }
+  })
+
+  folder.addBlade({
+  view: 'separator',
+});
+
+ 
 
 
   folder.addBinding(PARAMS, 'gradientRadius', {
@@ -126,6 +167,11 @@ const addTweakpane = (): void => {
 
   folder.addBinding(PARAMS, 'gradientColor', {
     color: { type: 'float' }
+  })
+
+  folder.on('change', () => {
+    if(!$gl.value) return
+    updateVars()
   })
 }
 
@@ -184,8 +230,16 @@ onMounted(() => {
     height: 100%;
     z-index: 9;
     object-fit: cover;
-    mix-blend-mode: var(--blend);
-    opacity: var(--opacity);
+
+    &.caustics {
+      mix-blend-mode: var(--caustics-blend);
+      opacity: var(--caustics-opacity);
+    }
+
+    &.lines {
+      mix-blend-mode: var(--lines-blend);
+      opacity: var(--lines-opacity);
+    }
   }
 
   #gl--gradient {

@@ -30,7 +30,7 @@ import JogwheelFx from './blocks/jogwheel-fx.vue'
 import { APP_STATE } from '@renderer/libs/@global/const'
 
 const $store = useAppStore()
-const storeVisible = ref(true)
+const storeVisible = ref(false)
 
 const onStart = (): void => {
   storeVisible.value = false
@@ -54,6 +54,7 @@ const onMixing = (): void => {
   flex-direction: column;
   gap: 32px;
 
+  /*
   &:after {
     content: '';
     position: absolute;
@@ -61,9 +62,10 @@ const onMixing = (): void => {
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle at 50% 50%, #faf3e9 50%, var(--blue) 100%);
+    // background: radial-gradient(circle at 50% 50%, #faf3e9 50%, var(--blue) 100%);
     opacity: 0.25;
     z-index: -1;
   }
+  */
 }
 </style>
