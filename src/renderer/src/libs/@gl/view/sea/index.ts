@@ -128,7 +128,7 @@ export default class SeaScene extends M0AbstractScene {
       )
     }
 
-    // this.#resume()
+    this.#resume()
 
     /*
     const $store = useAppStore()
@@ -147,6 +147,7 @@ export default class SeaScene extends M0AbstractScene {
   }
 
   addDrop(): void {
+    return
     const $store = useAppStore()
     const x = randomFloat(-1, 1)
     const y = randomFloat(-1, 1)
