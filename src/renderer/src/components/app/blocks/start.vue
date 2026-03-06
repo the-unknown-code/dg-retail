@@ -155,7 +155,7 @@ const emitter = inject('emitter')
 const led = { value: 0 }
 gsap.to(led, {
   value: 127,
-  duration: 2,
+  duration: 1.35,
   ease: 'none',
   repeat: -1,
   yoyo: true,
@@ -173,8 +173,21 @@ tryOnMounted(() => {
 tryOnBeforeUnmount(() => {
   gsap.killTweensOf(led)
 
-  //@ts-expect-error TODO: fix this
-  emitter?.emit(EVENTS.MIDI_LED, { id: 100, value: 0 })
+  gsap.killTweensOf([led])
+  gsap.to(led, {
+  value: 0,
+  duration: 1,
+  ease: 'none',
+  onUpdate: () => {
+    //@ts-expect-error TODO: fix this
+    emitter.emit(EVENTS.MIDI_LED, { id: 99, value: Math.floor(led.value) })
+  }, onComplete: () => {
+    //@ts-expect-error TODO: fix this
+    emitter?.emit(EVENTS.MIDI_LED, { id: 100, value: 0 })
+  }
+})
+
+  
   window.removeEventListener('keydown', onPress)
   pause()
 })

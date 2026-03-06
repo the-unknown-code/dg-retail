@@ -235,13 +235,15 @@ const pinState = {
 /* --------------------------------------------------
    MIDI → velocity mapping
 -------------------------------------------------- */
-const DEADZONE = 2
-const MAX_SPEED = 8
+const DEADZONE = -1
+const MIN_SPEED = 5
+const MAX_SPEED = 5
+const CENTER = 64
 
 const midiToVelocity = (value: number): number => {
-  const delta = value - 64
+  const delta = value - CENTER
   if (Math.abs(delta) <= DEADZONE) return 0
-  return Math.abs((delta / 63) * MAX_SPEED)
+  return Math.abs((delta / (CENTER - 1)) * MAX_SPEED) + MIN_SPEED
 }
 
 // FADER
