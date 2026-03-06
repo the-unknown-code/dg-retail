@@ -56,12 +56,18 @@ scope.run(() => {
 const PARAMS = {
   opacity: 0.15,
   blendMode: 'plus-lighter',
+  gradientRadius: 100,
+  gradientOpacity: 1,
+  gradientColor: { r: 1, g: 1, b: 1 }
 }
 
 const updateVars = (): void => {
   if(!$gl.value) return
   $gl.value.style.setProperty('--opacity', String(PARAMS.opacity))
   $gl.value.style.setProperty('--blend', PARAMS.blendMode)
+  $gl.value.style.setProperty('--gradient-radius', `${String(PARAMS.gradientRadius)}%`)
+  $gl.value.style.setProperty('--gradient-opacity', String(PARAMS.gradientOpacity))
+  $gl.value.style.setProperty('--gradient-color', `rgb(${PARAMS.gradientColor.r * 255}, ${PARAMS.gradientColor.g * 255}, ${PARAMS.gradientColor.b * 255})`)
 }
 
 const addTweakpane = (): void => {
@@ -103,6 +109,23 @@ const addTweakpane = (): void => {
   folder.on('change', () => {
     if(!$gl.value) return
     updateVars()
+  })
+
+
+  folder.addBinding(PARAMS, 'gradientRadius', {
+    min: 0,
+    max: 200,
+    step: .1
+  })
+
+  folder.addBinding(PARAMS, 'gradientOpacity', {
+    min: 0,
+    max: 1,
+    step: 0.01
+  })
+
+  folder.addBinding(PARAMS, 'gradientColor', {
+    color: { type: 'float' }
   })
 }
 
@@ -171,11 +194,11 @@ onMounted(() => {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(var(--angle), #faf3e9aa, var(--blue) 100%);
+    background: radial-gradient(circle at 50% 50%, #ffffff 0%, var(--gradient-color) var(--gradient-radius));
     animation: rotateGradient 30s linear infinite;
     z-index: 2;
     mix-blend-mode: overlay;
-    opacity: 1;
+    opacity: var(--gradient-opacity);
   }
 }
 </style>
