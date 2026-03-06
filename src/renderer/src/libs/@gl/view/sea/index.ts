@@ -128,7 +128,7 @@ export default class SeaScene extends M0AbstractScene {
       )
     }
 
-    this.#resume()
+    // this.#resume()
 
     /*
     const $store = useAppStore()
