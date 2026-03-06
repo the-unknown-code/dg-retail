@@ -5,3 +5,8 @@
 @use './_typography.scss';
 @use './_transitions.scss';
 @use './_layout.scss';
+
+.tp-dfwv {
+    position: fixed !important;
+    right: 8px !important;
+}

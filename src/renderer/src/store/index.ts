@@ -1,5 +1,6 @@
 import { APP_STATE } from '@renderer/libs/@global/const'
 import { defineStore } from 'pinia'
+import {Pane} from 'tweakpane';
 
 export type MidiChannelId = 1 | 2 | 3 | 60
 
@@ -28,6 +29,7 @@ export const useAppStore = defineStore('app', {
     isIpad: getQueryParam('ipad') === '1',
     midiFound: false,
     scale: 1.24,
+    tweakpane: new Pane(),
     midiData: {
       1: { name: 'FADER', input: 0, value: 0, x: 0, y: 0, velocity: 0 },
       2: { name: 'WHEEL_L', input: 0, value: 0, x: 0, y: 0, velocity: 0 },

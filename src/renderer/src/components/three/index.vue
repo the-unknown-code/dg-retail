@@ -6,7 +6,7 @@
     :style="{ '--scale': $store.scale }"
   >
     <div id="gl--gradient" />
-    <video type="video/webm" src="/videos/caustics.mp4" autoplay muted loop playsinline />
+    <video type="video/mp4" src="/videos/caustics_test.mp4" autoplay muted loop playsinline />
   </div>
 </template>
 
@@ -53,9 +53,63 @@ scope.run(() => {
     resize()
   })
 })
+const PARAMS = {
+  opacity: 0.15,
+  blendMode: 'plus-lighter',
+}
+
+const updateVars = (): void => {
+  if(!$gl.value) return
+  $gl.value.style.setProperty('--opacity', String(PARAMS.opacity))
+  $gl.value.style.setProperty('--blend', PARAMS.blendMode)
+}
+
+const addTweakpane = (): void => {
+
+  //@ts-expect-error - TODO: fix this
+ const folder = $store.tweakpane.addFolder({
+    title: 'Video',
+    expanded: true
+  })
+
+  folder.addBinding(PARAMS, 'opacity', {
+    min: 0,
+    max: 1,
+    step: 0.01
+  })
+
+  folder.addBinding(PARAMS, 'blendMode', {
+    options: {
+      'plus-lighter': 'plus-lighter',
+      'normal': 'normal',
+      'multiply': 'multiply',
+      'screen': 'screen',
+      'overlay': 'overlay',
+      'darken': 'darken',
+      'lighten': 'lighten',
+      'color-dodge': 'color-dodge',
+      'color-burn': 'color-burn',
+      'hard-light': 'hard-light',
+      'soft-light': 'soft-light',
+      'difference': 'difference',
+      'exclusion': 'exclusion',
+      'hue': 'hue',
+      'saturation': 'saturation',
+      'color': 'color',
+      'luminosity': 'luminosity'
+    }
+  })
+
+  folder.on('change', () => {
+    if(!$gl.value) return
+    updateVars()
+  })
+}
 
 onMounted(() => {
   initialize()
+  addTweakpane()
+  updateVars()
 })
 </script>
 
@@ -107,8 +161,8 @@ onMounted(() => {
     height: 100%;
     z-index: 9;
     object-fit: cover;
-    mix-blend-mode: overlay;
-    opacity: 0.35;
+    mix-blend-mode: var(--blend);
+    opacity: var(--opacity);
   }
 
   #gl--gradient {
@@ -117,7 +171,7 @@ onMounted(() => {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(var(--angle), #faf3e9, var(--blue) 40%);
+    background: linear-gradient(var(--angle), #faf3e9aa, var(--blue) 100%);
     animation: rotateGradient 30s linear infinite;
     z-index: 2;
     mix-blend-mode: overlay;
