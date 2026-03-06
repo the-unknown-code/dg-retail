@@ -30,7 +30,7 @@ import JogwheelFx from './blocks/jogwheel-fx.vue'
 import { APP_STATE } from '@renderer/libs/@global/const'
 
 const $store = useAppStore()
-const storeVisible = ref(false)
+const storeVisible = ref(true)
 
 const onStart = (): void => {
   storeVisible.value = false
