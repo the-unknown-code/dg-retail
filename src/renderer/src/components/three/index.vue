@@ -57,7 +57,7 @@ const PARAMS = {
   opacity: 0.15,
   blendMode: 'plus-lighter',
   gradientRadius: 100,
-  gradientOpacity: 1,
+  gradientOpacity: .2,
   gradientColor: { r: 1, g: 1, b: 1 }
 }
 
