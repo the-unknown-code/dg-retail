@@ -8,7 +8,7 @@
     </div>
 
     <div id="dot" ref="$dot">
-      <div id="dot--svg">
+      <div ref="$dotSvg" id="dot--svg">
         <img class="bloom" src="/assets/bloom.png" />
         <img class="ellipse" src="/assets/ellipse.png" />
       </div>
@@ -127,6 +127,7 @@ import { ref, watch } from 'vue'
 
 const $store = useAppStore()
 const $dot = ref<HTMLDivElement | null>(null)
+const $dotSvg = ref<HTMLDivElement | null>(null)
 
 const reset = (): void => {
   if (!$dot.value) return
@@ -134,28 +135,43 @@ const reset = (): void => {
 }
 
 const position = { ...$store.pinState }
+const velocity = { x: 0, y: 0 }
+const prev = { x: $store.pinState.x, y: $store.pinState.y }
+let currentAngle = 0
+
 const { start, stop } = useTimeoutFn(reset, 100, { immediate: false })
 const cb = Tempus.add(
   () => {
     if (!$dot.value) return
     const x = lerp(position.x, $store.pinState.x, 0.5)
     const y = lerp(position.y, $store.pinState.y, 0.5)
+
     position.x = x
     position.y = y
     $dot.value.style.transform = `translate(${x}px, ${y}px)`
+
+    velocity.x = x - prev.x
+    velocity.y = y - prev.y
+    prev.x = x
+    prev.y = y
+
+    const speed = Math.sqrt(velocity.x ** 2 + velocity.y ** 2)
+    if (speed > 0.0005 && $dotSvg.value) {
+      // atan2 gives angle in radians; y is inverted because screen-Y flips
+      const targetAngle = Math.atan2(velocity.y, velocity.x) * (180 / Math.PI)
+
+      // Lerp angle (handle wrap-around)
+      let delta = targetAngle - currentAngle
+      if (delta > 180) delta -= 360
+      if (delta < -180) delta += 360
+
+      currentAngle += delta * 0.12
+      $dotSvg.value.style.transform = `rotate(${currentAngle}deg)`
+    }
   },
+
   { priority: -1 }
 )
-
-/*
-watch(
-  () => $store.pinState,
-  (value) => {
-    if (!$dot.value) return
-    $dot.value.style.transform = `translate(${value.x}px, ${value.y}px)`
-  }
-)
-  */
 
 watch(
   () => $store.midiData[2].value,
@@ -175,6 +191,11 @@ watch(
     stop()
     start()
   }
+)
+
+watch(
+  () => $store.pinState,
+  () => {}
 )
 
 tryOnBeforeUnmount(() => {
