@@ -61,7 +61,7 @@ import gsap from 'gsap'
 import { Draggable } from 'gsap/all'
 import { useAppStore } from '@renderer/store'
 import Tempus from 'tempus'
-import { APP_STATE } from '@renderer/libs/@global/const'
+// import { APP_STATE } from '@renderer/libs/@global/const'
 
 const $store = useAppStore()
 
