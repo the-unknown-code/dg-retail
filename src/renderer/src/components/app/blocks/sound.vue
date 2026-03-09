@@ -1,10 +1,10 @@
 <template>
   <div class="sound">
     <div v-if="!$store.isIpad" class="sound__content">
-      <p>VIBY</p>
+      <p>FUNKY</p>
       <p>PARTY</p>
       <p>CHILL</p>
-      <p>JAZZY</p>
+      <p>GROOVY</p>
     </div>
 
     <div id="dot" ref="$dot">
@@ -55,21 +55,13 @@
             </feMerge>
           </filter>
 
-          <!-- Radial gradients -->
-          <radialGradient id="glass-body" cx="38%" cy="30%" r="105%">
-            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.55" />
-            <stop offset="30%" stop-color="#c8eeff" stop-opacity="0.18" />
-            <stop offset="65%" stop-color="#0087c1" stop-opacity="0.06" />
-            <stop offset="100%" stop-color="#001a2e" stop-opacity="0.25" />
-          </radialGradient>
-
           <radialGradient id="rim-light" cx="49%" cy="49%" r="50%">
-            <stop offset="72%" stop-color="#ffffff" stop-opacity="0" />
+            <stop offset="82%" stop-color="#ffffff" stop-opacity="0" />
             <stop offset="92%" stop-color="#7de0ff" stop-opacity="0.45" />
             <stop offset="100%" stop-color="#ffffff" stop-opacity="0.6" />
           </radialGradient>
 
-          <linearGradient id="edge-shine" x1="0%" y1="0%" x2="100%" y2="20%">
+          <linearGradient id="edge-shine" x1="60%" y1="40%" x2="40%" y2="20%">
             <stop offset="0%" stop-color="#ffffff" stop-opacity="0.7" />
             <stop offset="40%" stop-color="#279ed1" stop-opacity="0.1" />
             <stop offset="60%" stop-color="#ffffff" stop-opacity="0" />
@@ -138,6 +130,8 @@ const position = { ...$store.pinState }
 const velocity = { x: 0, y: 0 }
 const prev = { x: $store.pinState.x, y: $store.pinState.y }
 let currentAngle = 0
+let currentScaleX = 1
+let currentScaleY = 1
 
 const { start, stop } = useTimeoutFn(reset, 100, { immediate: false })
 const cb = Tempus.add(
@@ -156,17 +150,29 @@ const cb = Tempus.add(
     prev.y = y
 
     const speed = Math.sqrt(velocity.x ** 2 + velocity.y ** 2)
-    if (speed > 0.0005 && $dotSvg.value) {
-      // atan2 gives angle in radians; y is inverted because screen-Y flips
-      const targetAngle = Math.atan2(velocity.y, velocity.x) * (180 / Math.PI)
+    if ($dotSvg.value) {
+      // ── Rotation ──────────────────────────────────
+      if (speed > 0.0005) {
+        const targetAngle = Math.atan2(velocity.y, velocity.x) * (180 / Math.PI)
+        let delta = targetAngle - currentAngle
+        if (delta > 180) delta -= 360
+        if (delta < -180) delta += 360
+        currentAngle += delta * 0.12
+      }
 
-      // Lerp angle (handle wrap-around)
-      let delta = targetAngle - currentAngle
-      if (delta > 180) delta -= 360
-      if (delta < -180) delta += 360
+      // ── Warp / squash-and-stretch ─────────────────
+      // Map speed to a stretch factor (clamp so it doesn't go insane)
+      const stretch = Math.min(speed * 80, 0.15) // 0 → 0.5 max elongation
+      const targetScaleX = 1 + stretch
+      const targetScaleY = 1 / (1 + stretch) // volume-preserving squash
 
-      currentAngle += delta * 0.12
-      $dotSvg.value.style.transform = `rotate(${currentAngle}deg)`
+      // Lerp toward target for smooth ease-in/out
+      currentScaleX = lerp(currentScaleX, targetScaleX, 0.18)
+      currentScaleY = lerp(currentScaleY, targetScaleY, 0.18)
+
+      // Combine rotation + warp in one transform
+      // The scale is applied in LOCAL space (along movement axis = X after rotation)
+      $dotSvg.value.style.transform = `rotate(${currentAngle}deg) scaleX(${currentScaleX}) scaleY(${currentScaleY})`
     }
   },
 
@@ -204,6 +210,7 @@ tryOnBeforeUnmount(() => {
 </script>
 
 <style lang="scss" scoped>
+/*
 @keyframes ring-expand {
   0% {
     transform: scale(1);
@@ -239,6 +246,7 @@ tryOnBeforeUnmount(() => {
     transform: rotate(-20deg) translate(1px, -1px);
   }
 }
+  */
 
 .sound {
   position: fixed;
@@ -277,7 +285,7 @@ tryOnBeforeUnmount(() => {
 }
 
 #dot {
-  --size: 24px;
+  --size: 48px;
   position: absolute;
   width: var(--size);
   height: var(--size);
@@ -286,14 +294,18 @@ tryOnBeforeUnmount(() => {
   justify-content: center;
   mix-blend-mode: darken;
   isolation: isolate;
-  transition: all 0.25s ease-out;
+  transition: all 0.1s linear;
 
   &.is-active {
-    --size: 48px;
+    --size: 24px;
 
     #dot--svg {
       opacity: 1;
       transform: scale(1);
+    }
+
+    .dot__svg {
+      opacity: 1;
     }
   }
 
@@ -306,7 +318,7 @@ tryOnBeforeUnmount(() => {
     justify-content: center;
     // Ensure the ellipse image renders BELOW the glass layer
     z-index: 0;
-    transition: all 0.45s ease-out;
+    transition: all 0.15s ease-out;
     opacity: 0;
     transform: scale(0.5);
 
@@ -351,14 +363,14 @@ tryOnBeforeUnmount(() => {
     width: 100%;
     height: 100%;
     overflow: visible;
-    opacity: 1;
+    opacity: 0.2;
 
     // NO backdrop-filter here anymore — handled by ::before
     // Only keep the drop-shadow
     filter: drop-shadow(0 4px 16px rgba(0, 135, 193, 0.45))
       drop-shadow(0 1px 3px rgba(0, 0, 0, 0.3));
 
-    transition: filter 0.45s ease-out;
+    transition: all 0.45s ease-out;
 
     .dot__bloom {
       transition: opacity 0.4s ease;

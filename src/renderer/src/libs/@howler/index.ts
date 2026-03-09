@@ -1,5 +1,7 @@
 // import gsap from 'gsap/all'
+import gsap from 'gsap/all'
 import { Howl } from 'howler'
+Howler.volume(0)
 
 const SOUND_GRID = {
   1: { label: 'B3', color: '#ffb3f4', instance: null as Howl | null },
@@ -18,6 +20,18 @@ const SOUND_GRID = {
   14: { label: 'B1_75-25_B2', color: '#ffe6cd', instance: null as Howl | null },
   15: { label: 'B1_25-75_B2', color: '#fdffce', instance: null as Howl | null },
   16: { label: 'B2', color: '#b6d7a8', instance: null as Howl | null }
+}
+
+export const fadeVolume = (volume: number = 1): void => {
+  const value = { volume: Howler.volume() }
+  gsap.to(value, {
+    duration: 1,
+    ease: 'power2.inOut',
+    volume,
+    onUpdate: () => {
+      Howler.volume(value.volume)
+    }
+  })
 }
 
 export default class SoundManager {

@@ -1,8 +1,7 @@
 <template>
   <div class="onboarding">
     <div class="onboarding__content">
-      <p>mix YOUR personal light blue SOUND WAVE BY playing with THE dj console</p>
-      <p>امزج موجتك الصوتية الزرقاء الفاتحة الخاصة عن طريق اللعب بجهاز الدي جي</p>
+      <p>FEEL YOUR VIBE AND PLAY WITH THE DJ CONSOLE TO DISCOVER YOUR LIGHT BLUE PLAYLIST</p>
     </div>
     <div class="onboarding__footer">
       <dic class="console">
@@ -26,7 +25,10 @@ import gsap from 'gsap/all'
 import { ref } from 'vue'
 import Fader from '@renderer/components/ui/fader.vue'
 import Jogwheel from '@renderer/components/ui/jogwheel.vue'
+import { useAppStore } from '@renderer/store'
+import { APP_STATE } from '@renderer/libs/@global/const'
 
+const $store = useAppStore()
 const $jogwheelL = ref<HTMLDivElement>()
 const $fader = ref<HTMLDivElement>()
 const $jogwheelR = ref<HTMLDivElement>()
@@ -43,6 +45,11 @@ const initialize = (): void => {
     stagger: {
       from: 'center',
       amount: 0.25
+    },
+    onComplete: () => {
+      setTimeout(() => {
+        $store.appState = APP_STATE.MIXING
+      }, 2000)
     }
   })
 }
@@ -58,12 +65,17 @@ tryOnBeforeUnmount(() => {
 
 <style lang="scss" scoped>
 .onboarding {
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   flex-grow: 1;
+  pointer-events: none;
 
   &__content {
     position: relative;
@@ -78,7 +90,7 @@ tryOnBeforeUnmount(() => {
 
   &__footer {
     position: absolute;
-    bottom: 0;
+    bottom: 80px;
     left: 0;
     width: 100%;
     display: flex;

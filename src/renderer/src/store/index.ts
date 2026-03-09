@@ -1,6 +1,6 @@
 import { APP_STATE } from '@renderer/libs/@global/const'
 import { defineStore } from 'pinia'
-import {Pane} from 'tweakpane';
+import { Pane } from 'tweakpane'
 
 export type MidiChannelId = 1 | 2 | 3 | 60
 
@@ -24,12 +24,12 @@ export function getQueryParam(name: string): string | null {
 export const useAppStore = defineStore('app', {
   state: () => ({
     electron: typeof window !== 'undefined' && !!window.process?.versions?.electron,
-    appState: APP_STATE.NULL,
+    appState: APP_STATE.START,
     pinState: { x: 0, y: 0, vx: 0, vy: 0, nx: 0, ny: 0 },
     isIpad: getQueryParam('ipad') === '1',
     midiFound: false,
     scale: 1.24,
-    tweakpane: new Pane(),
+    tweakpane: getQueryParam('debug') === '1' ? new Pane() : null,
     midiData: {
       1: { name: 'FADER', input: 0, value: 0, x: 0, y: 0, velocity: 0 },
       2: { name: 'WHEEL_L', input: 0, value: 0, x: 0, y: 0, velocity: 0 },

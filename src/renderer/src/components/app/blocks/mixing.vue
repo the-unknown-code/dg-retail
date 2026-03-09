@@ -1,7 +1,8 @@
 <template>
   <div class="mixing">
+    <Sound />
     <div class="mixing__timeline">
-      <p>00:02</p>
+      <p>00:{{ String(currentTime).padStart(2, '0') }}</p>
       <div ref="$graph" class="graph">
         <svg
           width="297"
@@ -18,7 +19,7 @@
           </g>
         </svg>
       </div>
-      <p>00:58</p>
+      <p>00:45</p>
     </div>
   </div>
 </template>
@@ -27,6 +28,9 @@
 import { tryOnBeforeUnmount, tryOnMounted } from '@vueuse/core'
 import gsap from 'gsap/all'
 import { ref } from 'vue'
+import Sound from '../blocks/sound.vue'
+import { fadeVolume } from '@renderer/libs/@howler'
+const currentTime = ref(0)
 
 const props = defineProps<{
   callback: () => void
@@ -36,10 +40,13 @@ const $graph = ref<HTMLDivElement>()
 const initialize = (): void => {
   if (!$graph.value) return
 
-  gsap.to($graph.value, {
+  const tween = gsap.to($graph.value, {
     width: 297,
-    duration: 60,
+    duration: 45,
     ease: 'none',
+    onUpdate: () => {
+      currentTime.value = Math.floor(tween.progress() * 45)
+    },
     onComplete: () => {
       props.callback?.()
     }
@@ -47,10 +54,12 @@ const initialize = (): void => {
 }
 
 tryOnMounted(() => {
+  fadeVolume(1)
   initialize()
 })
 
 tryOnBeforeUnmount(() => {
+  fadeVolume(0)
   if (!$graph.value) return
   gsap.killTweensOf($graph.value)
 })
@@ -58,7 +67,7 @@ tryOnBeforeUnmount(() => {
 
 <style lang="scss" scoped>
 .mixing {
-  position: relative;
+  position: fixed;
   width: 100%;
   height: 100%;
   display: flex;
@@ -69,13 +78,14 @@ tryOnBeforeUnmount(() => {
 
   &__timeline {
     position: relative;
+    top: -15px;
     transform: translateY(calc(var(--app-padding) * -1));
     width: 470px;
     height: 60px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: linear-gradient(180deg, #ffffff11, #40edfd11);
+    background: linear-gradient(180deg, #ffffff33, #40edfd22);
     backdrop-filter: blur(6px) saturate(110%);
     -webkit-backdrop-filter: blur(6px) saturate(110%);
     border-radius: 30px;

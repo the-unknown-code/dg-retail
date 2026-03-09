@@ -167,8 +167,9 @@ const createWheelController = (
 
     gsap.to(state, {
       angle: targetAngle,
-      duration: gsap.utils.clamp(0.1, 0.4, Math.abs(targetAngle - state.angle)),
-      ease: 'power3.out',
+      // duration: gsap.utils.clamp(0.1, 0.3, Math.abs(targetAngle - state.angle)),
+      duration: 0,
+      ease: 'none',
       overwrite: 'auto',
       onUpdate: updateDot
     })

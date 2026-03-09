@@ -175,19 +175,19 @@ tryOnBeforeUnmount(() => {
 
   gsap.killTweensOf([led])
   gsap.to(led, {
-  value: 0,
-  duration: 1,
-  ease: 'none',
-  onUpdate: () => {
-    //@ts-expect-error TODO: fix this
-    emitter.emit(EVENTS.MIDI_LED, { id: 99, value: Math.floor(led.value) })
-  }, onComplete: () => {
-    //@ts-expect-error TODO: fix this
-    emitter?.emit(EVENTS.MIDI_LED, { id: 100, value: 0 })
-  }
-})
+    value: 0,
+    duration: 1,
+    ease: 'none',
+    onUpdate: () => {
+      //@ts-expect-error TODO: fix this
+      emitter.emit(EVENTS.MIDI_LED, { id: 99, value: Math.floor(led.value) })
+    },
+    onComplete: () => {
+      //@ts-expect-error TODO: fix this
+      emitter?.emit(EVENTS.MIDI_LED, { id: 100, value: 0 })
+    }
+  })
 
-  
   window.removeEventListener('keydown', onPress)
   pause()
 })
@@ -195,7 +195,7 @@ tryOnBeforeUnmount(() => {
 
 <style lang="scss" scoped>
 .svg-filters {
-  position: absolute;
+  position: fixed;
   width: 0;
   height: 0;
   overflow: hidden;
