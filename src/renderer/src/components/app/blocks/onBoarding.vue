@@ -1,9 +1,15 @@
 <template>
   <div class="onboarding">
-    <div class="onboarding__content">
-      <p>FEEL YOUR VIBE AND PLAY WITH THE DJ CONSOLE TO DISCOVER YOUR LIGHT BLUE PLAYLIST</p>
+    <div ref="$intro" class="onboarding__intro">
+      <animated-text text="WHAT'S YOUR MOOD OF THE DAY?" />
     </div>
-    <div class="onboarding__footer">
+    <div ref="$content" class="onboarding__content">
+      <animated-text
+        text="FEEL YOUR VIBE AND PLAY WITH THE DJ CONSOLE TO DISCOVER YOUR LIGHT BLUE PLAYLIST"
+        :delay="1"
+      />
+    </div>
+    <div ref="$footer" class="onboarding__footer">
       <dic class="console">
         <div ref="$jogwheelL">
           <Jogwheel />
@@ -20,38 +26,63 @@
 </template>
 
 <script setup lang="ts">
-import { tryOnBeforeUnmount, tryOnMounted } from '@vueuse/core'
 import gsap from 'gsap/all'
 import { ref } from 'vue'
+import AnimatedText from '@renderer/components/ui/animated-text.vue'
 import Fader from '@renderer/components/ui/fader.vue'
 import Jogwheel from '@renderer/components/ui/jogwheel.vue'
 import { useAppStore } from '@renderer/store'
 import { APP_STATE } from '@renderer/libs/@global/const'
+import { tryOnBeforeUnmount, tryOnMounted } from '@vueuse/core'
 
 const $store = useAppStore()
 const $jogwheelL = ref<HTMLDivElement>()
 const $fader = ref<HTMLDivElement>()
 const $jogwheelR = ref<HTMLDivElement>()
 
+const $intro = ref<HTMLDivElement>()
+const $content = ref<HTMLDivElement>()
+const $footer = ref<HTMLDivElement>()
+
+const timeline = gsap.timeline({ delay: 2.5 })
+
 const initialize = (): void => {
   if (!$jogwheelL.value || !$fader.value || !$jogwheelR.value) return
+  if (!$intro.value || !$content.value || !$footer.value) return
 
-  gsap.to([$jogwheelL.value, $fader.value, $jogwheelR.value], {
+  timeline.to($intro.value, {
     duration: 2,
     ease: 'power2.inOut',
-    y: 0,
-    rotate: 0,
-    opacity: 1,
-    stagger: {
-      from: 'center',
-      amount: 0.25
-    },
-    onComplete: () => {
-      setTimeout(() => {
-        $store.appState = APP_STATE.MIXING
-      }, 2000)
-    }
+    opacity: 0
   })
+
+  timeline.to(
+    [$content.value, $footer.value],
+    {
+      duration: 2,
+      ease: 'power2.inOut',
+      opacity: 1,
+      onStart: () => {
+        gsap.to([$jogwheelL.value, $fader.value, $jogwheelR.value], {
+          duration: 2,
+          ease: 'power2.inOut',
+          y: 0,
+          rotate: 0,
+          opacity: 1,
+          stagger: {
+            from: 'center',
+            amount: 0.25
+          },
+          onComplete: () => {
+            setTimeout(() => {
+              $store.appState = APP_STATE.MIXING
+            }, 3500)
+          }
+        })
+      }
+    },
+    '-=1'
+  )
 }
 
 tryOnMounted(() => {
@@ -77,6 +108,20 @@ tryOnBeforeUnmount(() => {
   flex-grow: 1;
   pointer-events: none;
 
+  &__intro {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &:deep(p) {
+      font-size: 32px;
+      max-width: 320px;
+      text-align: center;
+    }
+  }
+
   &__content {
     position: relative;
     width: 438px;
@@ -86,6 +131,8 @@ tryOnBeforeUnmount(() => {
     align-items: center;
     gap: var(--app-gap);
     text-align: center;
+    transform: translateY(-100%);
+    opacity: 0;
   }
 
   &__footer {
@@ -98,6 +145,7 @@ tryOnBeforeUnmount(() => {
     justify-content: center;
     align-items: center;
     gap: var(--app-gap);
+    opacity: 0;
 
     .console {
       position: relative;

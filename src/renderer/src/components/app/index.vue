@@ -1,18 +1,14 @@
 <template>
   <div class="app">
-    <Header />
     <transition mode="out-in" name="quick-fade">
       <Start v-if="$store.appState === APP_STATE.START" :callback="onStart" :qr-code="false" />
       <OnBoarding v-else-if="$store.appState === APP_STATE.ONBOARDING" />
       <Mixing v-else-if="$store.appState === APP_STATE.MIXING" :callback="onMixing" />
       <QrCode v-else-if="$store.appState === APP_STATE.QR_CODE" />
     </transition>
-    <!--
-    <Start v-if="storeVisible" :callback="onStart" :qr-code="false" />
-    -->
-
     <IpadController v-if="$store.isIpad" />
-    <JogwheelFx />
+    <JogwheelFx v-if="$store.appState === APP_STATE.MIXING" />
+    <Header />
   </div>
 </template>
 a
@@ -46,20 +42,6 @@ const onMixing = (): void => {
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 1;
-
-  /*
-  &:after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    // background: radial-gradient(circle at 50% 50%, #faf3e9 50%, var(--blue) 100%);
-    opacity: 0.25;
-    z-index: -1;
-  }
-  */
+  z-index: 10;
 }
 </style>

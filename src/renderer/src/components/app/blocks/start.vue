@@ -5,11 +5,16 @@
     <div class="language">
       <div
         v-for="(language, index) in LANGUAGES"
+        ref="$languageItems"
         :key="language"
         :class="['language--item', { 'is-active': activeLanguage === index }]"
       >
         <span>{{ language }}</span>
       </div>
+    </div>
+
+    <div class="info">
+      <animated-text text="SELECT YOUR LANGUAGE AND PRESS START" />
     </div>
   </div>
 </template>
@@ -17,6 +22,7 @@
 <script setup lang="ts">
 import gsap from 'gsap'
 import { ref, watch, inject } from 'vue'
+import AnimatedText from '@renderer/components/ui/animated-text.vue'
 import { tryOnBeforeUnmount, tryOnMounted, useIntervalFn } from '@vueuse/core'
 import { useAppStore } from '@renderer/store'
 import { EVENTS } from '@renderer/libs/@gl/libs/Const'
@@ -26,6 +32,7 @@ const props = defineProps<{
   qrCode: boolean
 }>()
 
+const $languageItems = ref<HTMLDivElement[]>([])
 const activeLanguage = ref(0)
 const LANGUAGES = [
   'English',
@@ -43,10 +50,16 @@ const $store = useAppStore()
 const $circle = ref<HTMLDivElement>()
 const canDraw = ref(true)
 const isStartPressed = ref(false)
+
 /* ----------------------------------
    PERFORMANCE CONSTANTS
 ---------------------------------- */
 const MAX_ACTIVE = 99
+
+/* ----------------------------------
+   ACTIVE COUNT (replaces children.length reads)
+---------------------------------- */
+let activeCount = 0
 
 /* ----------------------------------
    ELEMENT POOL
@@ -70,24 +83,27 @@ const releaseCircle = (el: HTMLDivElement): void => {
    DRAW FUNCTION
 ---------------------------------- */
 const drawCircle = (): void => {
+  console.log('drawCircle')
   if (!canDraw.value || !$circle.value) return
-  if ($circle.value.children.length >= MAX_ACTIVE) return
+  if (activeCount >= MAX_ACTIVE) return
 
   const el = getCircle()
+  activeCount++
   $circle.value.appendChild(el)
 
   gsap.fromTo(
     el,
     {
-      width: '2%',
+      scale: 0.01,
       opacity: 0.5
     },
     {
-      width: '200%',
+      scale: 20,
       opacity: 0,
       duration: 12,
       ease: 'power2.out',
       onComplete: () => {
+        activeCount--
         el.remove()
         releaseCircle(el)
       }
@@ -122,7 +138,7 @@ watch(
   ([val2, val3]: number[]) => {
     const CENTER = 64
     const DEADZONE = 4
-    const value = val2 !== 64 ? val2 : val3 // use whichever moved
+    const value = val2 !== 64 ? val2 : val3
 
     if (!canChange.value) return
 
@@ -165,7 +181,22 @@ gsap.to(led, {
   }
 })
 
+const animate = (value: boolean): void => {
+  gsap.to($languageItems.value, {
+    duration: 1.5,
+    ease: 'power2.inOut',
+    opacity: value ? 1 : 0,
+    scale: 1,
+    y: 0,
+    stagger: {
+      each: 0.1,
+      from: 'center'
+    }
+  })
+}
+
 tryOnMounted(() => {
+  animate(true)
   addListener()
   resume()
 })
@@ -226,6 +257,16 @@ tryOnBeforeUnmount(() => {
     opacity: 0.3;
   }
 
+  .info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 16px;
+    padding: 64px 32px;
+  }
+
   .language {
     position: relative;
     display: flex;
@@ -236,20 +277,18 @@ tryOnBeforeUnmount(() => {
       white-space: nowrap;
       text-transform: uppercase;
       font-size: 14px;
-      padding: 8px 24px;
+      padding: 10px 24px;
       border-radius: 32px;
-      isolation: isolate;
       background-color: rgba(255, 255, 255, 0.35);
+      backdrop-filter: blur(10px);
+      transform: scale(1.15);
+      opacity: 0;
 
-      // Outer ring — thin bright border catches light at top
       border: 0.5px solid rgba(255, 255, 255, 0.39);
       box-shadow:
         0 1px 0 0 rgba(255, 255, 255, 1) inset,
-        // top specular
         0 -1px 0 0 rgba(255, 255, 255, 0.3) inset,
-        // bottom inner
         0 4px 24px rgba(0, 0, 0, 0.08),
-        // soft drop shadow
         0 1px 3px rgba(0, 0, 0, 0.12);
 
       &.is-active {
@@ -258,11 +297,8 @@ tryOnBeforeUnmount(() => {
 
         box-shadow:
           0 1px 0 0 rgba(255, 255, 255, 0.5) inset,
-          // top specular
           0 -1px 0 0 rgba(255, 255, 255, 0.3) inset,
-          // bottom inner
           0 4px 24px rgba(0, 0, 0, 0.08),
-          // soft drop shadow
           0 1px 3px rgba(0, 0, 0, 0.12);
 
         span {
@@ -274,9 +310,9 @@ tryOnBeforeUnmount(() => {
       span {
         position: relative;
         z-index: 2;
-        // Match the blue text color from your screenshot
         color: rgba(30, 120, 180, 0.9);
         text-shadow: 0 1px 4px rgba(255, 255, 255, 0.5);
+        line-height: 1cap;
       }
     }
 
@@ -303,12 +339,10 @@ tryOnBeforeUnmount(() => {
       position: absolute;
       width: 10%;
       aspect-ratio: 1;
-      border: 1px solid #ffffff;
       border-radius: 50%;
       background-color: #ffffff55;
-      box-shadow:
-        0 0 8px 2px #ffffff33,
-        0 0 16px 2px rgba(15, 130, 159, 0.5);
+      transform-origin: center;
+      will-change: transform, opacity;
     }
   }
 
@@ -321,6 +355,7 @@ tryOnBeforeUnmount(() => {
     justify-content: center;
     align-items: center;
     transition: transform 180ms ease-out;
+    backdrop-filter: blur(10px);
 
     &.is-pressed {
       transition-duration: 40ms;

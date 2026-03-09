@@ -1,7 +1,9 @@
 <template>
   <main>
-    <Three />
-    <App />
+    <Three>
+      <App />
+    </Three>
+
     <MidiDebug />
     <ControllerUI />
     <ControllerSound :sound-callback="soundCallback" />

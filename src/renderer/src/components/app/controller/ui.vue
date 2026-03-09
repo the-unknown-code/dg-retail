@@ -483,9 +483,9 @@ tryOnMounted(() => {
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 2;
   pointer-events: none;
   visibility: hidden;
+  z-index: 9999999;
 
   &.is-visible {
     visibility: visible;
@@ -526,7 +526,7 @@ tryOnMounted(() => {
     width: 2px;
     height: 150px;
     background-color: white;
-    z-index: 50;
+    z-index: 20;
 
     &__dot {
       position: absolute;

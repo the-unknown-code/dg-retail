@@ -5,8 +5,8 @@
     :class="{ 'is-mixing': isMixing, 'is-null': isNull }"
     :style="{ '--scale': $store.scale }"
   >
+    <div id="gl--blur" />
     <div id="gl--gradient" />
-    <video class="lines" type="video/mp4" src="/videos/lines.mp4" autoplay muted loop playsinline />
     <video
       class="caustics"
       type="video/mp4"
@@ -17,6 +17,7 @@
       playsinline
     />
   </div>
+  <slot />
 </template>
 
 <script setup lang="ts">
@@ -39,11 +40,11 @@ const resize = useDebounceFn((): void => {
   $three.resize()
 }, 100)
 
-const initialize = (): void => {
+const initialize = async (): Promise<void> => {
   if (!$gl.value) return
 
   $three = new M0Application()
-  $gl.value.appendChild($three.renderer.domElement)
+  $gl.value.prepend($three.renderer.domElement)
 
   $three.start()
 }
@@ -219,9 +220,11 @@ onMounted(() => {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  filter: blur(2px);
+  transition: filter 2s ease-out;
 
-  &:not(.is-mixing):not(.is-null) {
-    filter: blur(4px);
+  &.is-mixing {
+    filter: blur(0px);
   }
 
   canvas {
@@ -232,13 +235,14 @@ onMounted(() => {
     height: 100%;
     transform: scale(var(--scale));
     transition: filter 2s ease-out;
+    z-index: 1;
   }
 
   video {
     position: fixed;
     width: 100%;
     height: 100%;
-    z-index: 9;
+    z-index: 3;
     object-fit: cover;
 
     &.caustics {
@@ -250,6 +254,19 @@ onMounted(() => {
       mix-blend-mode: var(--lines-blend);
       opacity: var(--lines-opacity);
     }
+  }
+
+  #gl--blur {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--blue);
+    opacity: 1;
+    z-index: 3;
+    backdrop-filter: blur(10px);
+    display: none;
   }
 
   #gl--gradient {

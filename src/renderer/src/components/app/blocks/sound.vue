@@ -210,44 +210,6 @@ tryOnBeforeUnmount(() => {
 </script>
 
 <style lang="scss" scoped>
-/*
-@keyframes ring-expand {
-  0% {
-    transform: scale(1);
-    opacity: 0.6;
-  }
-  100% {
-    transform: scale(2.4);
-    opacity: 0;
-  }
-}
-
-@keyframes svg-breathe {
-  0%,
-  100% {
-    transform: scale(1) rotate(0deg);
-  }
-  33% {
-    transform: scale(1.04) rotate(1.5deg);
-  }
-  66% {
-    transform: scale(0.97) rotate(-1deg);
-  }
-}
-
-@keyframes specular-drift {
-  0%,
-  100% {
-    opacity: 0.75;
-    transform: rotate(-25deg) translate(0, 0);
-  }
-  50% {
-    opacity: 0.9;
-    transform: rotate(-20deg) translate(1px, -1px);
-  }
-}
-  */
-
 .sound {
   position: fixed;
   inset: 0;
@@ -293,7 +255,6 @@ tryOnBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
   mix-blend-mode: darken;
-  isolation: isolate;
   transition: all 0.1s linear;
 
   &.is-active {

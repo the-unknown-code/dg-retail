@@ -173,6 +173,7 @@ export default class SeaScene extends M0AbstractScene {
   override render(_time: number, _dt: number): void {
     super.render(_time, _dt)
 
+    /*
     const $store = useAppStore()
     const dxNDC = this.viewport.mouseGL.x - this.#lastMouse.x
     const dyNDC = this.viewport.mouseGL.y - this.#lastMouse.y
@@ -191,6 +192,7 @@ export default class SeaScene extends M0AbstractScene {
 
       this.#lastMouse.copy(this.viewport.mouseGL)
     }
+    */
 
     this.#waterSimulation.stepSimulation()
     this.#waterSimulation.updateNormals()
