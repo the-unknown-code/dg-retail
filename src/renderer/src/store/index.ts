@@ -24,7 +24,7 @@ export function getQueryParam(name: string): string | null {
 export const useAppStore = defineStore('app', {
   state: () => ({
     electron: typeof window !== 'undefined' && !!window.process?.versions?.electron,
-    appState: APP_STATE.QR_CODE,
+    appState: APP_STATE.START,
     pinState: { x: 0, y: 0, vx: 0, vy: 0, nx: 0, ny: 0 },
     isIpad: getQueryParam('ipad') === '1',
     midiFound: false,
