@@ -1,10 +1,18 @@
 <template>
   <div class="sound">
     <div v-if="!$store.isIpad" class="sound__content">
-      <p>FUNKY</p>
-      <p>PARTY</p>
-      <p>CHILL</p>
-      <p>GROOVY</p>
+      <div>
+        <animated-text text="FUNKY" />
+      </div>
+      <div>
+        <animated-text text="PARTY" />
+      </div>
+      <div>
+        <animated-text text="CHILL" />
+      </div>
+      <div>
+        <animated-text text="GROOVY" />
+      </div>
     </div>
 
     <div id="dot" ref="$dot">
@@ -113,6 +121,7 @@
 <script setup lang="ts">
 import { useAppStore } from '@renderer/store'
 import { tryOnBeforeUnmount, useTimeoutFn } from '@vueuse/core'
+import AnimatedText from '@renderer/components/ui/animated-text.vue'
 import Tempus from 'tempus'
 import { lerp } from 'three/src/math/MathUtils.js'
 import { ref, watch } from 'vue'
@@ -221,27 +230,30 @@ tryOnBeforeUnmount(() => {
   mix-blend-mode: lighten;
   pointer-events: none;
 
-  p {
-    position: absolute;
-    font-size: 20px;
-    text-shadow: 0 4px 10px 0 #0087c166;
-    padding: 64px;
+  &__content {
+    > div {
+      position: absolute;
+      font-size: 20px;
+      text-shadow: 0 4px 10px 0 #0087c166;
+      padding: 64px;
+      white-space: nowrap;
 
-    &:nth-child(1) {
-      top: 0;
-      left: 0;
-    }
-    &:nth-child(2) {
-      top: 0;
-      right: 0;
-    }
-    &:nth-child(3) {
-      bottom: 0;
-      left: 0;
-    }
-    &:nth-child(4) {
-      bottom: 0;
-      right: 0;
+      &:nth-child(1) {
+        top: 0;
+        left: 0;
+      }
+      &:nth-child(2) {
+        top: 0;
+        right: 0;
+      }
+      &:nth-child(3) {
+        bottom: 0;
+        left: 0;
+      }
+      &:nth-child(4) {
+        bottom: 0;
+        right: 0;
+      }
     }
   }
 }

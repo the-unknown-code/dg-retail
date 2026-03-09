@@ -69,7 +69,7 @@ const PARAMS = {
   causticsBlendMode: 'overlay',
   linesBlendMode: 'plus-lighter',
   gradientRadius: 200,
-  gradientOpacity: 0.2,
+  gradientOpacity: 0.4,
   gradientColor: { r: 0, g: 0.68, b: 1 }
 }
 

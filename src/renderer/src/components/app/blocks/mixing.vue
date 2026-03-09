@@ -3,7 +3,7 @@
     <Sound />
   </div>
 
-  <div class="mixing__timeline">
+  <div ref="$timeline" class="mixing__timeline">
     <p>00:{{ String(currentTime).padStart(2, '0') }}</p>
     <div ref="$graph" class="graph">
       <svg
@@ -37,7 +37,9 @@ const props = defineProps<{
   callback: () => void
 }>()
 
+const $timeline = ref<HTMLDivElement>()
 const $graph = ref<HTMLDivElement>()
+
 const initialize = (): void => {
   if (!$graph.value) return
 
@@ -54,13 +56,28 @@ const initialize = (): void => {
   })
 }
 
+const timeline = gsap.timeline({ paused: true })
+const animate = (): void => {
+  if (!$timeline.value) return
+
+  timeline.to($timeline.value, {
+    bottom: 48,
+    y: 0,
+    ease: 'power4.inOut',
+    duration: 1.25
+  })
+}
+
 tryOnMounted(() => {
+  animate()
   fadeVolume(1)
   initialize()
+  timeline.play()
 })
 
 tryOnBeforeUnmount(() => {
   fadeVolume(0)
+  timeline.reverse()
   if (!$graph.value) return
   gsap.killTweensOf($graph.value)
 })
@@ -85,8 +102,8 @@ tryOnBeforeUnmount(() => {
     justify-content: space-between;
     align-items: center;
     left: 50%;
-    transform: translateX(-50%);
-    bottom: 48px;
+    transform: translate(-50%, 100%);
+    bottom: 0;
 
     backdrop-filter: blur(1px) saturate(1.2);
     // -webkit-backdrop-filter: blur(2px) saturate(1);
