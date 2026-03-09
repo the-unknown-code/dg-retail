@@ -415,7 +415,7 @@ const initialize = (): void => {
 watch(
   () => $store.midiData[1].input,
   (value: number) => {
-    if ($store.appState !== APP_STATE.MIXING) return
+    //if ($store.appState !== APP_STATE.MIXING) return
     $store.updateChannel(1, value, 0, 0, 0)
   }
 )
@@ -423,7 +423,7 @@ watch(
 watch(
   () => $store.midiData[1].value,
   (value: number) => {
-    if ($store.appState !== APP_STATE.MIXING) return
+    //  if ($store.appState !== APP_STATE.MIXING) return
     setFaderFromMidi(value)
   }
 )
