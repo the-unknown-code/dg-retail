@@ -16,7 +16,7 @@
     </div>
 
     <div id="dot" ref="$dot">
-      <div ref="$dotSvg" id="dot--svg">
+      <div id="dot--svg" ref="$dotSvg">
         <img class="bloom" src="/assets/bloom.png" />
         <img class="ellipse" src="/assets/ellipse.png" />
       </div>
@@ -227,7 +227,6 @@ tryOnBeforeUnmount(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  mix-blend-mode: lighten;
   pointer-events: none;
 
   &__content {
@@ -259,14 +258,13 @@ tryOnBeforeUnmount(() => {
 }
 
 #dot {
-  --size: 48px;
+  --size: 12px;
   position: absolute;
   width: var(--size);
   height: var(--size);
   display: flex;
   align-items: center;
   justify-content: center;
-  mix-blend-mode: darken;
   transition: all 0.1s linear;
 
   &.is-active {
@@ -303,13 +301,12 @@ tryOnBeforeUnmount(() => {
       filter: none;
 
       &.ellipse {
-        transform: scale(2) translate(-19%, 0%);
+        transform: scale(1) translate(-19%, 0%);
         opacity: 0.8;
       }
 
       &.bloom {
-        transform: scale(2) translate(5%, -10%);
-        opacity: 0.8;
+        transform: scale(1) translate(5%, -10%);
         opacity: 0.6;
       }
     }

@@ -6,6 +6,7 @@
       <Mixing v-else-if="$store.appState === APP_STATE.MIXING" :callback="onMixing" />
       <QrCode v-else-if="$store.appState === APP_STATE.QR_CODE" />
     </transition>
+
     <IpadController v-if="$store.isIpad" />
     <JogwheelFx v-if="$store.appState === APP_STATE.MIXING" />
     <Header />
@@ -23,6 +24,7 @@ import OnBoarding from './blocks/onBoarding.vue'
 import Mixing from './blocks/mixing.vue'
 import IpadController from './blocks/ipad-controller.vue'
 import JogwheelFx from './blocks/jogwheel-fx.vue'
+
 import { APP_STATE } from '@renderer/libs/@global/const'
 import { tryOnMounted } from '@vueuse/core'
 import gsap from 'gsap/all'

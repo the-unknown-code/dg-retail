@@ -20,12 +20,7 @@ import ControllerUI from './components/app/controller/ui.vue'
 import ControllerSound from './components/app/controller/sound.vue'
 import Midi from './libs/@midi'
 import SoundManager from './libs/@howler'
-// import { useAppStore } from './store'
 import App from './components/app/index.vue'
-// import { APP_STATE } from './libs/@global/const'
-//const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
-
-// const $store = useAppStore()
 
 new Midi()
 const sound = new SoundManager()
