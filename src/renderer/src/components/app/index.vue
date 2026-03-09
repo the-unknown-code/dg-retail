@@ -3,10 +3,10 @@
     <transition mode="out-in" name="quick-fade">
       <start v-if="$store.appState === APP_STATE.START" :callback="onStart" :qr-code="false" />
       <on-boarding v-else-if="$store.appState === APP_STATE.ONBOARDING" />
-      <div v-else-if="$store.appState === APP_STATE.MIXING">
+      <div v-else-if="$store.appState === APP_STATE.MIXING" class="full">
         <mixing :callback="onMixing" />
       </div>
-      <div v-else-if="$store.appState === APP_STATE.QR_CODE">
+      <div v-else-if="$store.appState === APP_STATE.QR_CODE" class="full">
         <qr-code />
       </div>
     </transition>
@@ -89,5 +89,13 @@ tryOnMounted(() => {
   width: 100%;
   height: 100%;
   z-index: 10;
+}
+
+.full {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 </style>
