@@ -2,13 +2,10 @@
   <div class="app">
     <Header />
     <transition mode="out-in" name="quick-fade">
-      <Start
-        v-if="$store.appState === APP_STATE.START || $store.appState === APP_STATE.QR_CODE"
-        :callback="onStart"
-        :qr-code="$store.appState === APP_STATE.QR_CODE"
-      />
+      <Start v-if="$store.appState === APP_STATE.START" :callback="onStart" :qr-code="false" />
       <OnBoarding v-else-if="$store.appState === APP_STATE.ONBOARDING" />
       <Mixing v-else-if="$store.appState === APP_STATE.MIXING" :callback="onMixing" />
+      <QrCode v-else-if="$store.appState === APP_STATE.QR_CODE" />
     </transition>
     <!--
     <Start v-if="storeVisible" :callback="onStart" :qr-code="false" />
@@ -23,6 +20,7 @@ a
 import { useAppStore } from '@renderer/store'
 import Header from './blocks/header.vue'
 import Start from './blocks/start.vue'
+import QrCode from './blocks/qr-code.vue'
 import OnBoarding from './blocks/onBoarding.vue'
 import Mixing from './blocks/mixing.vue'
 import IpadController from './blocks/ipad-controller.vue'
