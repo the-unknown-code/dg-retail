@@ -64,13 +64,13 @@ scope.run(() => {
   })
 })
 const PARAMS = {
-  causticsOpacity: 0.15,
+  causticsOpacity: 0.65,
   linesOpacity: 0.15,
-  causticsBlendMode: 'plus-lighter',
+  causticsBlendMode: 'overlay',
   linesBlendMode: 'plus-lighter',
-  gradientRadius: 100,
+  gradientRadius: 200,
   gradientOpacity: 0.2,
-  gradientColor: { r: 1, g: 1, b: 1 }
+  gradientColor: { r: 0, g: 0.68, b: 1 }
 }
 
 const updateVars = (): void => {
@@ -132,12 +132,14 @@ const addTweakpane = (): void => {
     view: 'separator'
   })
 
-  folder.addBinding(PARAMS, 'linesOpacity', {
+  /*
+
+    folder.addBinding(PARAMS, 'linesOpacity', {
     min: 0,
     max: 1,
     step: 0.01
   })
-
+ù
   folder.addBinding(PARAMS, 'linesBlendMode', {
     options: {
       'plus-lighter': 'plus-lighter',
@@ -159,6 +161,7 @@ const addTweakpane = (): void => {
       luminosity: 'luminosity'
     }
   })
+    */
 
   folder.addBlade({
     view: 'separator'
