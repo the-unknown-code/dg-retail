@@ -24,12 +24,12 @@ export function getQueryParam(name: string): string | null {
 export const useAppStore = defineStore('app', {
   state: () => ({
     electron: typeof window !== 'undefined' && !!window.process?.versions?.electron,
-    appState: APP_STATE.START,
+    appState: getQueryParam('debug') === '1' ? APP_STATE.MIXING : APP_STATE.START,
     pinState: { x: 0, y: 0, vx: 0, vy: 0, nx: 0, ny: 0 },
     isIpad: getQueryParam('ipad') === '1',
     midiFound: false,
     scale: 1.35,
-    playDuration: 30,
+    playDuration: getQueryParam('debug') === '1' ? 200 : 30,
     tweakpane: getQueryParam('debug') === '1' ? new Pane() : null,
     midiData: {
       1: { name: 'FADER', input: 0, value: 0, x: 0, y: 0, velocity: 0 },

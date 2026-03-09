@@ -18,6 +18,8 @@ uniform vec3 light;
 uniform sampler2D tiles;
 uniform sampler2D causticTex;
 uniform sampler2D water;
+uniform vec3 globalDay;
+uniform vec3 globalNight;
 
 
 vec2 intersectCube(vec3 origin, vec3 ray, vec3 cubeMin, vec3 cubeMax) {

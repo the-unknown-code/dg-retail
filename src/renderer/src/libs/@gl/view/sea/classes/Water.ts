@@ -1,5 +1,6 @@
 import {
   BackSide,
+  Color,
   FrontSide,
   MathUtils,
   Mesh,
@@ -39,6 +40,8 @@ export default class Water {
     this._geometry = new PlaneGeometry(2, 2, 512, 512)
     this._shader = new ShaderMaterial({
       uniforms: {
+        globalDay: { value: new Color(0xb2daea) },
+        globalNight: { value: new Color(0x0a5064) },
         light: { value: light },
         tiles: { value: this.#store.get('tile') },
         sky: { value: this.#store.get('env') },
@@ -53,6 +56,8 @@ export default class Water {
     })
 
     this._mesh = new Mesh(this._geometry, this._shader)
+
+    const $store = useAppStore()
 
     watch(
       () => this.#pinia.midiData[1].value,
@@ -72,7 +77,6 @@ export default class Water {
       }
     )
 
-    const $store = useAppStore()
     watch(
       () => $store.appState,
       (value) => {
@@ -85,6 +89,32 @@ export default class Water {
         })
       }
     )
+
+    setTimeout(() => {
+      const isDebug =
+        typeof window !== 'undefined' &&
+        new URLSearchParams(window.location.search).get('debug') === '1'
+
+      const PARAMS = {
+        globalDay: this._shader.uniforms.globalDay.value,
+        globalNight: this._shader.uniforms.globalNight.value
+      }
+
+      if (isDebug && $store.tweakpane) {
+        //@ts-expect-error - TODO: fix this
+        const folder = $store.tweakpane.addFolder({
+          title: 'Water',
+          expanded: true
+        })
+
+        folder.addBinding(PARAMS, 'globalDay', {
+          color: { type: 'float' }
+        })
+        folder.addBinding(PARAMS, 'globalNight', {
+          color: { type: 'float' }
+        })
+      }
+    }, 10)
   }
 
   update(waterTexture: Texture, causticTexture: Texture): void {

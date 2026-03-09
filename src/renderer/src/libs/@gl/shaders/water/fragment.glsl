@@ -102,8 +102,8 @@ void main() {
     );
 
     vec3 finalUnderwaterColor = mix(
-      COLOR_83CBEA_DUSK,
-      COLOR_B2DAEA,
+      globalNight,
+      globalDay,
       fader
     );
 

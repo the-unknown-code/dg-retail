@@ -107,7 +107,7 @@ tryOnBeforeUnmount(() => {
     transform: translate(-50%, 100%);
     bottom: 0;
 
-    backdrop-filter: blur(1px) saturate(1.2);
+    backdrop-filter: blur(2px) saturate(1.2);
     // -webkit-backdrop-filter: blur(2px) saturate(1);
 
     // Flat glass fill — very low alpha so blur shows through
