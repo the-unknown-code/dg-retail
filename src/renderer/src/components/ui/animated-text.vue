@@ -48,5 +48,9 @@ tryOnMounted(() => {
 <style lang="scss" scoped>
 .animated-text {
   position: relative;
+
+  p {
+    text-shadow: 2px 1px 6px #00000033;
+  }
 }
 </style>

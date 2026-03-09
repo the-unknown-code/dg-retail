@@ -83,7 +83,6 @@ const releaseCircle = (el: HTMLDivElement): void => {
    DRAW FUNCTION
 ---------------------------------- */
 const drawCircle = (): void => {
-  console.log('drawCircle')
   if (!canDraw.value || !$circle.value) return
   if (activeCount >= MAX_ACTIVE) return
 

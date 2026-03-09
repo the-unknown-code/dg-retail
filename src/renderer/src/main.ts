@@ -2,13 +2,13 @@ import './assets/main.scss'
 
 import Tempus from 'tempus'
 import gsap from 'gsap'
-import { Draggable, InertiaPlugin, SplitText } from 'gsap/all'
+import { Draggable, InertiaPlugin, SplitText, DrawSVGPlugin } from 'gsap/all'
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 import emitter from './plugins/mitt'
 import App from './App.vue'
 
-gsap.registerPlugin(Draggable, InertiaPlugin, SplitText)
+gsap.registerPlugin(Draggable, InertiaPlugin, SplitText, DrawSVGPlugin)
 gsap.defaults({ ease: 'none' })
 gsap.ticker.remove(gsap.updateRoot)
 

@@ -1,10 +1,12 @@
 <template>
   <div class="qr-code">
     <div class="qr-code__content">
-      <p class="big">What a Vibe!</p>
+      <div class="big">
+        <animated-text text="What a Vibe!" />
+      </div>
     </div>
 
-    <div class="qr-code__svg">
+    <div ref="$svg" class="qr-code__svg">
       <img src="/assets/qr-code.png" alt="QR Code" />
       <svg
         width="175"
@@ -15,41 +17,184 @@
       >
         <rect x="2" y="2" width="171" height="171" rx="27.5" stroke="white" />
         <path
-          d="M1.5 91.0789V145.5C1.5 160.964 14.036 173.5 29.5 173.5H145.5C160.964 173.5 173.5 160.964 173.5 145.5V29.5C173.5 14.036 160.964 1.5 145.5 1.5H94"
+          ref="$path"
+          d="M87.5 1.5 H145.5 C160.964 1.5 173.5 14.036 173.5 29.5 V145.5 C173.5 160.964 160.964 173.5 145.5 173.5 H29.5 C14.036 173.5 1.5 160.964 1.5 145.5 V29.5 C1.5 14.036 14.036 1.5 29.5 1.5 H87.5 Z"
           stroke="#00A6E9"
           stroke-width="3"
           stroke-linecap="round"
+          stroke-linejoin="round"
         />
       </svg>
     </div>
 
     <div class="qr-code__footer">
-      <p>SCAN THE QR CODE TO REVEAL YOUR LIGHT BLUE PLAYLIST</p>
+      <div>
+        <animated-text text="SCAN THE QR CODE TO REVEAL YOUR LIGHT BLUE PLAYLIST" :delay="0.5" />
+      </div>
     </div>
   </div>
+
+  <div ref="$circle" class="circle"></div>
 </template>
 
 <script setup lang="ts">
-import { watch } from 'vue'
+import { inject, ref, watch } from 'vue'
 import { useAppStore } from '@renderer/store'
-import { tryOnMounted } from '@vueuse/core'
+import { tryOnMounted, useIntervalFn } from '@vueuse/core'
+import AnimatedText from '@renderer/components/ui/animated-text.vue'
+import gsap from 'gsap/all'
+import { EVENTS } from '@renderer/libs/@global/const'
 
 const $store = useAppStore()
+const $circle = ref<HTMLDivElement>()
+const $svg = ref<HTMLDivElement>()
+const $path = ref<SVGPathElement>()
+const emitter = inject('emitter')
+
 watch(
   () => $store.midiData[60].input,
   () => {
+    //@ts-expect-error TODO: fix this
+    emitter?.emit(EVENTS.MIDI_LED, { id: 100, value: 0 })
     window.location.reload()
   }
 )
 
+const animate = (): void => {
+  if (!$path.value) return
+  if (!$svg.value) return
+  gsap.set($path.value, {
+    drawSVG: 0
+  })
+
+  gsap.to($svg.value, {
+    delay: 0.85,
+    duration: 3,
+    ease: 'power2.out',
+    opacity: 1
+  })
+
+  gsap.to($path.value, {
+    delay: 0.5,
+    duration: 15,
+    ease: 'none',
+    drawSVG: '100%',
+    onComplete: () => {
+      //@ts-expect-error TODO: fix this
+      emitter?.emit(EVENTS.MIDI_LED, { id: 100, value: 0 })
+      window.location.reload()
+    }
+  })
+}
+
+/* ----------------------------------
+   PERFORMANCE CONSTANTS
+---------------------------------- */
+const MAX_ACTIVE = 99
+
+/* ----------------------------------
+   ACTIVE COUNT (replaces children.length reads)
+---------------------------------- */
+let activeCount = 0
+
+/* ----------------------------------
+   ELEMENT POOL
+---------------------------------- */
+const pool: HTMLDivElement[] = []
+const canDraw = ref(true)
+
+const getCircle = (): HTMLDivElement => {
+  if (pool.length) return pool.pop()!
+
+  const el = document.createElement('div')
+  el.className = 'circle--item'
+  return el
+}
+
+const releaseCircle = (el: HTMLDivElement): void => {
+  gsap.set(el, { clearProps: 'all' })
+  pool.push(el)
+}
+
+/* ----------------------------------
+   DRAW FUNCTION
+---------------------------------- */
+
+const drawCircle = (): void => {
+  if (!canDraw.value || !$circle.value) return
+  if (activeCount >= MAX_ACTIVE) return
+
+  const el = getCircle()
+  activeCount++
+  $circle.value.appendChild(el)
+
+  gsap.fromTo(
+    el,
+    {
+      scale: 0.01,
+      opacity: 0.5
+    },
+    {
+      scale: 20,
+      opacity: 0,
+      duration: 12,
+      ease: 'power2.out',
+      onComplete: () => {
+        activeCount--
+        el.remove()
+        releaseCircle(el)
+      }
+    }
+  )
+}
+
+const { resume, pause } = useIntervalFn(drawCircle, 1200, {
+  immediate: false
+})
+
+pause()
+
+const led = { value: 0 }
+gsap.to(led, {
+  value: 127,
+  duration: 1.35,
+  ease: 'none',
+  repeat: -1,
+  yoyo: true,
+  onUpdate: () => {
+    //@ts-expect-error TODO: fix this
+    emitter.emit(EVENTS.MIDI_LED, { id: 99, value: Math.floor(led.value) })
+  }
+})
+
 tryOnMounted(() => {
-  setTimeout(() => {
-    window.location.reload()
-  }, 5000)
+  animate()
+  resume()
 })
 </script>
 
 <style lang="scss" scoped>
+.circle {
+  position: absolute;
+  inset: 0; // replaces top/left/width/height
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  mix-blend-mode: overlay;
+  z-index: 1;
+  pointer-events: none;
+
+  &:deep(.circle--item) {
+    position: absolute;
+    width: 10%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background-color: #ffffff22;
+    transform-origin: center;
+    will-change: transform, opacity;
+  }
+}
+
 .qr-code {
   position: fixed;
   top: 0;
@@ -69,6 +214,7 @@ tryOnMounted(() => {
     display: flex;
     justify-content: center;
     align-items: center;
+    opacity: 0;
 
     img,
     svg {
@@ -85,14 +231,20 @@ tryOnMounted(() => {
     }
   }
 
-  p {
+  div {
     text-align: center;
     font-size: 22px;
     max-width: 483px;
     text-wrap: balance;
 
+    &:deep(p) {
+      font-size: 22px;
+    }
+
     &.big {
-      font-size: 32px;
+      &:deep(p) {
+        font-size: 32px;
+      }
     }
   }
 }
