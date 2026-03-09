@@ -15,6 +15,8 @@ import fragmentShader from '../../../shaders/water/fragment.glsl?raw'
 import { M0Renderer, M0Store } from '@renderer/libs/@gl/core'
 import { useAppStore } from '@renderer/store'
 import { watch } from 'vue'
+import { APP_STATE } from '@renderer/libs/@global/const'
+import gsap from 'gsap/all'
 
 export default class Water {
   _geometry: PlaneGeometry
@@ -55,6 +57,8 @@ export default class Water {
     watch(
       () => this.#pinia.midiData[1].value,
       () => {
+        if (this.#pinia.appState !== APP_STATE.MIXING) return
+        gsap.killTweensOf(this._shader.uniforms.fader)
         this._shader.uniforms.fader.value = 1 - this.#pinia.midiData[1].value / 127
       }
     )
@@ -62,7 +66,23 @@ export default class Water {
     watch(
       () => this.#pinia.midiData[1].input,
       () => {
+        if (this.#pinia.appState !== APP_STATE.MIXING) return
+        gsap.killTweensOf(this._shader.uniforms.fader)
         this._shader.uniforms.fader.value = this.#pinia.midiData[1].input
+      }
+    )
+
+    const $store = useAppStore()
+    watch(
+      () => $store.appState,
+      (value) => {
+        if (value !== APP_STATE.MIXING) return
+        const fade = 1 - this.#pinia.midiData[1].value / 127
+        gsap.to(this._shader.uniforms.fader, {
+          duration: 1,
+          ease: 'power2.out',
+          value: fade
+        })
       }
     )
   }

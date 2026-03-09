@@ -15,6 +15,7 @@
 </template>
 
 <script setup lang="ts">
+import { APP_STATE } from '@renderer/libs/@global/const'
 import { useAppStore } from '@renderer/store'
 import { tryOnMounted } from '@vueuse/core'
 import { ref, watch } from 'vue'
@@ -116,12 +117,18 @@ const applyMovement = (rawValue: number, axis: 'x' | 'y'): void => {
 
 watch(
   () => $store.midiData[2].value,
-  (value) => applyMovement(value, 'x')
+  (value) => {
+    if ($store.appState !== APP_STATE.MIXING) return
+    applyMovement(value, 'x')
+  }
 )
 
 watch(
   () => $store.midiData[3].value,
-  (value) => applyMovement(value, 'y')
+  (value) => {
+    if ($store.appState !== APP_STATE.MIXING) return
+    applyMovement(value, 'y')
+  }
 )
 
 watch(currentGridIndex, (value) => {
