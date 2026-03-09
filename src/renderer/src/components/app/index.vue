@@ -1,10 +1,14 @@
 <template>
   <div class="app">
     <transition mode="out-in" name="quick-fade">
-      <Start v-if="$store.appState === APP_STATE.START" :callback="onStart" :qr-code="false" />
-      <OnBoarding v-else-if="$store.appState === APP_STATE.ONBOARDING" />
-      <Mixing v-else-if="$store.appState === APP_STATE.MIXING" :callback="onMixing" />
-      <QrCode v-else-if="$store.appState === APP_STATE.QR_CODE" />
+      <start v-if="$store.appState === APP_STATE.START" :callback="onStart" :qr-code="false" />
+      <on-boarding v-else-if="$store.appState === APP_STATE.ONBOARDING" />
+      <div v-else-if="$store.appState === APP_STATE.MIXING">
+        <mixing :callback="onMixing" />
+      </div>
+      <div v-else-if="$store.appState === APP_STATE.QR_CODE">
+        <qr-code />
+      </div>
     </transition>
 
     <IpadController v-if="$store.isIpad" />
@@ -58,6 +62,7 @@ const fadeAudio = (volume: number = 0): void => {
 watch(
   () => $store.appState,
   (value) => {
+    console.log('value', value)
     if (value === APP_STATE.MIXING) {
       fadeAudio(0)
     } else {

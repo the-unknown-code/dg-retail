@@ -31,12 +31,14 @@ import gsap from 'gsap/all'
 import { ref } from 'vue'
 import Sound from '../blocks/sound.vue'
 import { fadeVolume } from '@renderer/libs/@howler'
+import { useAppStore } from '@renderer/store'
 const currentTime = ref(0)
 
 const props = defineProps<{
   callback: () => void
 }>()
 
+const $store = useAppStore()
 const $timeline = ref<HTMLDivElement>()
 const $graph = ref<HTMLDivElement>()
 
@@ -45,7 +47,7 @@ const initialize = (): void => {
 
   const tween = gsap.to($graph.value, {
     width: 297,
-    duration: 45,
+    duration: $store.playDuration,
     ease: 'none',
     onUpdate: () => {
       currentTime.value = Math.floor(tween.progress() * 45)

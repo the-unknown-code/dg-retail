@@ -1,5 +1,7 @@
 <template>
   <div class="qr-code">
+    <div ref="$circle" class="circle"></div>
+
     <div class="qr-code__content">
       <div class="big">
         <animated-text text="What a Vibe!" />
@@ -33,8 +35,6 @@
       </div>
     </div>
   </div>
-
-  <div ref="$circle" class="circle"></div>
 </template>
 
 <script setup lang="ts">
@@ -167,7 +167,8 @@ gsap.to(led, {
   }
 })
 
-tryOnMounted(() => {
+tryOnMounted(async () => {
+  await new Promise((resolve) => setTimeout(resolve, 10))
   animate()
   resume()
 })
@@ -206,6 +207,7 @@ tryOnMounted(() => {
   justify-content: center;
   align-items: center;
   gap: 48px;
+  z-index: 10;
 
   &__svg {
     position: relative;
