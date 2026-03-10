@@ -158,6 +158,13 @@ const cb = Tempus.add(
     prev.x = x
     prev.y = y
 
+    if ($store.isIpad) {
+      $store.pinState.x = x
+      $store.pinState.y = y
+      $store.pinState.nx = x / window.innerWidth
+      $store.pinState.ny = y / window.innerHeight
+    }
+
     const speed = Math.sqrt(velocity.x ** 2 + velocity.y ** 2)
     if ($dotSvg.value) {
       // ── Rotation ──────────────────────────────────

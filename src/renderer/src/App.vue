@@ -72,7 +72,8 @@ tryOnMounted(async () => {
     isSoundStarted.value = true
   } else if (!$store.isIpad) {
     await sound.preload()
-    isSoundStarted.value = true
+    isPreloaded.value = true
+    // isSoundStarted.value = true
   } else {
     await sound.preload()
     isPreloaded.value = true

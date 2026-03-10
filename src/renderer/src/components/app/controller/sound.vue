@@ -68,12 +68,15 @@ const updatePinPosition = (): void => {
   $pin.value.style.transform = `translate(${pinState.x}px, ${pinState.y}px)`
 }
 
-const getGridIndex = (): number | null => {
+const getGridIndex = (x: number | null = null, y: number | null = null): number | null => {
   const w = window.innerWidth
   const h = window.innerHeight
 
-  const centerX = w / 2 + pinState.x
-  const centerY = h / 2 + pinState.y
+  const px = x ? x : pinState.x
+  const py = y ? y : pinState.y
+
+  const centerX = w / 2 + px
+  const centerY = h / 2 + py
 
   const corners = [
     { x: centerX - PIN_SIZE / 2, y: centerY - PIN_SIZE / 2 },
@@ -122,7 +125,6 @@ const applyMovement = (rawValue: number, axis: 'x' | 'y'): void => {
   pinState.ny = pinState.y / (bounds.y - padding)
 
   $store.pinState = { ...pinState }
-  updatePinPosition()
   currentGridIndex.value = getGridIndex()
 }
 
@@ -145,6 +147,17 @@ watch(
 watch(currentGridIndex, (value) => {
   props.soundCallback(value)
 })
+
+watch(
+  () => $store.pinState,
+  () => {
+    if ($store.appState === APP_STATE.MIXING && $store.isIpad) {
+      if (!$pin.value) return
+      $pin.value.style.transform = `translate(${$store.pinState.x}px, ${$store.pinState.y}px)`
+      currentGridIndex.value = getGridIndex($store.pinState.x, $store.pinState.y)
+    }
+  }
+)
 
 tryOnMounted(() => {
   updateBounds()
