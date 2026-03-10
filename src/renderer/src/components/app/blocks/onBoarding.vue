@@ -137,7 +137,7 @@ tryOnBeforeUnmount(() => {
 
   &__footer {
     position: absolute;
-    bottom: 80px;
+    bottom: 110px;
     left: 0;
     width: 100%;
     display: flex;

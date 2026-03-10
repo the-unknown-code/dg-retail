@@ -7,14 +7,6 @@
     <MidiDebug />
     <ControllerUI />
     <ControllerSound :sound-callback="soundCallback" />
-
-    <!--
-    <Transition name="fade">
-      <div v-if="!isSoundStarted" class="start-overlay" @click="handleStart">
-        <span>Click to begin</span>
-      </div>
-    </Transition>
-    -->
   </main>
 </template>
 
@@ -26,7 +18,7 @@ import MidiDebug from './components/app/debug/midi.vue'
 import ControllerUI from './components/app/controller/ui.vue'
 import ControllerSound from './components/app/controller/sound.vue'
 import Midi from './libs/@midi'
-import SoundManager, { setMuffle } from './libs/@tone'
+import SoundManager, { setMuffle, setNightReverb } from './libs/@tone'
 import App from './components/app/index.vue'
 import { useAppStore } from './store'
 import { APP_STATE } from './libs/@global/const'
@@ -68,17 +60,16 @@ watch(
     if (value) {
       const reverb = value / 127
       setMuffle(reverb / 1.5, 1)
+      setNightReverb(reverb / 1.5, 1)
     }
   }
 )
 
 tryOnMounted(async () => {
   if (isElectron) {
-    // No gesture needed in Electron
     await sound.start()
     isSoundStarted.value = true
   }
-  // On web, wait for user click on the overlay
 })
 </script>
 

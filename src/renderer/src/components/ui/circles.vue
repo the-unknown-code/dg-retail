@@ -25,6 +25,7 @@ const animate = (): void => {
     gsap.to(circle, {
       delay: i * 0.25,
       scale: 1.5,
+      opacity: 0.5,
       duration: 2,
       ease: 'power1.inOut',
       stagger: 0.8 / circles.value.length,

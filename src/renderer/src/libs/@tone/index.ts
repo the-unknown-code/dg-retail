@@ -57,6 +57,14 @@ export const setMuffle = (value: number, rampTime: number = 1): void => {
   muffle.frequency.rampTo(freq, rampTime)
 }
 
+const getSoundUrl = (label: string): string => {
+  if (import.meta.env.PROD) {
+    // Resolve relative to current page — works for file:// protocol
+    return new URL(`sounds/${label}.ogg`, window.location.href).href
+  }
+  return `/sounds/${label}.ogg`
+}
+
 export default class SoundManager {
   private currentIndex: number | null = null
   private currentSeek: number = 0
@@ -65,7 +73,7 @@ export default class SoundManager {
   constructor() {
     for (const sound of Object.values(SOUND_GRID)) {
       sound.player = new Tone.Player({
-        url: `/sounds/${sound.label}.ogg`,
+        url: getSoundUrl(sound.label),
         loop: true,
         autostart: false
       }).connect(reverb) // players → reverb → muffle → masterVolume → destination
@@ -75,9 +83,22 @@ export default class SoundManager {
   }
 
   async start(): Promise<void> {
-    await Tone.start()
+    const ctx = Tone.getContext().rawContext as AudioContext
+
+    try {
+      while (ctx.state !== 'running') {
+        await ctx.resume()
+        await Tone.start()
+        await new Promise((r) => setTimeout(r, 150))
+      }
+    } catch (e) {
+      console.warn('AudioContext resume failed, retrying...', e)
+      await new Promise((r) => setTimeout(r, 500))
+      await ctx.resume()
+    }
+
     await this.loaded
-    console.log('SoundManager: all buffers loaded')
+    console.log('SoundManager ready, context state:', ctx.state)
   }
 
   playSound(index: number): void {

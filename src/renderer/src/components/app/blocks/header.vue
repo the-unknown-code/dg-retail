@@ -144,7 +144,7 @@ const initialize = (): void => {
   const $paths = $header.value.querySelectorAll('path')
   gsap.set($paths, { drawSVG: 0, fill: '#ffffff00' })
 
-  const timeline = gsap.timeline()
+  const timeline = gsap.timeline({ delay: 0.5 })
 
   timeline.to($paths, {
     drawSVG: '100%',

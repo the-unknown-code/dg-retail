@@ -15,7 +15,7 @@
     <IpadController v-if="$store.isIpad" />
     <JogwheelFx v-if="$store.appState === APP_STATE.MIXING" />
     <Header />
-    <audio ref="$audio" src="/sounds/env.mp3" playsinline autoplay loop />
+    <audio ref="$audio" :src="getSoundUrl('env')" playsinline autoplay loop />
   </div>
 </template>
 
@@ -38,6 +38,14 @@ import gsap from 'gsap/all'
 const $audio = ref<HTMLAudioElement>()
 const $store = useAppStore()
 // const storeVisible = ref(false)
+
+const getSoundUrl = (label: string): string => {
+  if (import.meta.env.PROD) {
+    // Resolve relative to current page — works for file:// protocol
+    return new URL(`sounds/${label}.mp3`, window.location.href).href
+  }
+  return `/sounds/${label}.mp3`
+}
 
 const onStart = (): void => {
   $store.appState = APP_STATE.ONBOARDING

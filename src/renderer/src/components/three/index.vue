@@ -7,15 +7,10 @@
   >
     <div id="gl--blur" />
     <div id="gl--gradient" />
-    <video
-      class="caustics"
-      type="video/mp4"
-      src="/videos/caustics.mp4"
-      autoplay
-      muted
-      loop
-      playsinline
-    />
+
+    <div class="video-wrapper">
+      <video type="video/mp4" src="/videos/caustics.mp4" autoplay muted loop playsinline />
+    </div>
   </div>
   <slot />
 </template>
@@ -225,6 +220,10 @@ onMounted(() => {
 
   &.is-mixing {
     filter: blur(0px);
+
+    video {
+      opacity: 1 !important;
+    }
   }
 
   canvas {
@@ -238,22 +237,24 @@ onMounted(() => {
     z-index: 1;
   }
 
+  .video-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    mix-blend-mode: var(--caustics-blend);
+    opacity: var(--caustics-opacity);
+  }
+
   video {
     position: fixed;
     width: 100%;
     height: 100%;
-    z-index: 3;
     object-fit: cover;
-
-    &.caustics {
-      mix-blend-mode: var(--caustics-blend);
-      opacity: var(--caustics-opacity);
-    }
-
-    &.lines {
-      mix-blend-mode: var(--lines-blend);
-      opacity: var(--lines-opacity);
-    }
+    opacity: 0.4;
+    transition: opacity 1s ease-out;
   }
 
   #gl--blur {
