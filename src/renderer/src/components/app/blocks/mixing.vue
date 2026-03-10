@@ -1,6 +1,6 @@
 <template>
   <div class="mixing">
-    <Sound />
+    <sound />
   </div>
 
   <div ref="$timeline" :class="['mixing__timeline', { 'is-ipad': $store.isIpad }]">
