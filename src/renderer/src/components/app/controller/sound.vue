@@ -18,7 +18,6 @@
 import { APP_STATE } from '@renderer/libs/@global/const'
 import { useAppStore } from '@renderer/store'
 import { tryOnMounted } from '@vueuse/core'
-import { clamp } from 'three/src/math/MathUtils.js'
 import { ref, watch } from 'vue'
 
 const props = defineProps<{
