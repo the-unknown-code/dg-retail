@@ -41,7 +41,7 @@ export default class SoundManager {
   constructor() {
     for (const sound of Object.values(SOUND_GRID)) {
       sound.instance = new Howl({
-        src: [`/sounds/${sound.label}.ogg`],
+        src: [`/sounds/${sound.label}.mp3`],
         preload: true,
         loop: true,
         autoplay: false,

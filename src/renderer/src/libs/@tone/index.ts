@@ -60,9 +60,9 @@ export const setMuffle = (value: number, rampTime: number = 1): void => {
 const getSoundUrl = (label: string): string => {
   if (import.meta.env.PROD) {
     // Resolve relative to current page — works for file:// protocol
-    return new URL(`sounds/${label}.ogg`, window.location.href).href
+    return new URL(`sounds/${label}.mp3`, window.location.href).href
   }
-  return `/sounds/${label}.ogg`
+  return `/sounds/${label}.mp3`
 }
 
 export default class SoundManager {
@@ -86,6 +86,22 @@ export default class SoundManager {
     return this.loaded.then(() => {
       console.log('SoundManager: all buffers preloaded')
     })
+  }
+
+  async mobileStart(): Promise<void> {
+    // Must call Tone.start() synchronously in the gesture — no awaits before it
+
+    await Tone.start()
+
+    const ctx = Tone.getContext().rawContext as AudioContext
+
+    // Resume if suspended, but don't loop forever
+    if (ctx.state === 'suspended') {
+      await ctx.resume()
+    }
+
+    await this.loaded
+    console.log('SoundManager ready, context state:', ctx.state)
   }
 
   async start(): Promise<void> {
