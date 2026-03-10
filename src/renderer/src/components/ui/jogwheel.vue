@@ -252,6 +252,7 @@ const initialize = (): void => {
     inertia: false,
     dragResistance: 0.1,
     onPress(e) {
+      e.stopPropagation()
       gsap.killTweensOf(state)
       const { cx, cy } = getCenter()
       const touch = e.touches ? e.touches[0] : e
