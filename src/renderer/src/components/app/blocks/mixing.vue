@@ -30,7 +30,7 @@ import { tryOnBeforeUnmount, tryOnMounted } from '@vueuse/core'
 import gsap from 'gsap/all'
 import { ref } from 'vue'
 import Sound from '../blocks/sound.vue'
-import { fadeVolume } from '@renderer/libs/@howler'
+import { fadeVolume } from '@renderer/libs/@tone'
 import { useAppStore } from '@renderer/store'
 const currentTime = ref(0)
 
