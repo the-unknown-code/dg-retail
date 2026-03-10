@@ -63,11 +63,32 @@ const initialize = (): void => {
       ease: 'power2.inOut',
       opacity: 1,
       onStart: () => {
+        const $rect = $fader.value?.querySelector('rect')
+        gsap.set($rect as unknown as HTMLDivElement, {
+          y: 40
+        })
+
+        gsap.to($rect as unknown as HTMLDivElement, {
+          delay: 1,
+          duration: 3.5,
+          ease: 'power2.inOut',
+          y: -40,
+          repeat: 1,
+          yoyo: true
+        })
+
+        gsap.to([$jogwheelL.value, $jogwheelR.value], {
+          duration: 4.5,
+          ease: 'power2.inOut',
+          rotate: 0,
+          repeat: 1,
+          yoyo: true
+        })
+
         gsap.to([$jogwheelL.value, $fader.value, $jogwheelR.value], {
           duration: 2,
           ease: 'power2.inOut',
           y: 0,
-          rotate: 0,
           opacity: 1,
           stagger: {
             from: 'center',

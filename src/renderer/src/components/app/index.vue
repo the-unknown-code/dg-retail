@@ -18,6 +18,7 @@
 
     <JogwheelFx v-if="$store.appState === APP_STATE.MIXING" />
     <Header />
+
     <audio ref="$audio" :src="getSoundUrl('env')" playsinline autoplay loop />
   </div>
 </template>

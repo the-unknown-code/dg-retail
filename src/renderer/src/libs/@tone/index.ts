@@ -82,6 +82,12 @@ export default class SoundManager {
     this.loaded = Tone.loaded()
   }
 
+  async preload(): Promise<void> {
+    return this.loaded.then(() => {
+      console.log('SoundManager: all buffers preloaded')
+    })
+  }
+
   async start(): Promise<void> {
     const ctx = Tone.getContext().rawContext as AudioContext
 
@@ -102,13 +108,14 @@ export default class SoundManager {
   }
 
   playSound(index: number): void {
-    if (this.currentIndex === index) return
-
     const next = SOUND_GRID[index]?.player
     if (!next || !next.loaded) {
       console.warn(`playSound(${index}): buffer not ready`)
       return
     }
+
+    // Check actual playing state, not just index
+    if (this.currentIndex === index && next.state === 'started') return
 
     const now = Tone.now()
 
@@ -119,9 +126,7 @@ export default class SoundManager {
         if (p.state === 'started') {
           this.currentSeek =
             p.buffer.duration > 0
-              ? (Tone.getContext().currentTime -
-                  ((p as Tone.Player & { _startTime?: number })._startTime ?? 0)) %
-                p.buffer.duration
+              ? ((p as unknown as { _sourceStarted: number })._sourceStarted ?? 0)
               : 0
 
           p.volume.cancelScheduledValues(now)
@@ -130,16 +135,17 @@ export default class SoundManager {
       }
     }
 
-    // Start next sound immediately at full volume
+    // Always restart cleanly
+    if (next.state === 'started') {
+      next.stop(now)
+    }
+
     next.volume.cancelScheduledValues(now)
     next.volume.setValueAtTime(0, now)
+    next.start(now)
 
-    if (next.state !== 'started') {
-      next.start(now)
-
-      if (this.currentSeek > 0) {
-        next.seek(this.currentSeek, now)
-      }
+    if (this.currentSeek > 0 && this.currentSeek < next.buffer.duration) {
+      next.seek(this.currentSeek, now)
     }
 
     this.currentIndex = index

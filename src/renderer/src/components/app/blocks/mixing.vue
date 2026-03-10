@@ -1,6 +1,7 @@
 <template>
   <div class="mixing">
     <sound />
+    <audio ref="$audio" :src="getSoundUrl('ambience')" playsinline autoplay loop />
   </div>
 
   <div ref="$timeline" :class="['mixing__timeline', { 'is-ipad': $store.isIpad }]">
@@ -28,10 +29,11 @@
 <script setup lang="ts">
 import { tryOnBeforeUnmount, tryOnMounted } from '@vueuse/core'
 import gsap from 'gsap/all'
-import { ref } from 'vue'
+import { nextTick, ref, watch } from 'vue'
 import Sound from '../blocks/sound.vue'
 import { fadeVolume } from '@renderer/libs/@tone'
 import { useAppStore } from '@renderer/store'
+import { APP_STATE } from '@renderer/libs/@global/const'
 const currentTime = ref(0)
 
 const props = defineProps<{
@@ -41,6 +43,7 @@ const props = defineProps<{
 const $store = useAppStore()
 const $timeline = ref<HTMLDivElement>()
 const $graph = ref<HTMLDivElement>()
+const $audio = ref<HTMLAudioElement>()
 
 const initialize = (): void => {
   if (!$graph.value) return
@@ -71,11 +74,38 @@ const animate = (): void => {
   })
 }
 
-tryOnMounted(() => {
+const setVolume = (): void => {
+  if (!$audio.value) return
+  const volume = 1 - $store.midiData[1].value / 127
+  $audio.value!.volume = volume
+  console.log('volume', volume)
+}
+
+watch(
+  () => $store.midiData[1].value,
+  () => {
+    if ($store.appState === APP_STATE.MIXING) {
+      setVolume()
+    }
+  }
+)
+
+const getSoundUrl = (label: string): string => {
+  if (import.meta.env.PROD) {
+    // Resolve relative to current page — works for file:// protocol
+    return new URL(`sounds/${label}.mp3`, window.location.href).href
+  }
+  return `/sounds/${label}.mp3`
+}
+
+tryOnMounted(async () => {
+  await nextTick()
   animate()
   fadeVolume(1)
   initialize()
   timeline.play()
+  $audio.value?.play()
+  setVolume()
 })
 
 tryOnBeforeUnmount(() => {
@@ -83,6 +113,8 @@ tryOnBeforeUnmount(() => {
   timeline.reverse()
   if (!$graph.value) return
   gsap.killTweensOf($graph.value)
+  $audio.value!.volume = 0
+  $audio.value!.pause()
 })
 </script>
 

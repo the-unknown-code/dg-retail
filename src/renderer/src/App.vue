@@ -1,5 +1,5 @@
 <template>
-  <main @click="handleStart">
+  <main v-if="isSoundStarted" @click="handleStart">
     <Three>
       <App />
     </Three>
@@ -68,6 +68,9 @@ watch(
 tryOnMounted(async () => {
   if (isElectron) {
     await sound.start()
+    isSoundStarted.value = true
+  } else {
+    await sound.preload()
     isSoundStarted.value = true
   }
 })
