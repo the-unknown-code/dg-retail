@@ -76,7 +76,6 @@ const fadeAudio = (volume: number = 0): void => {
 watch(
   () => $store.appState,
   (value) => {
-    console.log('value', value)
     if (value === APP_STATE.MIXING) {
       fadeAudio(0)
     } else {

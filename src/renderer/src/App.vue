@@ -71,6 +71,7 @@ tryOnMounted(async () => {
     isSoundStarted.value = true
   } else {
     await sound.preload()
+    await sound.start()
     isSoundStarted.value = true
   }
 })
