@@ -9,7 +9,7 @@
       xmlns="http://www.w3.org/2000/svg"
     >
       <g transform="scale(1, 1)" filter="url(#filter0_d_197_193)">
-        <g ref="$fader" filter="url(#filter1_d_197_193)">
+        <g ref="$fader">
           <rect
             x="42"
             y="85.4099"
@@ -21,6 +21,7 @@
             stroke-linecap="round"
             shape-rendering="crispEdges"
             fill="white"
+            fill-opacity="0.92"
           />
         </g>
         <path d="M87 189H83V120H87V189Z" fill="white" />
@@ -36,7 +37,9 @@
             fill="white"
           />
         </g>
-        <path d="M87 18H83V87H87V18Z" fill="white" />
+        <g transform="translate(0, 34)">
+          <path d="M87 -17H83V122H87V-17Z" fill="white" />
+        </g>
       </g>
       <defs>
         <filter

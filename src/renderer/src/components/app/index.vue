@@ -12,7 +12,10 @@
       </div>
     </transition>
 
-    <IpadController v-if="$store.isIpad" />
+    <transition mode="out-in" name="quick-fade">
+      <IpadController v-if="$store.isIpad && $store.appState === APP_STATE.MIXING" />
+    </transition>
+
     <JogwheelFx v-if="$store.appState === APP_STATE.MIXING" />
     <Header />
     <audio ref="$audio" :src="getSoundUrl('env')" playsinline autoplay loop />

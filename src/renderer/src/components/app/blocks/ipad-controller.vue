@@ -131,7 +131,7 @@ const { height } = useElementSize($svg)
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 50;
+  z-index: 5000;
   display: flex;
   align-items: flex-end;
 

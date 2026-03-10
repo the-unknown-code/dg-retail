@@ -8,6 +8,7 @@
         ref="$languageItems"
         :key="language"
         :class="['language--item', { 'is-active': activeLanguage === index }]"
+        @click="handleLanguageClick(index)"
       >
         <span>{{ language }}</span>
       </div>
@@ -27,13 +28,15 @@ import { tryOnMounted } from '@vueuse/core'
 import { useAppStore } from '@renderer/store'
 import Circles from '@renderer/components/ui/circles.vue'
 
-defineProps<{
+const props = defineProps<{
   callback: () => void
   qrCode: boolean
 }>()
 
+const $store = useAppStore()
 const $languageItems = ref<HTMLDivElement[]>([])
-const activeLanguage = ref(0)
+const activeLanguage = ref($store.isIpad ? -1 : 0)
+
 const LANGUAGES = [
   'English',
   'Italiano',
@@ -58,11 +61,15 @@ const TEXTS = [
   '言語を選択してスタートを押してください' // Japanese
 ]
 
-const $store = useAppStore()
 const canChange = ref(true)
 
 const CENTER = 64
 const DEADZONE = 4
+
+const handleLanguageClick = (index: number): void => {
+  activeLanguage.value = index
+  props.callback?.()
+}
 
 const handleJogwheel = (value: number): void => {
   if (!canChange.value) return

@@ -3,7 +3,7 @@
     <Sound />
   </div>
 
-  <div ref="$timeline" class="mixing__timeline">
+  <div ref="$timeline" :class="['mixing__timeline', { 'is-ipad': $store.isIpad }]">
     <p>00:{{ String(currentTime).padStart(2, '0') }}</p>
     <div ref="$graph" class="graph">
       <svg
@@ -65,6 +65,7 @@ const animate = (): void => {
   timeline.to($timeline.value, {
     bottom: 48,
     y: 0,
+    opacity: 1,
     ease: 'power4.inOut',
     duration: 1.25
   })
@@ -106,18 +107,13 @@ tryOnBeforeUnmount(() => {
     left: 50%;
     transform: translate(-50%, 100%);
     bottom: 0;
+    padding: 0 var(--app-padding);
 
     backdrop-filter: blur(2px) saturate(1.2);
-    // -webkit-backdrop-filter: blur(2px) saturate(1);
-
-    // Flat glass fill — very low alpha so blur shows through
+    -webkit-backdrop-filter: blur(2px) saturate(1.2);
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(64, 237, 253, 0.1) 100%);
 
     border-radius: 30px;
-
-    // Thin outer rim
-    // border: 1px solid rgba(255, 255, 255, 0.12);
-
     box-shadow:
     // top edge light catch
       inset 0 1px 0 rgba(255, 255, 255, 0.45),
@@ -131,7 +127,10 @@ tryOnBeforeUnmount(() => {
       0 8px 32px rgba(15, 184, 240, 0.15),
       0 2px 8px rgba(0, 0, 0, 0.2);
 
-    padding: 0 var(--app-padding);
+    &.is-ipad {
+      margin-bottom: 310px;
+      opacity: 0;
+    }
 
     .graph {
       position: relative;
