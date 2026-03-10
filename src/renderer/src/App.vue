@@ -1,5 +1,5 @@
 <template>
-  <main v-if="isSoundStarted" @click="handleStart">
+  <main v-if="isSoundStarted || isPreloaded" @click="handleStart">
     <Three>
       <App />
     </Three>
@@ -27,6 +27,7 @@ const $store = useAppStore()
 const isElectron = navigator.userAgent.toLowerCase().includes('electron')
 
 const isSoundStarted = ref(false)
+const isPreloaded = ref(false)
 const currentGridIndex = ref<number | null>(null)
 
 new Midi()
@@ -69,10 +70,12 @@ tryOnMounted(async () => {
   if (isElectron) {
     await sound.start()
     isSoundStarted.value = true
+  } else if (!$store.isIpad) {
+    await sound.preload()
+    isSoundStarted.value = true
   } else {
     await sound.preload()
-    await sound.start()
-    isSoundStarted.value = true
+    isPreloaded.value = true
   }
 })
 </script>
