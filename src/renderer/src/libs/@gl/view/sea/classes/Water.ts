@@ -59,12 +59,17 @@ export default class Water {
 
     const $store = useAppStore()
 
+    const midiToExp = (input: number): number => {
+      const t = input / 127
+      return Math.pow(t, 0.415) // tuned so 64/127 ≈ 0.75
+    }
+
     watch(
       () => this.#pinia.midiData[1].value,
       () => {
         if (this.#pinia.appState !== APP_STATE.MIXING) return
         gsap.killTweensOf(this._shader.uniforms.fader)
-        this._shader.uniforms.fader.value = 1 - this.#pinia.midiData[1].value / 127
+        this._shader.uniforms.fader.value = 1 - midiToExp(this.#pinia.midiData[1].value)
       }
     )
 
@@ -73,7 +78,7 @@ export default class Water {
       () => {
         if (this.#pinia.appState !== APP_STATE.MIXING) return
         gsap.killTweensOf(this._shader.uniforms.fader)
-        this._shader.uniforms.fader.value = this.#pinia.midiData[1].input
+        this._shader.uniforms.fader.value = 1 - midiToExp(this.#pinia.midiData[1].value)
       }
     )
 
