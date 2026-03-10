@@ -1,6 +1,6 @@
 <template>
   <div class="start">
-    <div ref="$circle" class="circle"></div>
+    <circles :callback="callback" />
 
     <div class="language">
       <div
@@ -21,13 +21,13 @@
 
 <script setup lang="ts">
 import gsap from 'gsap'
-import { ref, watch, inject } from 'vue'
+import { ref, watch } from 'vue'
 import AnimatedText from '@renderer/components/ui/animated-text.vue'
-import { tryOnBeforeUnmount, tryOnMounted, useIntervalFn } from '@vueuse/core'
+import { tryOnMounted } from '@vueuse/core'
 import { useAppStore } from '@renderer/store'
-import { EVENTS } from '@renderer/libs/@gl/libs/Const'
+import Circles from '@renderer/components/ui/circles.vue'
 
-const props = defineProps<{
+defineProps<{
   callback: () => void
   qrCode: boolean
 }>()
@@ -47,89 +47,6 @@ const LANGUAGES = [
 ]
 
 const $store = useAppStore()
-const $circle = ref<HTMLDivElement>()
-const canDraw = ref(true)
-const isStartPressed = ref(false)
-
-/* ----------------------------------
-   PERFORMANCE CONSTANTS
----------------------------------- */
-const MAX_ACTIVE = 99
-
-/* ----------------------------------
-   ACTIVE COUNT (replaces children.length reads)
----------------------------------- */
-let activeCount = 0
-
-/* ----------------------------------
-   ELEMENT POOL
----------------------------------- */
-const pool: HTMLDivElement[] = []
-
-const getCircle = (): HTMLDivElement => {
-  if (pool.length) return pool.pop()!
-
-  const el = document.createElement('div')
-  el.className = 'circle--item'
-  return el
-}
-
-const releaseCircle = (el: HTMLDivElement): void => {
-  gsap.set(el, { clearProps: 'all' })
-  pool.push(el)
-}
-
-/* ----------------------------------
-   DRAW FUNCTION
----------------------------------- */
-const drawCircle = (): void => {
-  if (!canDraw.value || !$circle.value) return
-  if (activeCount >= MAX_ACTIVE) return
-
-  const el = getCircle()
-  activeCount++
-  $circle.value.appendChild(el)
-
-  gsap.fromTo(
-    el,
-    {
-      scale: 0.01,
-      opacity: 0.5
-    },
-    {
-      scale: 20,
-      opacity: 0,
-      duration: 12,
-      ease: 'power2.out',
-      onComplete: () => {
-        activeCount--
-        el.remove()
-        releaseCircle(el)
-      }
-    }
-  )
-}
-
-/* ----------------------------------
-   INTERVAL
----------------------------------- */
-const { resume, pause } = useIntervalFn(drawCircle, 1200, {
-  immediate: false
-})
-
-const onPress = (e: KeyboardEvent): void => {
-  if (e.key === 'x' || e.key === 'X') {
-    if (isStartPressed.value) return
-    drawCircle()
-    isStartPressed.value = true
-    props.callback?.()
-  }
-}
-
-const addListener = (): void => {
-  window.addEventListener('keydown', onPress)
-}
-
 const canChange = ref(true)
 
 watch(
@@ -153,33 +70,6 @@ watch(
   }
 )
 
-watch(
-  () => $store.midiData[60].input,
-  (value: number) => {
-    if (value > 0) {
-      if (isStartPressed.value) return
-
-      drawCircle()
-      isStartPressed.value = true
-      props.callback?.()
-    }
-  }
-)
-
-const emitter = inject('emitter')
-const led = { value: 0 }
-gsap.to(led, {
-  value: 127,
-  duration: 1.35,
-  ease: 'none',
-  repeat: -1,
-  yoyo: true,
-  onUpdate: () => {
-    //@ts-expect-error TODO: fix this
-    emitter.emit(EVENTS.MIDI_LED, { id: 99, value: Math.floor(led.value) })
-  }
-})
-
 const animate = (value: boolean): void => {
   gsap.to($languageItems.value, {
     duration: 1.5,
@@ -196,30 +86,6 @@ const animate = (value: boolean): void => {
 
 tryOnMounted(() => {
   animate(true)
-  addListener()
-  resume()
-})
-
-tryOnBeforeUnmount(() => {
-  gsap.killTweensOf(led)
-
-  gsap.killTweensOf([led])
-  gsap.to(led, {
-    value: 0,
-    duration: 1,
-    ease: 'none',
-    onUpdate: () => {
-      //@ts-expect-error TODO: fix this
-      emitter.emit(EVENTS.MIDI_LED, { id: 99, value: Math.floor(led.value) })
-    },
-    onComplete: () => {
-      //@ts-expect-error TODO: fix this
-      emitter?.emit(EVENTS.MIDI_LED, { id: 100, value: 0 })
-    }
-  })
-
-  window.removeEventListener('keydown', onPress)
-  pause()
 })
 </script>
 

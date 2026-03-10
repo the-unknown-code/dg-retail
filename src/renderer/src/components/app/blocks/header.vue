@@ -1,5 +1,5 @@
 <template>
-  <div class="header">
+  <div ref="$header" class="header">
     <svg
       width="241"
       height="112"
@@ -132,7 +132,64 @@
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { tryOnMounted } from '@vueuse/core'
+import gsap from 'gsap/all'
+import { ref } from 'vue'
+const $header = ref<HTMLDivElement>()
+
+const initialize = (): void => {
+  if (!$header.value) return
+
+  const $paths = $header.value.querySelectorAll('path')
+  gsap.set($paths, { drawSVG: 0, fill: '#ffffff00' })
+
+  const timeline = gsap.timeline()
+
+  timeline.to($paths, {
+    drawSVG: '100%',
+    duration: 2,
+    ease: 'power2.inOut',
+    stagger: {
+      each: 0.05,
+      from: 'center'
+    }
+  })
+
+  timeline.to(
+    $paths,
+    {
+      drawSVG: '100%',
+      duration: 1,
+      stroke: '#ffffff00',
+      ease: 'power2.inOut',
+      stagger: {
+        each: 0.05,
+        from: 'center'
+      }
+    },
+    '-=1.5'
+  )
+
+  timeline.to(
+    $paths,
+    {
+      duration: 2,
+      fill: '#fff',
+      ease: 'power2.inOut',
+      stagger: {
+        each: 0.05,
+        from: 'center'
+      }
+    },
+    '-=2.25'
+  )
+}
+
+tryOnMounted(() => {
+  initialize()
+})
+</script>
 
 <style lang="scss" scoped>
 .header {
@@ -145,9 +202,17 @@
   align-items: center;
   z-index: 999;
 
-  img {
-    width: 18vw;
+  img,
+  svg {
+    width: 25vw;
     transform: translateY(0%);
+  }
+
+  svg {
+    path {
+      stroke-width: 1;
+      stroke: #fff;
+    }
   }
 }
 </style>

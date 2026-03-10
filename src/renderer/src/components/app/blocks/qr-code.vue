@@ -1,8 +1,8 @@
 <template>
   <div class="qr-code">
-    <div ref="$circle" class="circle"></div>
+    <circles :callback="reloadApp" />
 
-    <div class="qr-code__content">
+    <div class="qr-code__content text">
       <div class="big">
         <animated-text text="What a Vibe!" />
       </div>
@@ -29,36 +29,41 @@
       </svg>
     </div>
 
-    <div class="qr-code__footer">
+    <div class="qr-code__footer text">
       <div>
         <animated-text text="SCAN THE QR CODE TO REVEAL YOUR LIGHT BLUE PLAYLIST" :delay="0.5" />
       </div>
     </div>
   </div>
+  <div ref="$overlay" class="qr-code__overlay"></div>
 </template>
 
 <script setup lang="ts">
+import gsap from 'gsap/all'
 import { inject, ref, watch } from 'vue'
 import { useAppStore } from '@renderer/store'
-import { tryOnMounted, useIntervalFn } from '@vueuse/core'
+import { tryOnMounted } from '@vueuse/core'
 import AnimatedText from '@renderer/components/ui/animated-text.vue'
-import gsap from 'gsap/all'
-import { EVENTS } from '@renderer/libs/@global/const'
+import Circles from '@renderer/components/ui/circles.vue'
+import { EVENTS } from '@renderer/libs/@gl/libs/Const'
 
 const $store = useAppStore()
-const $circle = ref<HTMLDivElement>()
+const $overlay = ref<HTMLDivElement>()
 const $svg = ref<HTMLDivElement>()
 const $path = ref<SVGPathElement>()
 const emitter = inject('emitter')
 
-watch(
-  () => $store.midiData[60].input,
-  () => {
-    //@ts-expect-error TODO: fix this
-    emitter?.emit(EVENTS.MIDI_LED, { id: 100, value: 0 })
-    window.location.reload()
-  }
-)
+const reloadApp = (): void => {
+  if (!$overlay.value) return
+  gsap.to($overlay.value, {
+    opacity: 1,
+    duration: 1,
+    ease: 'power2.out',
+    onComplete: () => {
+      window.location.reload()
+    }
+  })
+}
 
 const animate = (): void => {
   if (!$path.value) return
@@ -82,95 +87,22 @@ const animate = (): void => {
     onComplete: () => {
       //@ts-expect-error TODO: fix this
       emitter?.emit(EVENTS.MIDI_LED, { id: 100, value: 0 })
-      window.location.reload()
+      reloadApp()
     }
   })
 }
 
-/* ----------------------------------
-   PERFORMANCE CONSTANTS
----------------------------------- */
-const MAX_ACTIVE = 99
-
-/* ----------------------------------
-   ACTIVE COUNT (replaces children.length reads)
----------------------------------- */
-let activeCount = 0
-
-/* ----------------------------------
-   ELEMENT POOL
----------------------------------- */
-const pool: HTMLDivElement[] = []
-const canDraw = ref(true)
-
-const getCircle = (): HTMLDivElement => {
-  if (pool.length) return pool.pop()!
-
-  const el = document.createElement('div')
-  el.className = 'circle--item'
-  return el
-}
-
-const releaseCircle = (el: HTMLDivElement): void => {
-  gsap.set(el, { clearProps: 'all' })
-  pool.push(el)
-}
-
-/* ----------------------------------
-   DRAW FUNCTION
----------------------------------- */
-
-const drawCircle = (): void => {
-  if (!canDraw.value || !$circle.value) return
-  if (activeCount >= MAX_ACTIVE) return
-
-  const el = getCircle()
-  activeCount++
-  $circle.value.appendChild(el)
-
-  gsap.fromTo(
-    el,
-    {
-      scale: 0.01,
-      opacity: 0.5
-    },
-    {
-      scale: 20,
-      opacity: 0,
-      duration: 12,
-      ease: 'power2.out',
-      onComplete: () => {
-        activeCount--
-        el.remove()
-        releaseCircle(el)
-      }
-    }
-  )
-}
-
-const { resume, pause } = useIntervalFn(drawCircle, 1200, {
-  immediate: false
-})
-
-pause()
-
-const led = { value: 0 }
-gsap.to(led, {
-  value: 127,
-  duration: 1.35,
-  ease: 'none',
-  repeat: -1,
-  yoyo: true,
-  onUpdate: () => {
-    //@ts-expect-error TODO: fix this
-    emitter.emit(EVENTS.MIDI_LED, { id: 99, value: Math.floor(led.value) })
+watch(
+  () => $store.midiData[60].input,
+  () => {
+    //emitter?.emit(EVENTS.MIDI_LED, { id: 100, value: 0 })
+    reloadApp()
   }
-})
+)
 
 tryOnMounted(async () => {
   await new Promise((resolve) => setTimeout(resolve, 10))
   animate()
-  resume()
 })
 </script>
 
@@ -209,6 +141,18 @@ tryOnMounted(async () => {
   gap: 48px;
   z-index: 10;
 
+  &__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 50% 50%, var(--blue) 0%, black 200%);
+    opacity: 0;
+    z-index: 99;
+    pointer-events: none;
+  }
+
   &__svg {
     position: relative;
     width: 175px;
@@ -233,7 +177,7 @@ tryOnMounted(async () => {
     }
   }
 
-  div {
+  div.text {
     text-align: center;
     font-size: 22px;
     max-width: 483px;

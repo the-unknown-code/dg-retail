@@ -1,6 +1,5 @@
 import {
   BackSide,
-  Color,
   FrontSide,
   MathUtils,
   Mesh,
@@ -18,6 +17,7 @@ import { useAppStore } from '@renderer/store'
 import { watch } from 'vue'
 import { APP_STATE } from '@renderer/libs/@global/const'
 import gsap from 'gsap/all'
+import { DAY_PARAMS } from '@renderer/libs/@gl/libs/Const'
 
 export default class Water {
   _geometry: PlaneGeometry
@@ -40,8 +40,8 @@ export default class Water {
     this._geometry = new PlaneGeometry(2, 2, 512, 512)
     this._shader = new ShaderMaterial({
       uniforms: {
-        globalDay: { value: new Color(0xb2daea) },
-        globalNight: { value: new Color(0x0a5064) },
+        globalDay: { value: DAY_PARAMS.globalDay },
+        globalNight: { value: DAY_PARAMS.globalNight },
         light: { value: light },
         tiles: { value: this.#store.get('tile') },
         sky: { value: this.#store.get('env') },

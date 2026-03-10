@@ -22,6 +22,7 @@
 
 <script setup lang="ts">
 import M0Application from '@renderer/libs/@gl'
+import { DAY_PARAMS } from '@renderer/libs/@gl/libs/Const'
 import { APP_STATE } from '@renderer/libs/@global/const'
 import { useAppStore } from '@renderer/store'
 import { useDebounceFn, useWindowSize } from '@vueuse/core'
@@ -64,21 +65,17 @@ scope.run(() => {
   })
 })
 const PARAMS = {
-  causticsOpacity: 0.65,
-  linesOpacity: 0.15,
-  causticsBlendMode: 'overlay',
-  linesBlendMode: 'plus-lighter',
-  gradientRadius: 200,
-  gradientOpacity: 0.4,
-  gradientColor: { r: 0, g: 0.68, b: 1 }
+  causticsOpacity: DAY_PARAMS.causticsOpacity,
+  causticsBlendMode: DAY_PARAMS.causticsBlendMode,
+  gradientRadius: DAY_PARAMS.gradientRadius,
+  gradientOpacity: DAY_PARAMS.gradientOpacity,
+  gradientColor: DAY_PARAMS.gradientColor
 }
 
 const updateVars = (): void => {
   if (!$gl.value) return
   $gl.value.style.setProperty('--caustics-opacity', String(PARAMS.causticsOpacity))
-  $gl.value.style.setProperty('--lines-opacity', String(PARAMS.linesOpacity))
   $gl.value.style.setProperty('--caustics-blend', PARAMS.causticsBlendMode)
-  $gl.value.style.setProperty('--lines-blend', PARAMS.linesBlendMode)
   $gl.value.style.setProperty('--gradient-radius', `${String(PARAMS.gradientRadius)}%`)
   $gl.value.style.setProperty('--gradient-opacity', String(PARAMS.gradientOpacity))
   $gl.value.style.setProperty(
@@ -223,8 +220,8 @@ onMounted(() => {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  filter: blur(2px);
-  transition: filter 2s ease-out;
+  //filter: blur(2px);
+  //transition: filter 2s ease-out;
 
   &.is-mixing {
     filter: blur(0px);

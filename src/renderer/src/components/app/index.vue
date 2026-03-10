@@ -1,7 +1,8 @@
 <template>
   <div class="app">
     <transition mode="out-in" name="quick-fade">
-      <start v-if="$store.appState === APP_STATE.START" :callback="onStart" :qr-code="false" />
+      <null v-if="$store.appState === APP_STATE.NULL" />
+      <start v-else-if="$store.appState === APP_STATE.START" :callback="onStart" :qr-code="false" />
       <on-boarding v-else-if="$store.appState === APP_STATE.ONBOARDING" />
       <div v-else-if="$store.appState === APP_STATE.MIXING" class="full">
         <mixing :callback="onMixing" />
@@ -22,6 +23,7 @@
 import { ref, watch } from 'vue'
 import { useAppStore } from '@renderer/store'
 import Header from './blocks/header.vue'
+import Null from './blocks/null.vue'
 import Start from './blocks/start.vue'
 import QrCode from './blocks/qr-code.vue'
 import OnBoarding from './blocks/onBoarding.vue'
@@ -97,5 +99,6 @@ tryOnMounted(() => {
   left: 0;
   width: 100%;
   height: 100%;
+  z-index: 1000;
 }
 </style>
