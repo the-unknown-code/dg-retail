@@ -112,6 +112,7 @@ export default class SoundManager {
 
     const now = Tone.now()
 
+    // Stop all other playing sounds immediately
     for (const [i, sound] of Object.entries(SOUND_GRID)) {
       if (Number(i) !== index && sound.player) {
         const p = sound.player
@@ -124,26 +125,21 @@ export default class SoundManager {
               : 0
 
           p.volume.cancelScheduledValues(now)
-          p.volume.setValueAtTime(p.volume.value, now)
-          p.volume.linearRampToValueAtTime(SILENT_DB, now + FADE_OUT)
-          p.stop(now + FADE_OUT)
+          p.stop(now)
         }
       }
     }
 
+    // Start next sound immediately at full volume
     next.volume.cancelScheduledValues(now)
+    next.volume.setValueAtTime(0, now)
 
     if (next.state !== 'started') {
-      next.volume.setValueAtTime(SILENT_DB, now)
-      next.volume.linearRampToValueAtTime(0, now + FADE_IN)
       next.start(now)
 
       if (this.currentSeek > 0) {
         next.seek(this.currentSeek, now)
       }
-    } else {
-      next.volume.setValueAtTime(next.volume.value, now)
-      next.volume.linearRampToValueAtTime(0, now + FADE_IN)
     }
 
     this.currentIndex = index
