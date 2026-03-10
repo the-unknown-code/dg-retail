@@ -78,7 +78,6 @@ const setVolume = (): void => {
   if (!$audio.value) return
   const volume = 1 - $store.midiData[1].value / 127
   $audio.value!.volume = volume
-  console.log('volume', volume)
 }
 
 watch(
