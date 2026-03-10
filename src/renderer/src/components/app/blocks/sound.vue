@@ -15,14 +15,19 @@
       </div>
     </div>
 
-    <div id="dot" ref="$dot">
+    <div id="dot" ref="$dot" :class="{ 'is-ipad': $store.isIpad }">
       <div id="dot--svg" ref="$dotSvg">
         <img class="bloom" src="/assets/bloom.png" />
         <img class="ellipse" src="/assets/ellipse.png" />
       </div>
 
       <!-- SVG Glass Orb -->
-      <svg class="dot__svg" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+      <svg
+        v-if="!$store.isIpad"
+        class="dot__svg"
+        viewBox="0 0 48 48"
+        xmlns="http://www.w3.org/2000/svg"
+      >
         <defs>
           <!-- Refraction displacement map -->
           <filter id="glass-refract" x="-30%" y="-30%" width="160%" height="160%">
@@ -132,6 +137,7 @@ const $dotSvg = ref<HTMLDivElement | null>(null)
 
 const reset = (): void => {
   if (!$dot.value) return
+  if ($store.isIpad) return
   $dot.value.classList.remove('is-active')
 }
 
@@ -196,9 +202,26 @@ const cb = Tempus.add(
 )
 
 watch(
+  () => $store.isJogwheel,
+  (v) => {
+    if (v) {
+      if (!$dot.value) return
+
+      $dot.value.classList.add('is-active')
+      stop()
+      start()
+    } else {
+      if (!$dot.value) return
+      $dot.value.classList.remove('is-active')
+    }
+  }
+)
+
+watch(
   () => $store.midiData[2].value,
   () => {
     if (!$dot.value) return
+    if ($store.isIpad) return
     $dot.value.classList.add('is-active')
     stop()
     start()
@@ -209,6 +232,7 @@ watch(
   () => $store.midiData[3].value,
   () => {
     if (!$dot.value) return
+    if ($store.isIpad) return
     $dot.value.classList.add('is-active')
     stop()
     start()
@@ -274,8 +298,38 @@ tryOnBeforeUnmount(() => {
   justify-content: center;
   transition: all 0.1s linear;
 
+  &.is-ipad {
+    width: 12px;
+    height: 12px;
+    backdrop-filter: blur(2px) saturate(1.2);
+    -webkit-backdrop-filter: blur(2px) saturate(1.2);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(64, 237, 253, 0.1) 100%);
+    transition: all 0.1s linear;
+    border-radius: 30px;
+    box-shadow:
+    // top edge light catch
+      inset 0 1px 0 rgba(255, 255, 255, 0.45),
+      // bottom cyan tint
+      inset 0 -1px 0 rgba(64, 237, 253, 0.2),
+      // left edge
+      inset 1px 0 rgba(255, 255, 255, 0.08),
+      // right edge
+      inset -1px 0 rgba(255, 255, 255, 0.8),
+      // outer glow
+      0 8px 32px rgba(15, 184, 240, 0.15),
+      0 2px 8px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    mix-blend-mode: lighten;
+  }
+
   &.is-active {
     --size: 24px;
+
+    &.is-ipad {
+      width: 24px !important;
+      height: 24px !important;
+      opacity: 1 !important;
+    }
 
     #dot--svg {
       opacity: 1;

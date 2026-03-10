@@ -259,6 +259,7 @@ const initialize = (): void => {
       state.lastAngle = Math.atan2(touch.clientY - cy, touch.clientX - cx)
       state.lastTime = performance.now()
       state.velocity = 0
+      $store.isJogwheel = true
     },
 
     onDrag(e) {
@@ -280,6 +281,7 @@ const initialize = (): void => {
     },
 
     onRelease() {
+      $store.isJogwheel = false
       gsap.to(state, {
         velocity: 0,
         duration: 0.8, // coast duration

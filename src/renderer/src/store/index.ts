@@ -27,6 +27,7 @@ export const useAppStore = defineStore('app', {
     appState: getQueryParam('debug') === '1' ? APP_STATE.MIXING : APP_STATE.NULL,
     pinState: { x: 0, y: 0, vx: 0, vy: 0, nx: 0, ny: 0 },
     isIpad: getQueryParam('ipad') === '1',
+    isJogwheel: false,
     midiFound: false,
     scale: 1.35,
     playDuration: getQueryParam('debug') === '1' ? 12000 : 40,
