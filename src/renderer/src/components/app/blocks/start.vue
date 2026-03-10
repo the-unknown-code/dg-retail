@@ -14,7 +14,7 @@
     </div>
 
     <div class="info">
-      <animated-text text="SELECT YOUR LANGUAGE AND PRESS START" />
+      <animated-text :key="activeLanguage" :text="TEXTS[activeLanguage]" :speed="0.5" />
     </div>
   </div>
 </template>
@@ -46,29 +46,40 @@ const LANGUAGES = [
   '日本語'
 ]
 
+const TEXTS = [
+  'SELECT YOUR LANGUAGE AND PRESS START', // English
+  'SELEZIONA LA TUA LINGUA E PREMI START', // Italiano
+  'WÄHLEN SIE IHRE SPRACHE UND DRÜCKEN SIE START', // Deutsch
+  'SELECCIONA TU IDIOMA Y PULSA INICIAR', // Español
+  'اختر لغتك واضغط ابدأ', // Arabic
+  'SÉLECTIONNEZ VOTRE LANGUE ET APPUYEZ SUR START', // Français
+  'SELECIONE O SEU IDIOMA E PRESSIONE INICIAR', // Português
+  '选择您的语言，然后按开始', // Chinese (Simplified)
+  '言語を選択してスタートを押してください' // Japanese
+]
+
 const $store = useAppStore()
 const canChange = ref(true)
 
-watch(
-  () => [$store.midiData[2].value, $store.midiData[3].value],
-  ([val2, val3]: number[]) => {
-    const CENTER = 64
-    const DEADZONE = 4
-    const value = val2 !== 64 ? val2 : val3
+const CENTER = 64
+const DEADZONE = 4
 
-    if (!canChange.value) return
+const handleJogwheel = (value: number): void => {
+  if (!canChange.value) return
+  if (Math.abs(value - CENTER) <= DEADZONE) return
 
-    if (value > CENTER + DEADZONE) {
-      activeLanguage.value = (activeLanguage.value + 1) % LANGUAGES.length
-      canChange.value = false
-      setTimeout(() => (canChange.value = true), 400)
-    } else if (value < CENTER - DEADZONE) {
-      activeLanguage.value = (activeLanguage.value - 1 + LANGUAGES.length) % LANGUAGES.length
-      canChange.value = false
-      setTimeout(() => (canChange.value = true), 400)
-    }
+  if (value > CENTER + DEADZONE) {
+    activeLanguage.value = (activeLanguage.value + 1) % LANGUAGES.length
+  } else {
+    activeLanguage.value = (activeLanguage.value - 1 + LANGUAGES.length) % LANGUAGES.length
   }
-)
+
+  canChange.value = false
+  setTimeout(() => (canChange.value = true), 400)
+}
+
+watch(() => $store.midiData[2].value, handleJogwheel)
+watch(() => $store.midiData[3].value, handleJogwheel)
 
 const animate = (value: boolean): void => {
   gsap.to($languageItems.value, {

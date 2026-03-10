@@ -10,6 +10,7 @@ import gsap, { SplitText } from 'gsap/all'
 import { ref } from 'vue'
 
 const props = defineProps<{
+  speed?: number
   text: string
   delay?: number
 }>()
@@ -30,7 +31,7 @@ const animate = (): void => {
 
   gsap.to($st.chars, {
     delay: props.delay ?? 0,
-    duration: 2,
+    duration: props.speed ?? 2,
     ease: 'power2.inOut',
     opacity: 1,
     stagger: {
