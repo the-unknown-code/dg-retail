@@ -18,6 +18,7 @@
 import { APP_STATE } from '@renderer/libs/@global/const'
 import { useAppStore } from '@renderer/store'
 import { tryOnMounted } from '@vueuse/core'
+import { clamp } from 'three/src/math/MathUtils.js'
 import { ref, watch } from 'vue'
 
 const props = defineProps<{
@@ -96,19 +97,30 @@ const getGridIndex = (): number | null => {
 
 const applyMovement = (rawValue: number, axis: 'x' | 'y'): void => {
   const delta = rawValue - 64
-  // if (Math.abs(delta) <= DEAD_ZONE) return
-
   const speed = (delta / 64) * 36
+  const padding = 50
 
+  /*
   if (axis === 'x') {
     pinState.x = Math.max(-bounds.x, Math.min(bounds.x, pinState.x + speed))
   } else {
     pinState.y = Math.max(-bounds.y, Math.min(bounds.y, pinState.y + speed))
   }
+    */
+
+  if (axis === 'x') {
+    pinState.x = Math.max(-(bounds.x - padding), Math.min(bounds.x - padding, pinState.x + speed))
+  } else {
+    pinState.y = Math.max(-(bounds.y - padding), Math.min(bounds.y - padding, pinState.y + speed))
+  }
 
   // Calculate normalized coordinates nx and ny from -1 to 1
+  /*
   pinState.nx = pinState.x / bounds.x
   pinState.ny = pinState.y / bounds.y
+  */
+  pinState.nx = pinState.x / (bounds.x - padding)
+  pinState.ny = pinState.y / (bounds.y - padding)
 
   $store.pinState = { ...pinState }
   updatePinPosition()
