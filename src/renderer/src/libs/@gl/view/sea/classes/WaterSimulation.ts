@@ -14,6 +14,9 @@ import normalFragmentShader from '../../../shaders/simulation/normal_fragment.gl
 import updateFragmentShader from '../../../shaders/simulation/update_fragment.glsl?raw'
 import { M0Renderer } from '@renderer/libs/@gl/core'
 
+const SIM_WIDTH = 512
+const SIM_HEIGHT = Math.round(512 * (720 / 1280)) // 288 — maintains 16:9
+
 export default class WaterSimulation {
   _camera: OrthographicCamera
   _geometry: PlaneGeometry
@@ -56,7 +59,7 @@ export default class WaterSimulation {
 
     this._normalShader = new ShaderMaterial({
       uniforms: {
-        delta: { value: [1 / 512, 1 / 512] }, // TODO: Remove this useless uniform and hardcode it in shaders?
+        delta: { value: [1 / SIM_WIDTH, 1 / SIM_HEIGHT] }, // correct per-axis
         tDiffuse: { value: null }
       },
       vertexShader,
@@ -65,7 +68,7 @@ export default class WaterSimulation {
 
     this._updateShader = new ShaderMaterial({
       uniforms: {
-        delta: { value: [1 / 256, 1 / 256] }, // TODO: Remove this useless uniform and hardcode it in shaders?
+        delta: { value: [1.5 / SIM_WIDTH, 1.5 / SIM_HEIGHT] }, // correct per-axis
         tDiffuse: { value: null }
       },
       vertexShader,
