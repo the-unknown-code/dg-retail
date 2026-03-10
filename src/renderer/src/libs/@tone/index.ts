@@ -20,8 +20,8 @@ const SOUND_GRID: Record<number, { label: string; color: string; player: Tone.Pl
 }
 
 const SILENT_DB = -80
-const FADE_OUT = 1.5
-const FADE_IN = 1.5
+// const FADE_OUT = 1.5
+// const FADE_IN = 1.5
 
 const masterVolume = new Tone.Volume(0).toDestination()
 
