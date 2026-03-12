@@ -11,16 +11,6 @@
     <div class="video-wrapper">
       <video type="video/mp4" src="/videos/caustics.mp4" autoplay muted loop playsinline />
     </div>
-
-    <div id="dot--video" :class="{ 'is-active': $store.isActive }">
-      <div
-        :style="{
-          transform: `translate(${$store.particleState.x}px, ${$store.particleState.y}px) rotate(${$store.particleState.rotation - 270}deg)`
-        }"
-      >
-        <video type="video/mp4" src="/videos/particles.mp4" autoplay muted loop playsinline />
-      </div>
-    </div>
   </div>
   <slot />
 </template>

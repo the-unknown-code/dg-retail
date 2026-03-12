@@ -298,7 +298,7 @@ tryOnBeforeUnmount(() => {
 }
 
 #dot {
-  --size: 12px;
+  --size: 24px;
   position: absolute;
   width: var(--size);
   height: var(--size);
@@ -332,7 +332,7 @@ tryOnBeforeUnmount(() => {
   }
 
   &.is-active {
-    --size: 24px;
+    --size: 36px;
 
     &.is-ipad {
       width: 24px !important;
@@ -352,8 +352,8 @@ tryOnBeforeUnmount(() => {
 
   &--svg {
     position: absolute;
-    width: 240px;
-    height: 240px;
+    width: 440px;
+    height: 440px;
     display: flex;
     align-items: center;
     justify-content: center;
