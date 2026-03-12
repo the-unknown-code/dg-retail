@@ -11,6 +11,16 @@
     <div class="video-wrapper">
       <video type="video/mp4" src="/videos/caustics.mp4" autoplay muted loop playsinline />
     </div>
+
+    <div id="dot--video" :class="{ 'is-active': $store.isActive }">
+      <div
+        :style="{
+          transform: `translate(${$store.particleState.x}px, ${$store.particleState.y}px) rotate(${$store.particleState.rotation - 270}deg)`
+        }"
+      >
+        <video type="video/mp4" src="/videos/particles.mp4" autoplay muted loop playsinline />
+      </div>
+    </div>
   </div>
   <slot />
 </template>
@@ -217,6 +227,38 @@ onMounted(() => {
   overflow: hidden;
   //filter: blur(2px);
   //transition: filter 2s ease-out;
+
+  #dot--video {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    mix-blend-mode: screen;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: all 0.35s ease-out;
+
+    > div {
+      position: absolute;
+      width: 256px;
+      height: 256px;
+    }
+
+    &.is-active {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    video {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      transform-origin: center;
+      transform: translateY(35%);
+    }
+  }
 
   &.is-mixing {
     filter: blur(0px);

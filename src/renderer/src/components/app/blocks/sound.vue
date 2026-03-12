@@ -138,6 +138,7 @@ const $dotSvg = ref<HTMLDivElement | null>(null)
 const reset = (): void => {
   if (!$dot.value) return
   if ($store.isIpad) return
+  $store.isActive = false
   $dot.value.classList.remove('is-active')
 }
 
@@ -152,12 +153,15 @@ const { start, stop } = useTimeoutFn(reset, 100, { immediate: false })
 const cb = Tempus.add(
   () => {
     if (!$dot.value) return
-    const x = lerp(position.x, $store.pinState.x, 0.5)
-    const y = lerp(position.y, $store.pinState.y, 0.5)
+    const x = lerp(position.x, $store.pinState.x, 0.75)
+    const y = lerp(position.y, $store.pinState.y, 0.75)
 
     position.x = x
     position.y = y
     $dot.value.style.transform = `translate(${x}px, ${y}px)`
+
+    $store.particleState.x = x
+    $store.particleState.y = y
 
     velocity.x = x - prev.x
     velocity.y = y - prev.y
@@ -195,6 +199,7 @@ const cb = Tempus.add(
       // Combine rotation + warp in one transform
       // The scale is applied in LOCAL space (along movement axis = X after rotation)
       $dotSvg.value.style.transform = `rotate(${currentAngle}deg) scaleX(${currentScaleX}) scaleY(${currentScaleY})`
+      $store.particleState.rotation = currentAngle
     }
   },
 
@@ -207,11 +212,13 @@ watch(
     if (v) {
       if (!$dot.value) return
 
+      $store.isActive = true
       $dot.value.classList.add('is-active')
       stop()
       start()
     } else {
       if (!$dot.value) return
+      $store.isActive = false
       $dot.value.classList.remove('is-active')
     }
   }
@@ -222,6 +229,7 @@ watch(
   () => {
     if (!$dot.value) return
     if ($store.isIpad) return
+    $store.isActive = true
     $dot.value.classList.add('is-active')
     stop()
     start()
@@ -233,6 +241,7 @@ watch(
   () => {
     if (!$dot.value) return
     if ($store.isIpad) return
+    $store.isActive = true
     $dot.value.classList.add('is-active')
     stop()
     start()
@@ -394,7 +403,9 @@ tryOnBeforeUnmount(() => {
     width: 100%;
     height: 100%;
     overflow: visible;
-    opacity: 0.2;
+
+    // TODO
+    opacity: 1;
 
     // NO backdrop-filter here anymore — handled by ::before
     // Only keep the drop-shadow
