@@ -24,7 +24,7 @@ export function getQueryParam(name: string): string | null {
 export const useAppStore = defineStore('app', {
   state: () => ({
     electron: typeof window !== 'undefined' && !!window.process?.versions?.electron,
-    appState: getQueryParam('debug') === '1' ? APP_STATE.MIXING : APP_STATE.ONBOARDING,
+    appState: getQueryParam('debug') === '1' ? APP_STATE.MIXING : APP_STATE.START,
     pinState: { x: 0, y: 0, vx: 0, vy: 0, nx: 0, ny: 0 },
     particleState: { x: 0, y: 0, rotation: 0 },
     isActive: false,

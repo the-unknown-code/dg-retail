@@ -3,7 +3,7 @@
     <circles :callback="reloadApp" />
 
     <div class="qr-code__content text">
-      <div class="big">
+      <div class="big p default">
         <animated-text text="What a Vibe!" />
       </div>
     </div>
@@ -30,7 +30,7 @@
     </div>
 
     <div class="qr-code__footer text">
-      <div>
+      <div class="p">
         <animated-text text="SCAN THE QR CODE TO REVEAL YOUR LIGHT BLUE PLAYLIST" :delay="0.5" />
       </div>
     </div>
@@ -60,7 +60,7 @@ const reloadApp = (): void => {
     duration: 1,
     ease: 'power2.out',
     onComplete: () => {
-      window.location.reload()
+      // window.location.reload()
     }
   })
 }
@@ -87,7 +87,7 @@ const animate = (): void => {
     onComplete: () => {
       //@ts-expect-error TODO: fix this
       emitter?.emit(EVENTS.MIDI_LED, { id: 100, value: 0 })
-      reloadApp()
+      //reloadApp()
     }
   })
 }
@@ -96,7 +96,7 @@ watch(
   () => $store.midiData[60].input,
   () => {
     //emitter?.emit(EVENTS.MIDI_LED, { id: 100, value: 0 })
-    reloadApp()
+    //reloadApp()
   }
 )
 

@@ -1,5 +1,6 @@
 <template>
   <div class="app">
+    <div ref="$background" class="app__background" />
     <transition mode="out-in" name="quick-fade">
       <null v-if="$store.appState === APP_STATE.NULL" />
       <start v-else-if="$store.appState === APP_STATE.START" :callback="onStart" :qr-code="false" />
@@ -41,6 +42,7 @@ import gsap from 'gsap/all'
 
 const $audio = ref<HTMLAudioElement>()
 const $store = useAppStore()
+const $background = ref<HTMLDivElement>()
 // const storeVisible = ref(false)
 
 const getSoundUrl = (label: string): string => {
@@ -77,11 +79,21 @@ watch(
   () => $store.appState,
   (value) => {
     if (value === APP_STATE.MIXING) {
+      setTimeout(() => {
+        if (!$background.value) return
+        gsap.to($background.value, {
+          opacity: 0,
+          duration: 1.5,
+          ease: 'power2.inOut'
+        })
+      }, 1850)
+
       fadeAudio(0)
     } else {
       fadeAudio(1)
     }
-  }
+  },
+  { immediate: true }
 )
 
 const onPlayAudio = (): void => {
@@ -102,6 +114,16 @@ tryOnMounted(() => {
   width: 100%;
   height: 100%;
   z-index: 10;
+
+  &__background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 50% 50%, var(--blue) 0%, black 200%);
+    opacity: 0.7;
+  }
 }
 
 .full {

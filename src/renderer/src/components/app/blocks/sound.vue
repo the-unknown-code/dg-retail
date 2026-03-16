@@ -1,16 +1,16 @@
 <template>
   <div class="sound">
-    <div v-if="!$store.isIpad" class="sound__content">
-      <div>
+    <div v-if="!$store.isIpad" ref="$content" class="sound__content">
+      <div class="sound--item">
         <animated-text text="FUNKY" />
       </div>
-      <div>
+      <div class="sound--item">
         <animated-text text="PARTY" />
       </div>
-      <div>
+      <div class="sound--item">
         <animated-text text="CHILL" />
       </div>
-      <div>
+      <div class="sound--item">
         <animated-text text="GROOVY" />
       </div>
     </div>
@@ -125,15 +125,30 @@
 
 <script setup lang="ts">
 import { useAppStore } from '@renderer/store'
-import { tryOnBeforeUnmount, useTimeoutFn } from '@vueuse/core'
+import { tryOnBeforeUnmount, tryOnMounted, useTimeoutFn } from '@vueuse/core'
 import AnimatedText from '@renderer/components/ui/animated-text.vue'
 import Tempus from 'tempus'
 import { lerp } from 'three/src/math/MathUtils.js'
 import { ref, watch } from 'vue'
+import gsap from 'gsap/all'
 
 const $store = useAppStore()
+const $content = ref<HTMLDivElement | null>(null)
 const $dot = ref<HTMLDivElement | null>(null)
 const $dotSvg = ref<HTMLDivElement | null>(null)
+
+const initialize = (): void => {
+  if (!$content.value) return
+  const $items = $content.value.querySelectorAll('.sound--item')
+  gsap.to($items, {
+    delay: 0.05,
+    x: 0,
+    y: 0,
+    duration: 1.75,
+    ease: 'power4.inOut',
+    stagger: 0.1
+  })
+}
 
 const reset = (): void => {
   if (!$dot.value) return
@@ -253,6 +268,10 @@ watch(
   () => {}
 )
 
+tryOnMounted(() => {
+  initialize()
+})
+
 tryOnBeforeUnmount(() => {
   cb?.()
 })
@@ -280,18 +299,22 @@ tryOnBeforeUnmount(() => {
       &:nth-child(1) {
         top: 0;
         left: 0;
+        transform: translate(-80px, -80px);
       }
       &:nth-child(2) {
         top: 0;
         right: 0;
+        transform: translate(80px, -80px);
       }
       &:nth-child(3) {
         bottom: 0;
         left: 0;
+        transform: translate(-80px, 80px);
       }
       &:nth-child(4) {
         bottom: 0;
         right: 0;
+        transform: translate(80px, 80px);
       }
     }
   }

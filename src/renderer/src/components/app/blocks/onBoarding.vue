@@ -147,7 +147,7 @@ tryOnBeforeUnmount(() => {})
 }
 
 .headphones-pulse {
-  animation: headphones-pulse 1s infinite ease-in-out;
+  animation: headphones-pulse 2s infinite ease-in-out;
 }
 
 .onboarding {
@@ -162,6 +162,16 @@ tryOnBeforeUnmount(() => {})
   align-items: center;
   flex-grow: 1;
   pointer-events: none;
+
+  &__background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 50% 50%, var(--blue) 0%, black 200%);
+    opacity: 0.7;
+  }
 
   &__intro {
     position: absolute;
