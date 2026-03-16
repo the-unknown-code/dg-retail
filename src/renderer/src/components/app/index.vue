@@ -122,7 +122,8 @@ tryOnMounted(() => {
     width: 100%;
     height: 100%;
     background: radial-gradient(circle at 50% 50%, var(--blue) 0%, black 200%);
-    opacity: 0.7;
+    opacity: 0.5;
+    pointer-events: none;
   }
 }
 
