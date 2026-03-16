@@ -208,7 +208,8 @@ const $store = useAppStore()
 const $jogwheel = ref<HTMLDivElement | null>(null)
 const props = defineProps({
   id: { type: String, required: false, default: '1' },
-  axis: { type: String as () => 'x' | 'y', required: false, default: 'x' }
+  axis: { type: String as () => 'x' | 'y', required: false, default: 'x' },
+  animate: { type: Boolean, required: false, default: false }
 })
 
 const state = {
@@ -294,8 +295,27 @@ const initialize = (): void => {
   })
 }
 
+const animateJogwheel = (): void => {
+  if (!$jogwheel.value) return
+
+  gsap.set($jogwheel.value, {
+    rotate: 30
+  })
+
+  gsap.to($jogwheel.value, {
+    rotate: -30,
+    duration: 3.5,
+    ease: 'power2.inOut',
+    repeat: -1,
+    yoyo: true
+  })
+}
+
 tryOnMounted(() => {
   initialize()
+  if (props.animate) {
+    animateJogwheel()
+  }
 })
 </script>
 

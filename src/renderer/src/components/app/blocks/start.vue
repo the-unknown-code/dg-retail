@@ -14,7 +14,7 @@
       </div>
     </div>
 
-    <div class="info">
+    <div class="info p">
       <animated-text :key="activeLanguage" :text="TEXTS[activeLanguage]" :speed="0.5" />
     </div>
   </div>
@@ -142,7 +142,7 @@ tryOnMounted(() => {
 
   .info {
     position: absolute;
-    bottom: 0;
+    bottom: 44px;
     left: 0;
     width: 100%;
     text-align: center;

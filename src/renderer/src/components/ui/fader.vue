@@ -175,9 +175,13 @@
 
 <script setup lang="ts">
 import { tryOnMounted } from '@vueuse/core'
-import { Draggable } from 'gsap/all'
+import gsap, { Draggable } from 'gsap/all'
 import { ref } from 'vue'
 import { useAppStore } from '@renderer/store'
+
+const props = defineProps<{
+  animate?: boolean
+}>()
 
 const $store = useAppStore()
 const $svg = ref<HTMLDivElement | null>(null)
@@ -197,8 +201,26 @@ const initialize = (): void => {
   })
 }
 
+const animateFader = (): void => {
+  gsap.set($fader.value as unknown as HTMLDivElement, {
+    y: -60
+  })
+
+  gsap.to($fader.value as unknown as HTMLDivElement, {
+    delay: 1,
+    duration: 3.5,
+    ease: 'power2.inOut',
+    y: 60,
+    repeat: -1,
+    yoyo: true
+  })
+}
+
 tryOnMounted(() => {
   initialize()
+  if (props.animate) {
+    animateFader()
+  }
 })
 </script>
 

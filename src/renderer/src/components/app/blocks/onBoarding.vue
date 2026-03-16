@@ -1,26 +1,42 @@
 <template>
   <div class="onboarding">
-    <div ref="$intro" class="onboarding__intro">
+    <div ref="$intro" class="onboarding__intro p default">
       <animated-text text="WHAT'S YOUR MOOD OF THE DAY?" />
     </div>
-    <div ref="$content" class="onboarding__content">
+
+    <div ref="$headphones" class="onboarding__content headphones p default">
       <animated-text
-        text="FEEL YOUR VIBE AND PLAY WITH THE DJ CONSOLE TO DISCOVER YOUR LIGHT BLUE PLAYLIST"
-        :delay="1"
+        :key="keyHeadphones"
+        text="FEEL YOUR VIBE AND PLAY WITH THE DJ CONSOLE<br/>TO DISCOVER YOUR LIGHT BLUE PLAYLIST"
       />
+      <div class="icon">
+        <img src="/assets/headphones.svg" class="headphones-pulse" />
+        <div ref="$content" class="p">
+          <animated-text :key="keyHeadphones" text="Put your headphones on" />
+        </div>
+      </div>
     </div>
-    <div ref="$footer" class="onboarding__footer">
-      <dic class="console">
-        <div ref="$jogwheelL">
-          <Jogwheel />
+
+    <div ref="$fader" class="onboarding__content fader p default">
+      <animated-text
+        :key="keyFader"
+        text="move the fader up and down<br/>to go from day to night"
+      />
+      <div>
+        <Fader animate />
+      </div>
+    </div>
+
+    <div ref="$jogwheels" class="onboarding__content jogwheels p default">
+      <animated-text :key="keyJogwheels" text="spin the jog wheels<br/>to mix your music tracks" />
+      <div class="console">
+        <div>
+          <Jogwheel animate />
         </div>
-        <div ref="$fader">
-          <Fader />
+        <div>
+          <Jogwheel animate />
         </div>
-        <div ref="$jogwheelR">
-          <Jogwheel />
-        </div>
-      </dic>
+      </div>
     </div>
   </div>
 </template>
@@ -36,86 +52,104 @@ import { APP_STATE } from '@renderer/libs/@global/const'
 import { tryOnBeforeUnmount, tryOnMounted } from '@vueuse/core'
 
 const $store = useAppStore()
-const $jogwheelL = ref<HTMLDivElement>()
-const $fader = ref<HTMLDivElement>()
-const $jogwheelR = ref<HTMLDivElement>()
 
 const $intro = ref<HTMLDivElement>()
-const $content = ref<HTMLDivElement>()
-const $footer = ref<HTMLDivElement>()
+const $headphones = ref<HTMLDivElement>()
+const $fader = ref<HTMLDivElement>()
+const $jogwheels = ref<HTMLDivElement>()
 
+const keyHeadphones = ref(0)
+const keyFader = ref(0)
+const keyJogwheels = ref(0)
 const timeline = gsap.timeline({ delay: 2.5 })
 
 const initialize = (): void => {
-  if (!$jogwheelL.value || !$fader.value || !$jogwheelR.value) return
-  if (!$intro.value || !$content.value || !$footer.value) return
+  if (!$intro.value || !$headphones.value || !$fader.value || !$jogwheels.value) return
 
   timeline.to($intro.value, {
-    duration: 2,
-    ease: 'power2.inOut',
-    opacity: 0
+    opacity: 1,
+    duration: 1,
+    ease: 'power2.inOut'
   })
 
-  timeline.to(
-    [$content.value, $footer.value],
-    {
-      duration: 2,
-      ease: 'power2.inOut',
-      opacity: 1,
-      onStart: () => {
-        const $rect = $fader.value?.querySelector('rect')
-        gsap.set($rect as unknown as HTMLDivElement, {
-          y: 40
-        })
+  timeline.to($headphones.value, {
+    delay: 0.5,
+    opacity: 1,
+    duration: 1,
+    ease: 'power2.inOut',
+    onStart: () => {
+      keyHeadphones.value++
+      if (!$intro.value) return
+      gsap.to($intro.value, {
+        opacity: 0,
+        duration: 1,
+        ease: 'power2.inOut'
+      })
+    }
+  })
 
-        gsap.to($rect as unknown as HTMLDivElement, {
-          delay: 1,
-          duration: 3.5,
-          ease: 'power2.inOut',
-          y: -40,
-          repeat: 1,
-          yoyo: true
-        })
+  timeline.to($fader.value, {
+    delay: 4.5,
+    opacity: 1,
+    duration: 1,
+    ease: 'power2.inOut',
+    onStart: () => {
+      keyFader.value++
+      if (!$headphones.value) return
+      gsap.to($headphones.value, {
+        opacity: 0,
+        duration: 1,
+        ease: 'power2.inOut'
+      })
+    }
+  })
 
-        gsap.to([$jogwheelL.value, $jogwheelR.value], {
-          duration: 4.5,
-          ease: 'power2.inOut',
-          rotate: 0,
-          repeat: 1,
-          yoyo: true
-        })
-
-        gsap.to([$jogwheelL.value, $fader.value, $jogwheelR.value], {
-          duration: 2,
-          ease: 'power2.inOut',
-          y: 0,
-          opacity: 1,
-          stagger: {
-            from: 'center',
-            amount: 0.25
-          },
-          onComplete: () => {
-            setTimeout(() => {
-              $store.appState = APP_STATE.MIXING
-            }, 3500)
-          }
-        })
-      }
+  timeline.to($jogwheels.value, {
+    delay: 4.5,
+    opacity: 1,
+    duration: 1,
+    ease: 'power2.inOut',
+    onStart: () => {
+      keyJogwheels.value++
+      if (!$fader.value) return
+      gsap.to($fader.value, {
+        opacity: 0,
+        duration: 1,
+        ease: 'power2.inOut'
+      })
     },
-    '-=1'
-  )
+    onComplete: () => {
+      setTimeout(() => {
+        $store.appState = APP_STATE.MIXING
+      }, 3500)
+    }
+  })
 }
 
 tryOnMounted(() => {
   initialize()
 })
 
-tryOnBeforeUnmount(() => {
-  gsap.killTweensOf([$jogwheelL.value, $fader.value, $jogwheelR.value])
-})
+tryOnBeforeUnmount(() => {})
 </script>
 
 <style lang="scss" scoped>
+@keyframes headphones-pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.headphones-pulse {
+  animation: headphones-pulse 1s infinite ease-in-out;
+}
+
 .onboarding {
   position: fixed;
   top: 0;
@@ -130,63 +164,51 @@ tryOnBeforeUnmount(() => {
   pointer-events: none;
 
   &__intro {
-    position: relative;
+    position: absolute;
     width: 100%;
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-
-    &:deep(p) {
-      font-size: 32px;
-      max-width: 320px;
-      text-align: center;
-    }
   }
 
   &__content {
-    position: relative;
-    width: 438px;
+    position: absolute;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: var(--app-gap);
     text-align: center;
-    transform: translateY(-100%);
     opacity: 0;
-  }
+    padding-top: 140px;
 
-  &__footer {
-    position: absolute;
-    bottom: 110px;
-    left: 0;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: var(--app-gap);
-    opacity: 0;
+    .icon {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin-top: 64px;
+      gap: 16px;
+    }
 
     .console {
       position: relative;
       width: 795px;
+      height: 280px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: var(--app-gap);
 
       > div {
         position: relative;
-        transform: translateY(100%);
-        opacity: 0;
+        opacity: 1;
 
-        &:nth-child(1) {
-          transform: translateY(100%) rotate(-60deg);
-        }
-
-        &:nth-child(3) {
-          transform: translateY(100%) rotate(60deg);
+        &:nth-child(2) {
+          transform: scaleX(-1);
         }
       }
 

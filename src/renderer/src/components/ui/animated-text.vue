@@ -1,6 +1,6 @@
 <template>
   <div class="animated-text">
-    <p ref="$text">{{ text }}</p>
+    <div ref="$text" v-html="text" />
   </div>
 </template>
 
@@ -50,7 +50,7 @@ tryOnMounted(() => {
 .animated-text {
   position: relative;
 
-  p {
+  > div {
     text-shadow: 2px 1px 6px #00000033;
   }
 }
