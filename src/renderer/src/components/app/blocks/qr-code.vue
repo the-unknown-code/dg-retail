@@ -60,7 +60,7 @@ const reloadApp = (): void => {
     duration: 1,
     ease: 'power2.out',
     onComplete: () => {
-      // window.location.reload()
+      window.location.reload()
     }
   })
 }
@@ -87,7 +87,7 @@ const animate = (): void => {
     onComplete: () => {
       //@ts-expect-error TODO: fix this
       emitter?.emit(EVENTS.MIDI_LED, { id: 100, value: 0 })
-      //reloadApp()
+      reloadApp()
     }
   })
 }
@@ -96,7 +96,7 @@ watch(
   () => $store.midiData[60].input,
   () => {
     //emitter?.emit(EVENTS.MIDI_LED, { id: 100, value: 0 })
-    //reloadApp()
+    reloadApp()
   }
 )
 
