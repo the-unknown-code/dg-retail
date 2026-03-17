@@ -22,7 +22,7 @@ import { ref, watch } from 'vue'
 export type CornerZone = 'TL' | 'TR' | 'BL' | 'BR' | null
 
 const props = defineProps<{
-  soundCallback: (index: number | null, corner: CornerZone | null) => void
+  soundCallback: (index: number | null) => void
 }>()
 
 const SOUND_GRID = {
@@ -168,7 +168,7 @@ watch(
 )
 
 watch(currentGridIndex, (value) => {
-  props.soundCallback(value, currentCorner.value)
+  props.soundCallback(value)
 })
 
 watch(currentCorner, (value) => {
