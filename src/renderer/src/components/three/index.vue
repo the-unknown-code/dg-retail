@@ -13,7 +13,7 @@
     </div>
 
     <div
-      :class="['sound__grid', $store.currentCorner, { 'is-dark': $store.midiData[1].value > 0.5 }]"
+      :class="['sound__grid', $store.currentCorner, { 'is-dark': $store.midiData[1].value > 55 }]"
     >
       <div />
       <div />
@@ -39,6 +39,13 @@ let $three: M0Application
 const scope = effectScope()
 const isMixing = ref($store.appState === APP_STATE.MIXING)
 const isNull = ref($store.appState === APP_STATE.NULL)
+
+watch(
+  () => $store.midiData[1].value,
+  (value) => {
+    console.log(value)
+  }
+)
 
 const resize = useDebounceFn((): void => {
   if (!$three) return
@@ -274,7 +281,10 @@ onMounted(() => {
   &.is-dark {
     > div {
       &::before {
-        background: radial-gradient(circle, purple 0%, transparent 100%);
+        opacity: 0;
+      }
+      &::after {
+        opacity: 1;
       }
     }
   }
@@ -296,8 +306,20 @@ onMounted(() => {
       border-radius: 50%;
       filter: blur(20px);
       opacity: 1;
-      transition: all 0.3s ease-out;
-      animation: pulse 2s infinite ease-in-out;
+      transition: all 1s ease-out;
+      // animation: pulse 2s infinite ease-in-out;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle, purple 0%, transparent 100%);
+      border-radius: 50%;
+      filter: blur(20px);
+      opacity: 0;
+      transition: all 1s ease-out;
+      // animation: pulse 2s infinite ease-in-out;
     }
 
     &:nth-child(1) {
