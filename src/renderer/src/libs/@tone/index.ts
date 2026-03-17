@@ -20,31 +20,37 @@ const SOUND_GRID: Record<number, { label: string; color: string; player: Tone.Pl
 }
 
 const SILENT_DB = -80
+// const FADE_OUT = 1.5
+// const FADE_IN = 1.5
 
 const masterVolume = new Tone.Volume(0).toDestination()
 
+// Low-pass filter — muffles sound by cutting high frequencies
 const muffle = new Tone.Filter({
   type: 'lowpass',
-  frequency: 20000,
+  frequency: 20000, // start fully open
   rolloff: -24
 }).connect(masterVolume)
 
+// Reverb — adds night atmosphere / spatial depth
 const reverb = new Tone.Reverb({
   decay: 4,
   preDelay: 0.1,
   wet: 0
-}).connect(muffle)
+}).connect(muffle) // chain: reverb → muffle → masterVolume → destination
 
 export const fadeVolume = (volume: number = 1, rampTime: number = 1): void => {
   const db = volume <= 0 ? SILENT_DB : Tone.gainToDb(volume)
   masterVolume.volume.rampTo(db, rampTime)
 }
 
+// 0 = dry, 1 = full night reverb
 export const setNightReverb = (value: number, rampTime: number = 1): void => {
   const clamped = Math.max(0, Math.min(1, value))
   reverb.wet.rampTo(clamped, rampTime)
 }
 
+// 0 = normal, 1 = fully muffled
 export const setMuffle = (value: number, rampTime: number = 1): void => {
   const clamped = Math.max(0, Math.min(1, value))
   const freq = 20000 * Math.pow(300 / 20000, clamped)
@@ -53,6 +59,7 @@ export const setMuffle = (value: number, rampTime: number = 1): void => {
 
 const getSoundUrl = (label: string): string => {
   if (import.meta.env.PROD) {
+    // Resolve relative to current page — works for file:// protocol
     return new URL(`sounds/${label}.mp3`, window.location.href).href
   }
   return `/sounds/${label}.mp3`
@@ -61,7 +68,6 @@ const getSoundUrl = (label: string): string => {
 export default class SoundManager {
   private currentIndex: number | null = null
   private currentSeek: number = 0
-  private startedAt: number = 0
   private loaded: Promise<void>
 
   constructor() {
@@ -70,7 +76,7 @@ export default class SoundManager {
         url: getSoundUrl(sound.label),
         loop: true,
         autostart: false
-      }).connect(reverb)
+      }).connect(reverb) // players → reverb → muffle → masterVolume → destination
     }
 
     this.loaded = Tone.loaded()
@@ -83,10 +89,13 @@ export default class SoundManager {
   }
 
   async mobileStart(): Promise<void> {
+    // Must call Tone.start() synchronously in the gesture — no awaits before it
+
     await Tone.start()
 
     const ctx = Tone.getContext().rawContext as AudioContext
 
+    // Resume if suspended, but don't loop forever
     if (ctx.state === 'suspended') {
       await ctx.resume()
     }
@@ -114,14 +123,6 @@ export default class SoundManager {
     console.log('SoundManager ready, context state:', ctx.state)
   }
 
-  private getPlayerPosition(): number {
-    if (this.startedAt === 0 || this.currentIndex === null) return 0
-    const player = SOUND_GRID[this.currentIndex]?.player
-    if (!player || player.state !== 'started') return 0
-    const elapsed = Tone.now() - this.startedAt
-    return elapsed % player.buffer.duration
-  }
-
   playSound(index: number): void {
     const next = SOUND_GRID[index]?.player
     if (!next || !next.loaded) {
@@ -129,53 +130,40 @@ export default class SoundManager {
       return
     }
 
+    // Check actual playing state, not just index
     if (this.currentIndex === index && next.state === 'started') return
 
     const now = Tone.now()
 
-    // Snapshot position of current track before stopping
-    if (this.currentIndex !== null && this.currentIndex !== index) {
-      this.currentSeek = this.getPlayerPosition()
-    }
-
-    // Fade out and stop all other playing sounds
+    // Stop all other playing sounds immediately
     for (const [i, sound] of Object.entries(SOUND_GRID)) {
       if (Number(i) !== index && sound.player) {
         const p = sound.player
         if (p.state === 'started') {
+          this.currentSeek =
+            p.buffer.duration > 0
+              ? ((p as unknown as { _sourceStarted: number })._sourceStarted ?? 0)
+              : 0
+
           p.volume.cancelScheduledValues(now)
-          p.volume.rampTo(SILENT_DB, 0.1)
-          p.stop(now + 0.15)
+          p.stop(now)
         }
       }
     }
 
-    if (next.state === 'started') next.stop(now)
+    // Always restart cleanly
+    if (next.state === 'started') {
+      next.stop(now)
+    }
 
     next.volume.cancelScheduledValues(now)
-    next.volume.setValueAtTime(SILENT_DB, now)
-    next.volume.rampTo(0, 0.1)
-    next.start(now + 0.01)
+    next.volume.setValueAtTime(0, now)
+    next.start(now)
 
-    console.log('currentSeek', this.currentSeek)
     if (this.currentSeek > 0 && this.currentSeek < next.buffer.duration) {
-      next.seek(this.currentSeek, now + 0.01)
+      next.seek(this.currentSeek, now)
     }
 
-    this.startedAt = now + 0.01
     this.currentIndex = index
-  }
-
-  stop(): void {
-    this.currentSeek = this.getPlayerPosition()
-
-    for (const sound of Object.values(SOUND_GRID)) {
-      if (sound.player?.state === 'started') {
-        sound.player.stop()
-      }
-    }
-
-    this.startedAt = 0
-    this.currentIndex = null
   }
 }
