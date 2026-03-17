@@ -172,7 +172,7 @@ watch(currentGridIndex, (value) => {
 })
 
 watch(currentCorner, (value) => {
-  props.soundCallback(currentGridIndex.value, value)
+  $store.currentCorner = value
 })
 
 watch(
