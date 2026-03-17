@@ -1,3 +1,4 @@
+import { CornerZone } from '@renderer/components/app/controller/sound.vue'
 import { APP_STATE } from '@renderer/libs/@global/const'
 import { defineStore } from 'pinia'
 import { Pane } from 'tweakpane'
@@ -28,6 +29,7 @@ export const useAppStore = defineStore('app', {
     pinState: { x: 0, y: 0, vx: 0, vy: 0, nx: 0, ny: 0 },
     particleState: { x: 0, y: 0, rotation: 0 },
     isActive: false,
+    currentCorner: null as CornerZone | null,
     isIpad: getQueryParam('ipad') === '1',
     isJogwheel: false,
     midiFound: false,

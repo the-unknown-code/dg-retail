@@ -16,7 +16,7 @@ import { tryOnMounted } from '@vueuse/core'
 import Three from './components/three/index.vue'
 import MidiDebug from './components/app/debug/midi.vue'
 import ControllerUI from './components/app/controller/ui.vue'
-import ControllerSound from './components/app/controller/sound.vue'
+import ControllerSound, { CornerZone } from './components/app/controller/sound.vue'
 import Midi from './libs/@midi'
 import SoundManager, { setMuffle, setNightReverb } from './libs/@tone'
 import App from './components/app/index.vue'
@@ -33,7 +33,8 @@ const currentGridIndex = ref<number | null>(null)
 new Midi()
 const sound = new SoundManager()
 
-const soundCallback = (index: number | null): void => {
+const soundCallback = (index: number | null, corner: CornerZone | null): void => {
+  $store.currentCorner = corner
   currentGridIndex.value = index
   if ($store.appState !== APP_STATE.MIXING) return
   if (!isSoundStarted.value) return
@@ -49,6 +50,7 @@ const handleStart = async (): Promise<void> => {
 watch(
   () => $store.appState,
   (value) => {
+    $store.currentCorner = null
     if (value === APP_STATE.MIXING) {
       sound.playSound(currentGridIndex.value as number)
     }

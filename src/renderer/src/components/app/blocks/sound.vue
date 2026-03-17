@@ -329,6 +329,7 @@ tryOnBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
   transition: all 0.1s linear;
+  border-radius: 50%;
 
   &.is-ipad {
     width: 12px;
@@ -356,6 +357,24 @@ tryOnBeforeUnmount(() => {
 
   &.is-active {
     --size: 36px;
+    &::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.32) 0%,
+        rgba(237, 237, 253, 0.05) 200%
+      );
+    }
+
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.82) 0%,
+      rgba(237, 237, 253, 0.5) 100%
+    );
 
     &.is-ipad {
       width: 24px !important;

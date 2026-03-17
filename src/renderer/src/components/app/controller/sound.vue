@@ -19,9 +19,10 @@ import { APP_STATE } from '@renderer/libs/@global/const'
 import { useAppStore } from '@renderer/store'
 import { tryOnMounted } from '@vueuse/core'
 import { ref, watch } from 'vue'
+export type CornerZone = 'TL' | 'TR' | 'BL' | 'BR' | null
 
 const props = defineProps<{
-  soundCallback: (index: number | null) => void
+  soundCallback: (index: number | null, corner: CornerZone | null) => void
 }>()
 
 const SOUND_GRID = {
@@ -48,6 +49,7 @@ const $pin = ref<HTMLDivElement | null>(null)
 
 const pinState = { x: 0, y: 0, vx: 0, vy: 0, nx: 0, ny: 0 }
 const currentGridIndex = ref<number | null>(null)
+const currentCorner = ref<CornerZone>(null)
 
 // const DEAD_ZONE = 3
 const PIN_SIZE = 32
@@ -66,6 +68,26 @@ const updateBounds = (): void => {
 const updatePinPosition = (): void => {
   if (!$pin.value) return
   $pin.value.style.transform = `translate(${pinState.x}px, ${pinState.y}px)`
+}
+
+const CORNER_THRESHOLD = 0.15 // 0 = only at edge, 1 = whole screen — tweak to taste
+
+const getCornerZone = (x: number | null = null, y: number | null = null): CornerZone => {
+  const px = x ?? pinState.x
+  const py = y ?? pinState.y
+
+  const padding = 50
+  const nx = px / (bounds.x - padding) // -1 to 1
+  const ny = py / (bounds.y - padding) // -1 to 1
+
+  const inCorner = Math.abs(nx) > CORNER_THRESHOLD && Math.abs(ny) > CORNER_THRESHOLD
+
+  if (!inCorner) return null
+
+  if (nx < 0 && ny < 0) return 'TL'
+  if (nx > 0 && ny < 0) return 'TR'
+  if (nx < 0 && ny > 0) return 'BL'
+  return 'BR'
 }
 
 const getGridIndex = (x: number | null = null, y: number | null = null): number | null => {
@@ -126,6 +148,7 @@ const applyMovement = (rawValue: number, axis: 'x' | 'y'): void => {
 
   $store.pinState = { ...pinState }
   currentGridIndex.value = getGridIndex()
+  currentCorner.value = getCornerZone()
 }
 
 watch(
@@ -145,7 +168,11 @@ watch(
 )
 
 watch(currentGridIndex, (value) => {
-  props.soundCallback(value)
+  props.soundCallback(value, currentCorner.value)
+})
+
+watch(currentCorner, (value) => {
+  props.soundCallback(currentGridIndex.value, value)
 })
 
 watch(

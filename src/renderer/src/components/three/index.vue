@@ -11,6 +11,15 @@
     <div class="video-wrapper">
       <video type="video/mp4" src="/videos/caustics.mp4" autoplay muted loop playsinline />
     </div>
+
+    <div
+      :class="['sound__grid', $store.currentCorner, { 'is-dark': $store.midiData[1].value > 0.5 }]"
+    >
+      <div />
+      <div />
+      <div />
+      <div />
+    </div>
   </div>
   <slot />
 </template>
@@ -205,6 +214,112 @@ onMounted(() => {
   }
   100% {
     --angle: 360deg;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+}
+
+.sound__grid {
+  position: absolute;
+  inset: 0;
+  z-index: 100;
+  mix-blend-mode: plus-lighter;
+
+  &.TL {
+    > div {
+      &:nth-child(1) {
+        transform: scale(1) translate(-50%, -50%);
+        opacity: 1;
+      }
+    }
+  }
+  &.TR {
+    > div {
+      &:nth-child(2) {
+        transform: scale(1) translate(50%, -50%);
+        opacity: 1;
+      }
+    }
+  }
+  &.BL {
+    > div {
+      &:nth-child(3) {
+        transform: scale(1) translate(-50%, 50%);
+        opacity: 1;
+      }
+    }
+  }
+  &.BR {
+    > div {
+      &:nth-child(4) {
+        transform: scale(1) translate(50%, 50%);
+        opacity: 1;
+      }
+    }
+  }
+
+  &.is-dark {
+    > div {
+      &::before {
+        background: radial-gradient(circle, purple 0%, transparent 100%);
+      }
+    }
+  }
+
+  > div {
+    position: absolute;
+    width: 800px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    filter: blur(20px);
+    opacity: 0;
+    transition: all 0.3s ease-out;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle, var(--blue) 0%, transparent 100%);
+      border-radius: 50%;
+      filter: blur(20px);
+      opacity: 1;
+      transition: all 0.3s ease-out;
+      animation: pulse 2s infinite ease-in-out;
+    }
+
+    &:nth-child(1) {
+      top: 0;
+      left: 0;
+      transform: scale(0.5) translate(-50%, -50%);
+    }
+    &:nth-child(2) {
+      top: 0;
+      right: 0;
+      transform: scale(0.5) translate(50%, -50%);
+    }
+    &:nth-child(3) {
+      bottom: 0;
+      left: 0;
+      transform: scale(0.5) translate(-50%, 50%);
+    }
+    &:nth-child(4) {
+      bottom: 0;
+      right: 0;
+      transform: scale(0.5) translate(50%, 50%);
+    }
   }
 }
 
