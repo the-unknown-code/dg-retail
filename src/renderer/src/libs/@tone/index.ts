@@ -67,7 +67,7 @@ const getSoundUrl = (label: string): string => {
 
 export default class SoundManager {
   private currentIndex: number | null = null
-  private currentSeek: number = 0
+  // private currentSeek: number = 0
   private loaded: Promise<void>
 
   constructor() {
