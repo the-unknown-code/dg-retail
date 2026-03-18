@@ -242,16 +242,32 @@ const applySpeed = (speed: number): void => {
 const initialize = (): void => {
   if (!$jogwheel.value) return
   const el = $jogwheel.value
+  let pointerId: number | null = null
 
   const getCenter = (): { cx: number; cy: number } => {
     const rect = el.getBoundingClientRect()
     return { cx: rect.left + rect.width / 2, cy: rect.top + rect.height / 2 }
   }
 
+  // Claim a pointer exclusively on this element
+  el.addEventListener('pointerdown', (e) => {
+    if (pointerId !== null) return
+    pointerId = e.pointerId
+    el.setPointerCapture(e.pointerId) // 👈 this is the key
+  })
+
+  el.addEventListener('pointerup', () => {
+    pointerId = null
+  })
+  el.addEventListener('pointercancel', () => {
+    pointerId = null
+  })
+
   Draggable.create(el, {
     type: 'rotation',
     inertia: false,
     dragResistance: 0.1,
+    allowEventDefault: true,
     onPress(e) {
       e.stopPropagation()
       gsap.killTweensOf(state)
@@ -265,7 +281,11 @@ const initialize = (): void => {
 
     onDrag(e) {
       const { cx, cy } = getCenter()
-      const touch = e.touches ? e.touches[0] : e
+
+      const touch = e.touches
+        ? (Array.from(e.touches).find((t: any) => t.identifier === pointerId) ?? e.touches[0])
+        : e
+
       const now = performance.now()
       const dt = Math.max(1, now - state.lastTime)
       const currentAngle = Math.atan2(touch.clientY - cy, touch.clientX - cx)
