@@ -182,7 +182,7 @@ export default class SoundManager {
     // Map progress ratio onto the new buffer's duration 👈
     if (progress > 0 && next.buffer.duration > 0) {
       const seekPos = progress * next.buffer.duration
-      next.seek(seekPos, now + SEEK_OFFSET) // 👈 schedule slightly after start
+      next.seek(seekPos, now + SEEK_OFFSET)
       this.playStartSeek = seekPos
     } else {
       this.playStartSeek = 0
