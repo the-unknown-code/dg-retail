@@ -124,7 +124,26 @@ export default class SoundManager {
   }
 
   private playStartTime: number = 0
-  private playBufferDuration: number = 0
+  private playStartSeek: number = 0 // the seek offset we started from
+
+  getCurrentSeek(): number {
+    if (this.currentIndex === null) return 0
+    const p = SOUND_GRID[this.currentIndex]?.player
+    if (!p || !p.loaded || p.state !== 'started' || p.buffer.duration === 0) return 0
+
+    const elapsed = Tone.now() - this.playStartTime
+    return (this.playStartSeek + elapsed) % p.buffer.duration
+  }
+
+  // Returns 0–1 progress through the current loop
+  getCurrentProgress(): number {
+    if (this.currentIndex === null) return 0
+    const p = SOUND_GRID[this.currentIndex]?.player
+    if (!p || !p.loaded || p.buffer.duration === 0) return 0
+
+    return this.getCurrentSeek() / p.buffer.duration
+  }
+
   playSound(index: number): void {
     const next = SOUND_GRID[index]?.player
     if (!next || !next.loaded) {
@@ -136,39 +155,41 @@ export default class SoundManager {
 
     const now = Tone.now()
 
-    // Stop all other playing sounds and capture seek position
+    // Capture progress ratio (0–1) from current track before stopping 👈
+    const progress = this.getCurrentProgress()
+
+    // Stop all other playing sounds
     for (const [i, sound] of Object.entries(SOUND_GRID)) {
       if (Number(i) !== index && sound.player) {
         const p = sound.player
         if (p.state === 'started') {
-          const elapsed = now - this.playStartTime
-          this.playBufferDuration = p.buffer.duration
-
-          if (this.playBufferDuration > 0) {
-            this.currentSeek = elapsed % this.playBufferDuration
-          }
-
           p.volume.cancelScheduledValues(now)
           p.stop(now)
         }
       }
     }
 
-    // Always restart cleanly
     if (next.state === 'started') {
       next.stop(now)
     }
 
-    next.volume.cancelScheduledValues(now)
-    next.volume.setValueAtTime(0, now)
+    //next.volume.cancelScheduledValues(now)
+    //next.volume.setValueAtTime(0, now)
+
+    const SEEK_OFFSET = 0.001
     next.start(now)
 
-    if (this.currentSeek > 0 && next.buffer.duration > 0) {
-      const seekPos = this.currentSeek % next.buffer.duration
-      next.seek(seekPos, now)
+    // Map progress ratio onto the new buffer's duration 👈
+    if (progress > 0 && next.buffer.duration > 0) {
+      const seekPos = progress * next.buffer.duration
+      next.seek(seekPos, now + SEEK_OFFSET) // 👈 schedule slightly after start
+      this.playStartSeek = seekPos
+    } else {
+      this.playStartSeek = 0
     }
 
-    // Record when this player started
+    this.playStartTime = now + SEEK_OFFSET
+
     this.playStartTime = now
     this.currentIndex = index
   }
