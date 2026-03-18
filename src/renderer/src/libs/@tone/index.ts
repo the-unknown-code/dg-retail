@@ -144,6 +144,9 @@ export default class SoundManager {
     return this.getCurrentSeek() / p.buffer.duration
   }
 
+  private readonly FADE_TIME = 0.5
+  private readonly SEEK_OFFSET = 0.001
+
   playSound(index: number): void {
     const next = SOUND_GRID[index]?.player
     if (!next || !next.loaded) {
@@ -154,17 +157,17 @@ export default class SoundManager {
     if (this.currentIndex === index && next.state === 'started') return
 
     const now = Tone.now()
-
-    // Capture progress ratio (0–1) from current track before stopping 👈
     const progress = this.getCurrentProgress()
 
-    // Stop all other playing sounds
+    // Fade out all currently playing sounds
     for (const [i, sound] of Object.entries(SOUND_GRID)) {
       if (Number(i) !== index && sound.player) {
         const p = sound.player
         if (p.state === 'started') {
           p.volume.cancelScheduledValues(now)
-          p.stop(now)
+          p.volume.setValueAtTime(p.volume.value, now)
+          p.volume.linearRampToValueAtTime(SILENT_DB, now + this.FADE_TIME) // 👈 fade out
+          p.stop(now + this.FADE_TIME) // 👈 stop after fade completes
         }
       }
     }
@@ -173,22 +176,19 @@ export default class SoundManager {
       next.stop(now)
     }
 
-    //next.volume.cancelScheduledValues(now)
-    //next.volume.setValueAtTime(0, now)
-
-    const SEEK_OFFSET = 0.001
+    // Fade in the next sound
+    next.volume.cancelScheduledValues(now)
+    next.volume.setValueAtTime(SILENT_DB, now) // 👈 start silent
+    next.volume.linearRampToValueAtTime(0, now + this.FADE_TIME) // 👈 fade in to 0db
     next.start(now)
 
-    // Map progress ratio onto the new buffer's duration 👈
     if (progress > 0 && next.buffer.duration > 0) {
       const seekPos = progress * next.buffer.duration
-      next.seek(seekPos, now + SEEK_OFFSET)
+      next.seek(seekPos, now + this.SEEK_OFFSET)
       this.playStartSeek = seekPos
     } else {
       this.playStartSeek = 0
     }
-
-    this.playStartTime = now + SEEK_OFFSET
 
     this.playStartTime = now
     this.currentIndex = index
