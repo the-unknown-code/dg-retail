@@ -34,7 +34,7 @@ export const useAppStore = defineStore('app', {
     isIpad: getQueryParam('ipad') === '1',
     isJogwheel: false,
     midiFound: false,
-    scale: 1.35,
+    scale: 1.25,
     playDuration: getQueryParam('debug') === '1' ? 12000 : 40,
     tweakpane: getQueryParam('debug') === '1' ? new Pane() : null,
     midiData: {

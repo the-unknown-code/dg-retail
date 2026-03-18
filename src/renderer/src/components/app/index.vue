@@ -48,7 +48,7 @@ const $background = ref<HTMLDivElement>()
 const getSoundUrl = (label: string): string => {
   if (import.meta.env.PROD) {
     // Resolve relative to current page — works for file:// protocol
-    return new URL(`sounds/${label}.mp3`, window.location.href).href
+    return new URL(`sounds/${label}.flac`, window.location.href).href
   }
   return `/sounds/${label}.mp3`
 }
