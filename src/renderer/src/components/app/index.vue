@@ -19,12 +19,11 @@
 
     <JogwheelFx v-if="$store.appState === APP_STATE.MIXING" />
     <Header />
-
-    <audio v-if="!$store.debug" ref="$audio" :src="getSoundUrl('env')" playsinline autoplay loop />
   </div>
 </template>
 
 <script setup lang="ts">
+import * as Tone from 'tone'
 import { ref, watch } from 'vue'
 import { useAppStore } from '@renderer/store'
 import Header from './blocks/header.vue'
@@ -48,10 +47,16 @@ const $background = ref<HTMLDivElement>()
 const getSoundUrl = (label: string): string => {
   if (import.meta.env.PROD) {
     // Resolve relative to current page — works for file:// protocol
-    return new URL(`sounds/${label}.flac`, window.location.href).href
+    return new URL(`sounds/${label}.mp3`, window.location.href).href
   }
   return `/sounds/${label}.mp3`
 }
+
+const ambientPlayer = new Tone.Player({
+  url: getSoundUrl('env'),
+  loop: true,
+  autostart: false
+}).toDestination()
 
 const onStart = (): void => {
   $store.appState = APP_STATE.ONBOARDING
@@ -62,17 +67,8 @@ const onMixing = (): void => {
 }
 
 const fadeAudio = (volume: number = 0): void => {
-  if (!$audio.value) return
-
-  const value = { volume: $audio.value?.volume }
-  gsap.to(value, {
-    volume,
-    duration: 1,
-    ease: 'power2.out',
-    onUpdate: () => {
-      $audio.value!.volume = value.volume
-    }
-  })
+  const db = volume <= 0 ? -80 : Tone.gainToDb(volume)
+  ambientPlayer.volume.rampTo(db, 1)
 }
 
 watch(
@@ -101,7 +97,15 @@ const onPlayAudio = (): void => {
   window.removeEventListener('click', onPlayAudio)
 }
 
-tryOnMounted(() => {
+const playAmbientAudio = (): void => {
+  Tone.loaded().then(() => {
+    ambientPlayer.start()
+  })
+}
+
+tryOnMounted(async () => {
+  await Tone.start()
+  playAmbientAudio()
   window.addEventListener('click', onPlayAudio)
 })
 </script>
