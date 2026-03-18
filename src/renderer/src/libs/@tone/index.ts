@@ -123,6 +123,8 @@ export default class SoundManager {
     console.log('SoundManager ready, context state:', ctx.state)
   }
 
+  private playStartTime: number = 0
+  private playBufferDuration: number = 0
   playSound(index: number): void {
     const next = SOUND_GRID[index]?.player
     if (!next || !next.loaded) {
@@ -130,20 +132,21 @@ export default class SoundManager {
       return
     }
 
-    // Check actual playing state, not just index
     if (this.currentIndex === index && next.state === 'started') return
 
     const now = Tone.now()
 
-    // Stop all other playing sounds immediately
+    // Stop all other playing sounds and capture seek position
     for (const [i, sound] of Object.entries(SOUND_GRID)) {
       if (Number(i) !== index && sound.player) {
         const p = sound.player
         if (p.state === 'started') {
-          this.currentSeek =
-            p.buffer.duration > 0
-              ? ((p as unknown as { _sourceStarted: number })._sourceStarted ?? 0)
-              : 0
+          const elapsed = now - this.playStartTime
+          this.playBufferDuration = p.buffer.duration
+
+          if (this.playBufferDuration > 0) {
+            this.currentSeek = elapsed % this.playBufferDuration
+          }
 
           p.volume.cancelScheduledValues(now)
           p.stop(now)
@@ -160,10 +163,13 @@ export default class SoundManager {
     next.volume.setValueAtTime(0, now)
     next.start(now)
 
-    if (this.currentSeek > 0 && this.currentSeek < next.buffer.duration) {
-      next.seek(this.currentSeek, now)
+    if (this.currentSeek > 0 && next.buffer.duration > 0) {
+      const seekPos = this.currentSeek % next.buffer.duration
+      next.seek(seekPos, now)
     }
 
+    // Record when this player started
+    this.playStartTime = now
     this.currentIndex = index
   }
 }
