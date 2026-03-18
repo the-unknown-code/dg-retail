@@ -1,14 +1,17 @@
 <template>
   <div class="ipad-controller">
     <div class="ipad-controller__background">
-      <div :style="{ '--height': `${height * 0.8}px` }">
+      <div class="sound" :style="{ '--height': `${height * 0.8}px` }">
         <p>VIBY</p>
         <p>PARTY</p>
         <p>CHILL</p>
         <p>JAZZY</p>
       </div>
+      <div class="ipad-controller__background--mask" />
+      <div class="ipad-controller__background--blur" :style="{ height: `${height * 1.1}px` }" />
       <svg
         ref="$svg"
+        class="controller"
         width="1376"
         height="437"
         viewBox="0 0 1376 437"
@@ -19,19 +22,19 @@
           <path
             d="M0 106H1376V442H0V106Z"
             fill="url(#paint0_linear_230_502)"
-            fill-opacity="0.4"
+            fill-opacity="1"
             shape-rendering="crispEdges"
           />
           <path
             d="M1375.97 24C1375.96 24 1375.95 24.0118 1375.95 24.0265C1374.39 68.5644 1338.56 104.387 1294.03 105.945C1294.01 105.946 1294 105.958 1294 105.973C1294 105.988 1294.01 106 1294.03 106H1376V24.0273C1376 24.0122 1375.99 24 1375.97 24Z"
             fill="url(#paint1_linear_230_502)"
-            fill-opacity="0.4"
+            fill-opacity="1"
             shape-rendering="crispEdges"
           />
           <path
             d="M0.0273211 24C0.0420415 24 0.0541198 24.0118 0.0546346 24.0265C1.61329 68.5644 37.4356 104.387 81.9735 105.945C81.9882 105.946 82 105.958 82 105.973C82 105.988 81.9878 106 81.9727 106H0V24.0273C0 24.0122 0.0122321 24 0.0273211 24Z"
             fill="url(#paint2_linear_230_502)"
-            fill-opacity="0.4"
+            fill-opacity="1"
             shape-rendering="crispEdges"
           />
         </g>
@@ -142,6 +145,7 @@ const { height } = useElementSize($svg)
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 10;
 
     transform: translateY(40%);
 
@@ -157,6 +161,7 @@ const { height } = useElementSize($svg)
         width: auto;
 
         svg {
+          position: relative;
           width: 100%;
           height: auto;
           display: block;
@@ -190,7 +195,31 @@ const { height } = useElementSize($svg)
     justify-content: space-between;
     pointer-events: none;
 
-    > div {
+    &--blur {
+      position: absolute !important;
+      bottom: 0 !important;
+      left: 0;
+      width: 100%;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+
+      // This masks the blur to fade bottom→top
+      -webkit-mask-image: linear-gradient(to top, black 30%, transparent 100%);
+      mask-image: linear-gradient(to top, black 30%, transparent 100%);
+    }
+
+    &--mask {
+      display: none;
+      position: absolute !important;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 320px !important;
+      background: linear-gradient(to top, rgba(255, 255, 255, 0.6) 0%, transparent 100%);
+      z-index: 1;
+    }
+
+    > div.sound {
       position: relative;
       width: 100%;
       height: calc(100% - var(--height));
@@ -232,7 +261,7 @@ const { height } = useElementSize($svg)
     max-width: 100vw;
 
     path {
-      fill: #ffffff11;
+      fill: #ffffff22;
     }
   }
 }
