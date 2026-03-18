@@ -200,8 +200,8 @@ const { height } = useElementSize($svg)
       bottom: 0 !important;
       left: 0;
       width: 100%;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
 
       // This masks the blur to fade bottom→top
       -webkit-mask-image: linear-gradient(to top, black 30%, transparent 100%);
@@ -261,7 +261,8 @@ const { height } = useElementSize($svg)
     max-width: 100vw;
 
     path {
-      fill: #ffffff22;
+      fill: var(--white);
+      fill-opacity: 0.2;
     }
   }
 }

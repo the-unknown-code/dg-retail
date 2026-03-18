@@ -225,16 +225,22 @@ const applySpeed = (speed: number): void => {
     y: window.innerHeight / 2 - 16
   }
 
+  const padding = 40
   if (props.id === '2') {
-    pinState.x = Math.max(-bounds.x, Math.min(bounds.x, pinState.x + speed))
+    pinState.x = Math.max(-(bounds.x - padding), Math.min(bounds.x - padding, pinState.x + speed))
     pinState.vx = Math.abs(speed) / 10
   } else {
-    pinState.y = Math.max(-bounds.y, Math.min(bounds.y, pinState.y + speed))
+    pinState.y = Math.max(-(bounds.y - padding), Math.min(bounds.y - padding, pinState.y + speed))
     pinState.vy = Math.abs(speed) / 10
   }
 
   pinState.nx = pinState.x / bounds.x
   pinState.ny = pinState.y / bounds.y
+
+  pinState.nx /= $store.scale
+  pinState.ny /= $store.scale
+
+  console.log(pinState.nx, pinState.ny)
 
   $store.pinState = pinState
 }

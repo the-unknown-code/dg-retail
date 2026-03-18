@@ -78,6 +78,7 @@ export default class SeaScene extends M0AbstractScene {
 
           const o = this.#store.pinState
           const scale = $store.scale
+
           const nx = o.nx / scale
           const ny = o.ny / scale
 
