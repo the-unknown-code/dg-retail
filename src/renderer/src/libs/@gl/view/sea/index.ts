@@ -157,26 +157,26 @@ export default class SeaScene extends M0AbstractScene {
   override render(_time: number, _dt: number): void {
     super.render(_time, _dt)
 
-    /*
     const $store = useAppStore()
-    const dxNDC = this.viewport.mouseGL.x - this.#lastMouse.x
-    const dyNDC = this.viewport.mouseGL.y - this.#lastMouse.y
+    if ($store.debug) {
+      const dxNDC = this.viewport.mouseGL.x - this.#lastMouse.x
+      const dyNDC = this.viewport.mouseGL.y - this.#lastMouse.y
 
-    const dxPx = dxNDC * (this.viewport.width / 2)
-    const dyPx = dyNDC * (this.viewport.height / 2)
+      const dxPx = dxNDC * (this.viewport.width / 2)
+      const dyPx = dyNDC * (this.viewport.height / 2)
 
-    const THRESHOLD_PX = 1
-    const distPxSq = dxPx * dxPx + dyPx * dyPx
-    const scale = $store.scale
-    const nx = this.viewport.mouseGL.x / scale
-    const ny = this.viewport.mouseGL.y / scale
+      const THRESHOLD_PX = 1
+      const distPxSq = dxPx * dxPx + dyPx * dyPx
+      const scale = $store.scale
+      const nx = this.viewport.mouseGL.x / scale
+      const ny = this.viewport.mouseGL.y / scale
 
-    if (distPxSq > THRESHOLD_PX * THRESHOLD_PX) {
-      this.#waterSimulation.addDrop(nx, ny, randomFloat(0.03, 0.06), randomFloat(0.01, 0.03))
+      if (distPxSq > THRESHOLD_PX * THRESHOLD_PX) {
+        this.#waterSimulation.addDrop(nx, ny, randomFloat(0.03, 0.06), randomFloat(0.01, 0.03))
 
-      this.#lastMouse.copy(this.viewport.mouseGL)
+        this.#lastMouse.copy(this.viewport.mouseGL)
+      }
     }
-    */
 
     this.#waterSimulation.stepSimulation()
     this.#waterSimulation.updateNormals()
