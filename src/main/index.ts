@@ -25,6 +25,7 @@ function createWindow(): void {
     }
   })
 
+  // update
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
   })
