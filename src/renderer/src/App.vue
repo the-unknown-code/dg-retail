@@ -22,9 +22,11 @@ import SoundManager, { setMuffle, setNightReverb } from './libs/@tone'
 import App from './components/app/index.vue'
 import { useAppStore } from './store'
 import { APP_STATE } from './libs/@global/const'
+import { initMachineId } from './utils/machineId'
 
 const $store = useAppStore()
 const isElectron = navigator.userAgent.toLowerCase().includes('electron')
+$store.isElectron = isElectron
 
 const isSoundStarted = ref(false)
 const isPreloaded = ref(false)
@@ -53,6 +55,16 @@ watch(
     if (value === APP_STATE.MIXING) {
       sound.playSound(currentGridIndex.value as number)
     }
+
+    const now = new Date()
+    const pad = (n: number): string => n.toString().padStart(2, '0')
+    const formattedDate = `${pad(now.getDate())}/${pad(now.getMonth() + 1)}/${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}`
+
+    if (value === APP_STATE.ONBOARDING) {
+      $store.sessionData.startTime = formattedDate
+    } else if (value === APP_STATE.QR_CODE) {
+      $store.sessionData.endTime = formattedDate
+    }
   }
 )
 
@@ -69,6 +81,16 @@ watch(
 
 tryOnMounted(async () => {
   if (isElectron) {
+    const id = await initMachineId()
+    $store.sessionData.machineId = id as string
+
+    await window.electron.ipcRenderer.invoke('init-machine', id)
+
+    // From now on, main knows the ID
+    window.addEventListener('online', () => {
+      window.electron.ipcRenderer.invoke('sync-data')
+    })
+
     await sound.start()
     isSoundStarted.value = true
   } else if (!$store.isIpad) {

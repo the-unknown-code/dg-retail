@@ -1,34 +1,28 @@
 <template>
   <div class="onboarding">
     <div ref="$intro" class="onboarding__intro p default">
-      <animated-text text="WHAT'S YOUR MOOD OF THE DAY?" />
+      <animated-text :text="$store.getLocale('onboarding_01')" />
     </div>
 
     <div ref="$headphones" class="onboarding__content headphones p default">
-      <animated-text
-        :key="keyHeadphones"
-        text="FEEL YOUR VIBE AND PLAY WITH THE DJ CONSOLE<br/>TO DISCOVER YOUR LIGHT BLUE PLAYLIST"
-      />
+      <animated-text :key="keyHeadphones" :text="$store.getLocale('onboarding_02_title')" />
       <div class="icon">
         <img src="/assets/headphones.svg" class="headphones-pulse" />
         <div ref="$content" class="p">
-          <animated-text :key="keyHeadphones" text="Put your headphones on" />
+          <animated-text :key="keyHeadphones" :text="$store.getLocale('onboarding_02_subtitle')" />
         </div>
       </div>
     </div>
 
     <div ref="$fader" class="onboarding__content fader p default">
-      <animated-text
-        :key="keyFader"
-        text="move the fader up and down<br/>to go from day to night"
-      />
+      <animated-text :key="keyFader" :text="$store.getLocale('onboarding_03_title')" />
       <div>
         <Fader animate />
       </div>
     </div>
 
     <div ref="$jogwheels" class="onboarding__content jogwheels p default">
-      <animated-text :key="keyJogwheels" text="spin the jog wheels<br/>to mix your music tracks" />
+      <animated-text :key="keyJogwheels" :text="$store.getLocale('onboarding_04')" />
       <div class="console">
         <div>
           <Jogwheel animate />

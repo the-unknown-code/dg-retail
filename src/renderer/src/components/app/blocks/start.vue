@@ -4,18 +4,22 @@
 
     <div class="language">
       <div
-        v-for="(language, index) in LANGUAGES"
+        v-for="(language, index) in LOCALES"
         ref="$languageItems"
-        :key="language"
+        :key="language.id"
         :class="['language--item', { 'is-active': activeLanguage === index }]"
-        @click="handleLanguageClick(index)"
+        @click="handleLanguageClick(language.id)"
       >
-        <span>{{ language }}</span>
+        <span>{{ language.label }}</span>
       </div>
     </div>
 
     <div class="info p">
-      <animated-text :key="activeLanguage" :text="TEXTS[activeLanguage]" :speed="0.5" />
+      <animated-text
+        :key="activeLanguage"
+        :text="LOCALES[activeLanguage].translations.language_selection"
+        :speed="0.5"
+      />
     </div>
   </div>
 </template>
@@ -27,6 +31,7 @@ import AnimatedText from '@renderer/components/ui/animated-text.vue'
 import { tryOnMounted } from '@vueuse/core'
 import { useAppStore } from '@renderer/store'
 import Circles from '@renderer/components/ui/circles.vue'
+import { LOCALES } from '@renderer/store/locale'
 
 const props = defineProps<{
   callback: () => void
@@ -37,37 +42,13 @@ const $store = useAppStore()
 const $languageItems = ref<HTMLDivElement[]>([])
 const activeLanguage = ref($store.isIpad ? -1 : 0)
 
-const LANGUAGES = [
-  'English',
-  'Italiano',
-  'DEUTSCH',
-  'ESPAÑOL',
-  'عربي',
-  'FRANÇAIS',
-  'PORTUGUÊS',
-  '中国人',
-  '日本語'
-]
-
-const TEXTS = [
-  'SELECT YOUR LANGUAGE AND PRESS START', // English
-  'SELEZIONA LA TUA LINGUA E PREMI START', // Italiano
-  'WÄHLEN SIE IHRE SPRACHE UND DRÜCKEN SIE START', // Deutsch
-  'SELECCIONA TU IDIOMA Y PULSA INICIAR', // Español
-  'اختر لغتك واضغط ابدأ', // Arabic
-  'SÉLECTIONNEZ VOTRE LANGUE ET APPUYEZ SUR START', // Français
-  'SELECIONE O SEU IDIOMA E PRESSIONE INICIAR', // Português
-  '选择您的语言，然后按开始', // Chinese (Simplified)
-  '言語を選択してスタートを押してください' // Japanese
-]
-
 const canChange = ref(true)
 
 const CENTER = 64
 const DEADZONE = 4
 
-const handleLanguageClick = (index: number): void => {
-  activeLanguage.value = index
+const handleLanguageClick = (id: string): void => {
+  $store.sessionData.language = id
   props.callback?.()
 }
 
@@ -76,9 +57,9 @@ const handleJogwheel = (value: number): void => {
   if (Math.abs(value - CENTER) <= DEADZONE) return
 
   if (value > CENTER + DEADZONE) {
-    activeLanguage.value = (activeLanguage.value + 1) % LANGUAGES.length
+    activeLanguage.value = (activeLanguage.value + 1) % LOCALES.length
   } else {
-    activeLanguage.value = (activeLanguage.value - 1 + LANGUAGES.length) % LANGUAGES.length
+    activeLanguage.value = (activeLanguage.value - 1 + LOCALES.length) % LOCALES.length
   }
 
   canChange.value = false

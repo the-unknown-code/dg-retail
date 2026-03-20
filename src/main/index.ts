@@ -1,11 +1,12 @@
 import { app, shell, BrowserWindow, ipcMain, session } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
+import { init, syncData } from './sheets-sync'
+import fs from 'fs'
+import path from 'path'
 import icon from '../../resources/icon.png?asset'
 
 function createWindow(): void {
-  // Create the browser window.
-
   app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required')
 
   const mainWindow = new BrowserWindow({
@@ -13,7 +14,6 @@ function createWindow(): void {
     height: 720,
     show: false,
     autoHideMenuBar: true,
-    // fullscreen: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
@@ -32,8 +32,6 @@ function createWindow(): void {
     return { action: 'deny' }
   })
 
-  // HMR for renderer base on electron-vite cli.
-  // Load the remote URL for development or the local html file for production.
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
   } else {
@@ -41,11 +39,7 @@ function createWindow(): void {
   }
 }
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
 
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
@@ -59,33 +53,67 @@ app.whenReady().then(() => {
     })
   })
 
-  // Default open or close DevTools by F12 in development
-  // and ignore CommandOrControl + R in production.
-  // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  // IPC test
   ipcMain.on('ping', () => console.log('pong'))
+
+  ipcMain.handle('init-machine', async (_, machineId) => {
+    init(machineId)
+    await syncData() // sync immediately on startup
+  })
+
+  ipcMain.handle('sync-data', async () => {
+    await syncData()
+  })
+
+  ipcMain.handle('append-json', (_event, entry: object) => {
+    const filePath = app.isPackaged
+      ? path.join(path.dirname(app.getPath('exe')), 'data.json')
+      : path.join(process.cwd(), 'data.json')
+
+    let existing: object[] = []
+
+    try {
+      const raw = fs.readFileSync(filePath, 'utf-8').trim()
+      existing = JSON.parse(raw)
+    } catch {
+      // file doesn't exist yet or is empty — start fresh
+      existing = []
+    }
+
+    existing.push(entry)
+    fs.writeFileSync(filePath, JSON.stringify(existing, null, 2), 'utf-8')
+    console.log('Appended entry, total:', existing.length)
+    return existing.length
+  })
+
+  // Read machine_id.txt from app root
+  ipcMain.handle('get-machine-id', () => {
+    const srcPath = app.isPackaged
+      ? path.join(path.dirname(app.getPath('exe')), 'machine_id.txt')
+      : path.join(process.cwd(), 'machine_id.txt')
+
+    console.log(srcPath)
+
+    try {
+      return fs.readFileSync(srcPath, 'utf-8').trim()
+    } catch {
+      console.error('machine_id.txt not found at:', srcPath)
+      return null
+    }
+  })
 
   createWindow()
 
   app.on('activate', function () {
-    // On macOS it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
 })
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
   }
 })
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.

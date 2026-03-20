@@ -4,7 +4,7 @@
 
     <div class="qr-code__content text">
       <div class="big p default">
-        <animated-text text="What a Vibe!" />
+        <animated-text :text="$store.getLocale('end_title')" />
       </div>
     </div>
 
@@ -31,7 +31,7 @@
 
     <div class="qr-code__footer text">
       <div class="p">
-        <animated-text text="SCAN THE QR CODE TO REVEAL YOUR LIGHT BLUE PLAYLIST" :delay="0.5" />
+        <animated-text :text="$store.getLocale('end_subtitle')" :delay="0.5" />
       </div>
     </div>
   </div>
@@ -92,6 +92,12 @@ const animate = (): void => {
   })
 }
 
+const saveJSON = async (): Promise<void> => {
+  await window.electronAPI.appendJson({
+    ...$store.sessionData
+  })
+}
+
 watch(
   () => $store.midiData[60].input,
   () => {
@@ -102,6 +108,7 @@ watch(
 
 tryOnMounted(async () => {
   await new Promise((resolve) => setTimeout(resolve, 10))
+  saveJSON()
   animate()
 })
 </script>
