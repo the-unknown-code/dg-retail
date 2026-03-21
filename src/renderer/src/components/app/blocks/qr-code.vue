@@ -36,6 +36,7 @@
     </div>
   </div>
   <div ref="$overlay" class="qr-code__overlay"></div>
+  <div ref="$white" class="qr-code__white"></div>
 </template>
 
 <script setup lang="ts">
@@ -49,12 +50,15 @@ import { EVENTS } from '@renderer/libs/@gl/libs/Const'
 
 const $store = useAppStore()
 const $overlay = ref<HTMLDivElement>()
+const $white = ref<HTMLDivElement>()
 const $svg = ref<HTMLDivElement>()
 const $path = ref<SVGPathElement>()
 const emitter = inject('emitter')
 
 const reloadApp = (): void => {
   if (!$overlay.value) return
+  if (!$white.value) return
+
   gsap.to($overlay.value, {
     opacity: 1,
     duration: 1,
@@ -147,6 +151,18 @@ tryOnMounted(async () => {
   align-items: center;
   gap: 48px;
   z-index: 10;
+
+  &__white {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    z-index: 100;
+    pointer-events: none;
+    opacity: 0;
+  }
 
   &__overlay {
     position: absolute;

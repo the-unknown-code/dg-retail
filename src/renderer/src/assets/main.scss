@@ -12,7 +12,11 @@
   display: none;
 }
 
+html[lang='ar'] {
+}
 
-html[lang="ar"] {
- 
+html {
+  &.electron {
+    cursor: none !important;
+  }
 }

@@ -83,6 +83,7 @@ tryOnMounted(async () => {
   if (isElectron) {
     const id = await initMachineId()
     $store.sessionData.machineId = id as string
+    document.documentElement.classList.add('electron')
 
     await window.electron.ipcRenderer.invoke('init-machine', id)
 

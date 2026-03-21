@@ -15,7 +15,8 @@
       { 'is-ipad': $store.isIpad, active: $store.playDuration - currentTime <= 5 }
     ]"
   >
-    <p>{{ $store.playDuration - currentTime }}</p>
+    <p class="countdown">{{ $store.playDuration - currentTime }}</p>
+    <p>00:{{ String(currentTime).padStart(2, '0') }}</p>
     <div ref="$graph" class="graph">
       <svg
         width="297"
@@ -32,6 +33,7 @@
         </g>
       </svg>
     </div>
+    <p>00:{{ String($store.playDuration).padStart(2, '0') }}</p>
   </div>
 </template>
 
@@ -50,7 +52,7 @@ const props = defineProps<{
   callback: () => void
 }>()
 
-let timeout;
+let timeout
 const $store = useAppStore()
 const $timeline = ref<HTMLDivElement>()
 const $graph = ref<HTMLDivElement>()
@@ -110,13 +112,13 @@ const setVolume = (): void => {
   $audio.value!.volume = volume
 }
 
-let killed = false;
+let killed = false
 watch(
   () => $store.midiData[1].value,
   () => {
     if ($store.appState === APP_STATE.MIXING) {
-      if(!killed) {
-        killed = true;
+      if (!killed) {
+        killed = true
         clearTimeout(timeout)
         gsap.killTweensOf($fader.value as unknown as HTMLDivElement)
         gsap.to($fader.value as unknown as HTMLDivElement, {
@@ -125,7 +127,6 @@ watch(
           ease: 'power2.inOut'
         })
       }
-      
 
       setVolume()
     }
@@ -187,7 +188,7 @@ tryOnBeforeUnmount(() => {
 
   &__timeline {
     position: absolute;
-    width: 370px;
+    width: 470px;
     height: 60px;
     display: flex;
     justify-content: space-between;
@@ -226,8 +227,11 @@ tryOnBeforeUnmount(() => {
       width: 100px;
 
       p {
-        transform: translateY(-50%);
-        opacity: 1;
+        opacity: 0;
+        &.countdown {
+          transform: translateY(-50%);
+          opacity: 1 !important;
+        }
       }
 
       .graph {
@@ -248,18 +252,21 @@ tryOnBeforeUnmount(() => {
     }
 
     p {
-      color: white;
-      position: absolute;
-      left: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 100%;
-      text-align: center;
-      font-size: 40px;
-      opacity: 0;
-      transform: translateY(50%);
-      transition: all 1s ease-out;
-      padding-left: 4px;
+      font-size: 14px;
+      &.countdown {
+        color: white;
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 100%;
+        text-align: center;
+        font-size: 40px;
+        opacity: 0;
+        transform: translateY(50%);
+        transition: all 1s ease-out;
+        padding-left: 4px;
+      }
     }
   }
 }

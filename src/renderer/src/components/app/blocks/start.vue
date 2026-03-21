@@ -1,6 +1,6 @@
 <template>
   <div class="start">
-    <circles :callback="callback" />
+    <circles :callback="handleStart" />
 
     <div class="language">
       <div
@@ -51,6 +51,7 @@ const props = defineProps<{
 const $store = useAppStore()
 const $languageItems = ref<HTMLDivElement[]>([])
 const activeLanguage = ref($store.isIpad ? -1 : 0)
+const currentLanguage = ref(LOCALES[activeLanguage.value].id)
 
 const canChange = ref(true)
 
@@ -65,14 +66,20 @@ const handleLanguageClick = (id: string): void => {
   }, 1000)
 }
 
+const handleStart = (): void => {
+  handleLanguageClick(currentLanguage.value as string)
+}
+
 const handleJogwheel = (value: number): void => {
   if (!canChange.value) return
   if (Math.abs(value - CENTER) <= DEADZONE) return
 
   if (value > CENTER + DEADZONE) {
     activeLanguage.value = (activeLanguage.value + 1) % LOCALES.length
+    currentLanguage.value = LOCALES[activeLanguage.value].id
   } else {
     activeLanguage.value = (activeLanguage.value - 1 + LOCALES.length) % LOCALES.length
+    currentLanguage.value = LOCALES[activeLanguage.value].id
   }
 
   canChange.value = false
