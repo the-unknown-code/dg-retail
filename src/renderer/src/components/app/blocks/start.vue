@@ -59,6 +59,7 @@ const DEADZONE = 4
 
 const handleLanguageClick = (id: string): void => {
   $store.sessionData.language = id
+  document.documentElement.lang = id
   props.callback?.()
 }
 

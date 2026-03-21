@@ -19,6 +19,9 @@ const $text = ref<HTMLParagraphElement>()
 
 const animate = (): void => {
   if (!$text.value) return
+  if (document.documentElement.lang === 'ar') {
+    return
+  }
 
   const $st = new SplitText($text.value, {
     type: 'words, chars',
