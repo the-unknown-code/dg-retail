@@ -4,6 +4,10 @@
     <audio ref="$audio" :src="getSoundUrl('ambience')" playsinline autoplay loop />
   </div>
 
+  <div ref="$fader" class="mixing__fader">
+    <Fader animate />
+  </div>
+
   <div
     ref="$timeline"
     :class="[
@@ -36,6 +40,7 @@ import { tryOnBeforeUnmount, tryOnMounted } from '@vueuse/core'
 import gsap from 'gsap/all'
 import { nextTick, ref, watch } from 'vue'
 import Sound from '../blocks/sound.vue'
+import Fader from '@renderer/components/ui/fader.vue'
 import { fadeVolume } from '@renderer/libs/@tone'
 import { useAppStore } from '@renderer/store'
 import { APP_STATE } from '@renderer/libs/@global/const'
@@ -45,13 +50,33 @@ const props = defineProps<{
   callback: () => void
 }>()
 
+let timeout;
 const $store = useAppStore()
 const $timeline = ref<HTMLDivElement>()
 const $graph = ref<HTMLDivElement>()
 const $audio = ref<HTMLAudioElement>()
+const $fader = ref<HTMLElement>()
 
 const initialize = (): void => {
   if (!$graph.value) return
+  if (!$fader.value) return
+
+  timeout = setTimeout(() => {
+    gsap.to($fader.value as unknown as HTMLDivElement, {
+      opacity: 1,
+      duration: 1,
+      ease: 'power2.inOut',
+      onComplete: () => {
+        clearTimeout(timeout)
+        gsap.to($fader.value as unknown as HTMLDivElement, {
+          delay: 6,
+          opacity: 0,
+          duration: 1,
+          ease: 'power2.inOut'
+        })
+      }
+    })
+  }, $store.playDuration * 500)
 
   const tween = gsap.to($graph.value, {
     width: 297,
@@ -85,10 +110,23 @@ const setVolume = (): void => {
   $audio.value!.volume = volume
 }
 
+let killed = false;
 watch(
   () => $store.midiData[1].value,
   () => {
     if ($store.appState === APP_STATE.MIXING) {
+      if(!killed) {
+        killed = true;
+        clearTimeout(timeout)
+        gsap.killTweensOf($fader.value as unknown as HTMLDivElement)
+        gsap.to($fader.value as unknown as HTMLDivElement, {
+          opacity: 0,
+          duration: 1,
+          ease: 'power2.inOut'
+        })
+      }
+      
+
       setVolume()
     }
   }
@@ -132,6 +170,20 @@ tryOnBeforeUnmount(() => {
   justify-content: flex-end;
   align-items: center;
   z-index: 1;
+
+  &__fader {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+    opacity: 0;
+  }
 
   &__timeline {
     position: absolute;
