@@ -4,8 +4,14 @@
     <audio ref="$audio" :src="getSoundUrl('ambience')" playsinline autoplay loop />
   </div>
 
-  <div ref="$timeline" :class="['mixing__timeline', { 'is-ipad': $store.isIpad }]">
-    <p>00:{{ String(currentTime).padStart(2, '0') }}</p>
+  <div
+    ref="$timeline"
+    :class="[
+      'mixing__timeline',
+      { 'is-ipad': $store.isIpad, active: $store.playDuration - currentTime <= 5 }
+    ]"
+  >
+    <p>{{ $store.playDuration - currentTime }}</p>
     <div ref="$graph" class="graph">
       <svg
         width="297"
@@ -22,7 +28,6 @@
         </g>
       </svg>
     </div>
-    <p>00:45</p>
   </div>
 </template>
 
@@ -53,7 +58,7 @@ const initialize = (): void => {
     duration: $store.playDuration,
     ease: 'none',
     onUpdate: () => {
-      currentTime.value = Math.floor(tween.progress() * 45)
+      currentTime.value = Math.floor(tween.progress() * $store.playDuration)
     },
     onComplete: () => {
       props.callback?.()
@@ -130,7 +135,7 @@ tryOnBeforeUnmount(() => {
 
   &__timeline {
     position: absolute;
-    width: 470px;
+    width: 370px;
     height: 60px;
     display: flex;
     justify-content: space-between;
@@ -140,11 +145,12 @@ tryOnBeforeUnmount(() => {
     bottom: 0;
     padding: 0 var(--app-padding);
     z-index: 1000;
+    overflow: hidden;
 
     backdrop-filter: blur(2px) saturate(1.2);
     -webkit-backdrop-filter: blur(2px) saturate(1.2);
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(64, 237, 253, 0.1) 100%);
-
+    transition: all 0.8s ease-in-out;
     border-radius: 30px;
     box-shadow:
     // top edge light catch
@@ -164,11 +170,25 @@ tryOnBeforeUnmount(() => {
       opacity: 0;
     }
 
+    &.active {
+      width: 100px;
+
+      p {
+        transform: translateY(-50%);
+        opacity: 1;
+      }
+
+      .graph {
+        opacity: 0;
+      }
+    }
+
     .graph {
       position: relative;
       width: 0%;
       transform: translateY(5px);
       overflow: hidden;
+      transition: all 1s ease-out;
 
       svg {
         position: relative;
@@ -177,7 +197,17 @@ tryOnBeforeUnmount(() => {
 
     p {
       color: white;
-      letter-spacing: 0;
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 100%;
+      text-align: center;
+      font-size: 40px;
+      opacity: 0;
+      transform: translateY(50%);
+      transition: all 1s ease-out;
+      padding-left: 4px;
     }
   }
 }
