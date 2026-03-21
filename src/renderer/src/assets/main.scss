@@ -7,6 +7,7 @@
 @use './_layout.scss';
 
 .tp-dfwv {
-    position: fixed !important;
-    right: 8px !important;
+  position: fixed !important;
+  right: 8px !important;
+  display: none;
 }

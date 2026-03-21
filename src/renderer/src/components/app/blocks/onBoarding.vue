@@ -1,7 +1,7 @@
 <template>
   <div class="onboarding">
     <div ref="$intro" class="onboarding__intro p default">
-      <animated-text :text="$store.getLocale('onboarding_01')" />
+      <animated-text :key="keyIntro" :text="$store.getLocale('onboarding_01')" />
     </div>
 
     <div ref="$headphones" class="onboarding__content headphones p default">
@@ -52,22 +52,24 @@ const $headphones = ref<HTMLDivElement>()
 const $fader = ref<HTMLDivElement>()
 const $jogwheels = ref<HTMLDivElement>()
 
+const keyIntro = ref(0)
 const keyHeadphones = ref(0)
 const keyFader = ref(0)
 const keyJogwheels = ref(0)
-const timeline = gsap.timeline({ delay: 2.5 })
+const timeline = gsap.timeline({ delay: 0.5 })
 
 const initialize = (): void => {
   if (!$intro.value || !$headphones.value || !$fader.value || !$jogwheels.value) return
 
+  /*
   timeline.to($intro.value, {
     opacity: 1,
     duration: 1,
     ease: 'power2.inOut'
   })
+  */
 
   timeline.to($headphones.value, {
-    delay: 0.5,
     opacity: 1,
     duration: 1,
     ease: 'power2.inOut',
@@ -107,6 +109,22 @@ const initialize = (): void => {
       keyJogwheels.value++
       if (!$fader.value) return
       gsap.to($fader.value, {
+        opacity: 0,
+        duration: 1,
+        ease: 'power2.inOut'
+      })
+    }
+  })
+
+  timeline.to($intro.value, {
+    delay: 4.5,
+    opacity: 1,
+    duration: 1,
+    ease: 'power2.inOut',
+    onStart: () => {
+      keyIntro.value++
+      if (!$jogwheels.value) return
+      gsap.to($jogwheels.value, {
         opacity: 0,
         duration: 1,
         ease: 'power2.inOut'
@@ -174,6 +192,7 @@ tryOnBeforeUnmount(() => {})
     display: flex;
     justify-content: center;
     align-items: center;
+    opacity: 0;
   }
 
   &__content {

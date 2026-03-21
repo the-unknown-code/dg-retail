@@ -18,15 +18,15 @@ export const LOCALES = [
     id: 'it',
     label: 'Italiano',
     translations: {
-      language_selection: 'seleziona la tua lingua e premi start',
-      onboarding_01: 'qual è il tuo umore di oggi?',
+      language_selection: 'Fai girare i piatti per selezionare la lingua e premi start',
+      onboarding_01: 'Qual è il tuo mood di oggi?',
       onboarding_02_title:
-        'senti il tuo vibe e gioca con la console DJ<br/>per scoprire la tua playlist light blue',
-      onboarding_02_subtitle: 'indossa le cuffie',
-      onboarding_03_title: 'muovi il fader su e giù<br/>per passare dal giorno alla notte',
-      onboarding_04: 'gira le ruote<br/>per mixare le tue tracce musicali',
+        "Senti l'atmosfera (Vibe) e gioca con la<br/>console DJ per scoprire la tua playlist light blue",
+      onboarding_02_subtitle: 'Mettiti le cuffie',
+      onboarding_03_title: 'Muovi il fader su e giù<br/>per passare dal giorno alla notte',
+      onboarding_04: 'Fai girare i piatti<br/>per mixare i tuoi brani',
       end_title: 'che vibe!',
-      end_subtitle: 'scansiona il QR code<br/>per scoprire la tua playlist light blue'
+      end_subtitle: 'Scansiona il QR code per<br/>svelare la tua playlist light blue'
     }
   }
 ]

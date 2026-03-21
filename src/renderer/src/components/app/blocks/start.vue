@@ -21,6 +21,15 @@
         :speed="0.5"
       />
     </div>
+
+    <div class="jogwheels">
+      <div class="jogwheel-item">
+        <Jogwheel animate />
+      </div>
+      <div class="jogwheel-item">
+        <Jogwheel animate />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -32,6 +41,7 @@ import { tryOnMounted } from '@vueuse/core'
 import { useAppStore } from '@renderer/store'
 import Circles from '@renderer/components/ui/circles.vue'
 import { LOCALES } from '@renderer/store/locale'
+import Jogwheel from '@renderer/components/ui/jogwheel.vue'
 
 const props = defineProps<{
   callback: () => void
@@ -95,6 +105,34 @@ tryOnMounted(() => {
   height: 0;
   overflow: hidden;
   pointer-events: none;
+}
+
+.jogwheels {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 220px;
+  align-items: flex-end;
+  flex-grow: 1;
+  pointer-events: none;
+
+  .jogwheel-item {
+    position: relative;
+    width: 400px;
+    aspect-ratio: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: scale(1.43) translateY(35%);
+
+    &:nth-child(2) {
+      transform: scaleX(-1) scale(1.43) translateY(35%);
+    }
+  }
 }
 
 .start {

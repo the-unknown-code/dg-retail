@@ -5,7 +5,7 @@
       <null v-if="$store.appState === APP_STATE.NULL" />
       <start v-else-if="$store.appState === APP_STATE.START" :callback="onStart" :qr-code="false" />
       <on-boarding v-else-if="$store.appState === APP_STATE.ONBOARDING" />
-      <div v-else-if="$store.appState === APP_STATE.MIXING" class="full">
+      <div v-else-if="$store.appState === APP_STATE.MIXING" class="full mixing">
         <mixing :callback="onMixing" />
       </div>
       <div v-else-if="$store.appState === APP_STATE.QR_CODE" class="full">
@@ -138,5 +138,9 @@ tryOnMounted(async () => {
   width: 100%;
   height: 100%;
   z-index: 1000;
+
+  &.mixing {
+    z-index: 2000;
+  }
 }
 </style>

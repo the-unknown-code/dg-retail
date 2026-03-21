@@ -241,9 +241,13 @@ onMounted(() => {
 
 .sound__grid {
   position: absolute;
-  inset: 0;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
   z-index: 100;
-  mix-blend-mode: plus-lighter;
+  mix-blend-mode: hue;
+  // mix-blend-mode: plus-lighter;
 
   &.TL {
     > div {
@@ -291,13 +295,14 @@ onMounted(() => {
 
   > div {
     position: absolute;
-    width: 800px;
+    width: 1000px;
     aspect-ratio: 1;
     border-radius: 50%;
     filter: blur(20px);
     opacity: 0;
     transition: all 0.3s ease-out;
 
+    /*
     &::before {
       content: '';
       position: absolute;
@@ -321,26 +326,67 @@ onMounted(() => {
       transition: all 1s ease-out;
       // animation: pulse 2s infinite ease-in-out;
     }
+      */
 
     &:nth-child(1) {
       top: 0;
       left: 0;
-      transform: scale(0.5) translate(-50%, -50%);
+      transform: scale(0.5) translate(-100%, -100%);
+
+      &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle, #f5d06b 0%, transparent 100%);
+        border-radius: 50%;
+        filter: blur(20px);
+        opacity: 0.9;
+      }
     }
     &:nth-child(2) {
       top: 0;
       right: 0;
-      transform: scale(0.5) translate(50%, -50%);
+      transform: scale(0.5) translate(100%, -100%);
+
+      &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle, #f640c0 0%, transparent 100%);
+        border-radius: 50%;
+        filter: blur(20px);
+        opacity: 0.9;
+      }
     }
     &:nth-child(3) {
       bottom: 0;
       left: 0;
-      transform: scale(0.5) translate(-50%, 50%);
+      transform: scale(0.5) translate(-100%, 100%);
+
+      &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle, #0000ff 20%, transparent 100%);
+        border-radius: 50%;
+        filter: blur(20px);
+        opacity: 1;
+      }
     }
     &:nth-child(4) {
       bottom: 0;
       right: 0;
-      transform: scale(0.5) translate(50%, 50%);
+      transform: scale(0.5) translate(100%, 100%);
+
+      &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle, #5fd259 0%, transparent 100%);
+        border-radius: 50%;
+        filter: blur(20px);
+        opacity: 0.8;
+      }
     }
   }
 }

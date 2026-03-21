@@ -139,6 +139,7 @@ tryOnBeforeUnmount(() => {
     transform: translate(-50%, 100%);
     bottom: 0;
     padding: 0 var(--app-padding);
+    z-index: 1000;
 
     backdrop-filter: blur(2px) saturate(1.2);
     -webkit-backdrop-filter: blur(2px) saturate(1.2);

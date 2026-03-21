@@ -1,16 +1,16 @@
 <template>
   <div class="sound">
     <div v-if="!$store.isIpad" ref="$content" class="sound__content">
-      <div class="sound--item">
+      <div :class="['sound--item', { active: $store.currentCorner === 'TL' }]">
         <animated-text text="FUNKY" />
       </div>
-      <div class="sound--item">
+      <div :class="['sound--item', { active: $store.currentCorner === 'TR' }]">
         <animated-text text="PARTY" />
       </div>
-      <div class="sound--item">
+      <div :class="['sound--item', { active: $store.currentCorner === 'BL' }]">
         <animated-text text="CHILL" />
       </div>
-      <div class="sound--item">
+      <div :class="['sound--item', { active: $store.currentCorner === 'BR' }]">
         <animated-text text="GROOVY" />
       </div>
     </div>
@@ -278,10 +278,22 @@ tryOnBeforeUnmount(() => {
 </script>
 
 <style lang="scss" scoped>
+@keyframes pulse-scale {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.25);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 .sound {
   position: fixed;
   inset: 0;
-  z-index: 9999;
+  z-index: 999;
   color: white;
   display: flex;
   align-items: center;
@@ -295,6 +307,12 @@ tryOnBeforeUnmount(() => {
       text-shadow: 0 4px 10px 0 #0087c166;
       padding: 64px;
       white-space: nowrap;
+
+      &.active {
+        &:deep(> *) {
+          animation: pulse-scale 2s ease-in-out infinite;
+        }
+      }
 
       &:nth-child(1) {
         top: 0;
