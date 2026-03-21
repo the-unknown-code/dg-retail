@@ -59,8 +59,10 @@ const DEADZONE = 4
 
 const handleLanguageClick = (id: string): void => {
   $store.sessionData.language = id
-  document.documentElement.lang = id
   props.callback?.()
+  setTimeout(() => {
+    document.documentElement.lang = id
+  }, 1000)
 }
 
 const handleJogwheel = (value: number): void => {
