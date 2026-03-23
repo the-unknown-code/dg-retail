@@ -13,7 +13,7 @@ function createWindow(): void {
     width: 1920,
     height: 1080,
     show: false,
-    fullscreen: true,
+    fullscreen: false,
     frame: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
@@ -104,6 +104,19 @@ app.whenReady().then(() => {
       return fs.readFileSync(srcPath, 'utf-8').trim()
     } catch {
       console.error('machine_id.txt not found at:', srcPath)
+      return null
+    }
+  })
+
+  ipcMain.handle('get-config', () => {
+    const configPath = app.isPackaged
+      ? path.join(path.dirname(app.getPath('exe')), 'config.json')
+      : path.join(process.cwd(), 'config.json')
+
+    try {
+      return JSON.parse(fs.readFileSync(configPath, 'utf-8'))
+    } catch {
+      console.error('config.json not found at:', configPath)
       return null
     }
   })

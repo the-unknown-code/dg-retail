@@ -22,7 +22,7 @@ import SoundManager, { setMuffle, setNightReverb } from './libs/@tone'
 import App from './components/app/index.vue'
 import { useAppStore } from './store'
 import { APP_STATE } from './libs/@global/const'
-import { initMachineId } from './utils/machineId'
+import { getConfig } from './utils/machineId'
 
 const $store = useAppStore()
 const isElectron = navigator.userAgent.toLowerCase().includes('electron')
@@ -81,13 +81,24 @@ watch(
 
 tryOnMounted(async () => {
   if (isElectron) {
-    const id = await initMachineId()
-    $store.sessionData.machineId = id as string
+    const config: {
+      machineId: string
+      playDuration: number
+      qrDuration: number
+      startingLanguage: string
+    } = (await getConfig()) as {
+      machineId: string
+      playDuration: number
+      qrDuration: number
+      startingLanguage: string
+    }
+
+    $store.config = config
+    $store.sessionData.machineId = (config?.machineId as string) ?? ''
+    $store.playDuration = config?.playDuration ?? 40
+    $store.qrDuration = config?.qrDuration ?? 40
     document.documentElement.classList.add('electron')
 
-    await window.electron.ipcRenderer.invoke('init-machine', id)
-
-    // From now on, main knows the ID
     window.addEventListener('online', () => {
       window.electron.ipcRenderer.invoke('sync-data')
     })

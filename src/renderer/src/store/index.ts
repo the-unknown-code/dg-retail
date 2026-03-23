@@ -29,6 +29,12 @@ export function getQueryParam(name: string): string | null {
 
 export const useAppStore = defineStore('app', {
   state: () => ({
+    config: {
+      startingLanguage: 'fr',
+      machineId: '',
+      playDuration: 40,
+      qrDuration: 15
+    } as { startingLanguage: string; machineId: string; playDuration: number; qrDuration: number },
     electron: typeof window !== 'undefined' && !!window.process?.versions?.electron,
     appState: getQueryParam('debug') === '1' ? APP_STATE.MIXING : APP_STATE.START,
     debug: getQueryParam('debug') === '1',
@@ -45,7 +51,14 @@ export const useAppStore = defineStore('app', {
     isJogwheel: false,
     midiFound: false,
     scale: 1.25,
-    playDuration: getQueryParam('debug') === '1' ? 30 : 40,
+    corners: {
+      TL: 0,
+      TR: 0,
+      BL: 0,
+      BR: 0
+    } as { TL: number; TR: number; BL: number; BR: number },
+    playDuration: getQueryParam('debug') === '1' ? 200 : 20,
+    qrDuration: getQueryParam('debug') === '1' ? 15 : 15,
     tweakpane: getQueryParam('debug') === '1' ? new Pane() : null,
     midiData: {
       1: { name: 'FADER', input: 0, value: 0, x: 0, y: 0, velocity: 0 },
@@ -58,7 +71,8 @@ export const useAppStore = defineStore('app', {
       machineId: '',
       startTime: '',
       endTime: '',
-      mood: ''
+      mood: '',
+      fader: 0
     }
   }),
 

@@ -10,6 +10,10 @@
 
     <div ref="$svg" class="qr-code__svg">
       <img src="/assets/qr-code.png" alt="QR Code" />
+      <div id="qr-svg">
+        <QrCode />
+      </div>
+
       <svg
         width="175"
         height="175"
@@ -47,6 +51,7 @@ import { tryOnMounted } from '@vueuse/core'
 import AnimatedText from '@renderer/components/ui/animated-text.vue'
 import Circles from '@renderer/components/ui/circles.vue'
 import { EVENTS } from '@renderer/libs/@gl/libs/Const'
+import QrCode from '@renderer/components/ui/qr-code.vue'
 
 const $store = useAppStore()
 const $overlay = ref<HTMLDivElement>()
@@ -85,7 +90,7 @@ const animate = (): void => {
 
   gsap.to($path.value, {
     delay: 0.5,
-    duration: 15,
+    duration: $store.qrDuration,
     ease: 'none',
     drawSVG: '100%',
     onComplete: () => {
@@ -184,6 +189,18 @@ tryOnMounted(async () => {
     justify-content: center;
     align-items: center;
     opacity: 0;
+
+    #qr-svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 65%;
+      height: 65%;
+      z-index: 100;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
 
     img,
     svg {

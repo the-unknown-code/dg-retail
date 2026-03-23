@@ -11,6 +11,7 @@ if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electronAPI', {
       getMachineId: () => ipcRenderer.invoke('get-machine-id'),
+      getConfig: () => ipcRenderer.invoke('get-config'),
       appendJson: (entry: object) => ipcRenderer.invoke('append-json', entry)
     })
 

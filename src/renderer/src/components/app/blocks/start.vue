@@ -4,7 +4,7 @@
 
     <div class="language">
       <div
-        v-for="(language, index) in LOCALES"
+        v-for="(language, index) in PARSED_LOCALES"
         ref="$languageItems"
         :key="language.id"
         :class="['language--item', { 'is-active': activeLanguage === index }]"
@@ -17,7 +17,7 @@
     <div class="info p">
       <animated-text
         :key="activeLanguage"
-        :text="LOCALES[activeLanguage].translations.language_selection"
+        :text="PARSED_LOCALES[activeLanguage].translations.language_selection"
         :speed="0.5"
       />
     </div>
@@ -35,7 +35,7 @@
 
 <script setup lang="ts">
 import gsap from 'gsap'
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import AnimatedText from '@renderer/components/ui/animated-text.vue'
 import { tryOnMounted } from '@vueuse/core'
 import { useAppStore } from '@renderer/store'
@@ -49,9 +49,25 @@ const props = defineProps<{
 }>()
 
 const $store = useAppStore()
+
+const PARSED_LOCALES = computed(() => {
+  // Find the starting language
+  const startingLanguage = $store.config.startingLanguage || LOCALES[0].id
+  const startingIndex = LOCALES.findIndex((locale) => locale.id === startingLanguage)
+
+  if (startingIndex === -1) return LOCALES
+
+  // Move the starting language to the first position, maintaining original order for the rest
+  return [
+    LOCALES[startingIndex],
+    ...LOCALES.slice(0, startingIndex),
+    ...LOCALES.slice(startingIndex + 1)
+  ]
+})
+
 const $languageItems = ref<HTMLDivElement[]>([])
 const activeLanguage = ref($store.isIpad ? -1 : 0)
-const currentLanguage = ref(LOCALES[activeLanguage.value].id)
+const currentLanguage = ref(PARSED_LOCALES.value[activeLanguage.value].id)
 
 const canChange = ref(true)
 
@@ -75,11 +91,12 @@ const handleJogwheel = (value: number): void => {
   if (Math.abs(value - CENTER) <= DEADZONE) return
 
   if (value > CENTER + DEADZONE) {
-    activeLanguage.value = (activeLanguage.value + 1) % LOCALES.length
-    currentLanguage.value = LOCALES[activeLanguage.value].id
+    activeLanguage.value = (activeLanguage.value + 1) % PARSED_LOCALES.value.length
+    currentLanguage.value = PARSED_LOCALES.value[activeLanguage.value].id
   } else {
-    activeLanguage.value = (activeLanguage.value - 1 + LOCALES.length) % LOCALES.length
-    currentLanguage.value = LOCALES[activeLanguage.value].id
+    activeLanguage.value =
+      (activeLanguage.value - 1 + PARSED_LOCALES.value.length) % PARSED_LOCALES.value.length
+    currentLanguage.value = PARSED_LOCALES.value[activeLanguage.value].id
   }
 
   canChange.value = false

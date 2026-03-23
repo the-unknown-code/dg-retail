@@ -21,6 +21,7 @@
     "build:linux": "npm run build && electron-builder --linux"
   },
   "dependencies": {
+    "@akamfoad/qrcode": "^0.3.2",
     "@electron-toolkit/preload": "^3.0.2",
     "@electron-toolkit/utils": "^4.0.0",
     "@vueuse/core": "^14.1.0",
@@ -29,6 +30,7 @@
     "gsap": "^3.14.2",
     "howler": "^2.2.4",
     "mitt": "^3.0.1",
+    "nuxt-qrcode": "^0.4.9",
     "pinia": "^3.0.4",
     "postprocessing": "^6.38.2",
     "stats.js": "^0.17.0",

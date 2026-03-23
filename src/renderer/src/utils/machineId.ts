@@ -7,3 +7,9 @@ export async function initMachineId(): Promise<string | null> {
 export function getMachineId(): string | null {
   return localStorage.getItem('machineId')
 }
+
+export async function getConfig(): Promise<object | null> {
+  const config = await window.electronAPI.getConfig()
+  if (config) localStorage.setItem('config', JSON.stringify(config))
+  return config
+}

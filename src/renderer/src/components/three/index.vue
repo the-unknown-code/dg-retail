@@ -63,6 +63,17 @@ const initialize = async (): Promise<void> => {
 
 scope.run(() => {
   watch(
+    () => $store.currentCorner,
+    (v) => {
+      console.log(v)
+      if (!v) return
+
+      $store.corners[v] += 1
+      console.log($store.corners)
+    }
+  )
+
+  watch(
     () => $store.appState,
     () => {
       if ($store.appState === APP_STATE.MIXING) {
@@ -337,7 +348,7 @@ onMounted(() => {
         content: '';
         position: absolute;
         inset: 0;
-        background: radial-gradient(circle, #f5d06b 0%, transparent 100%);
+        background: radial-gradient(circle, #f5d06bed 0%, transparent 100%);
         border-radius: 50%;
         filter: blur(20px);
         opacity: 0.9;
@@ -352,7 +363,7 @@ onMounted(() => {
         content: '';
         position: absolute;
         inset: 0;
-        background: radial-gradient(circle, #f640c0 0%, transparent 100%);
+        background: radial-gradient(circle, #f640c0cc 0%, transparent 100%);
         border-radius: 50%;
         filter: blur(20px);
         opacity: 0.9;
@@ -367,7 +378,7 @@ onMounted(() => {
         content: '';
         position: absolute;
         inset: 0;
-        background: radial-gradient(circle, #0000ff 20%, transparent 100%);
+        background: radial-gradient(circle, #537378 60%, transparent 100%);
         border-radius: 50%;
         filter: blur(20px);
         opacity: 1;
@@ -382,7 +393,7 @@ onMounted(() => {
         content: '';
         position: absolute;
         inset: 0;
-        background: radial-gradient(circle, #5fd259 0%, transparent 100%);
+        background: radial-gradient(circle, #649b83 0%, transparent 100%);
         border-radius: 50%;
         filter: blur(20px);
         opacity: 0.8;
