@@ -112,12 +112,14 @@ const setVolume = (): void => {
   $audio.value!.volume = volume
 }
 
+let lastValue = $store.midiData[1].value
 let killed = false
 watch(
   () => $store.midiData[1].value,
   () => {
     if ($store.appState === APP_STATE.MIXING) {
-      if (!killed) {
+      const delta = Math.abs($store.midiData[1].value - lastValue)
+      if (!killed && delta > 10) {
         killed = true
         clearTimeout(timeout)
         gsap.killTweensOf($fader.value as unknown as HTMLDivElement)

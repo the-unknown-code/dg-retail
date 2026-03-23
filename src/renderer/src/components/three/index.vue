@@ -40,12 +40,14 @@ const scope = effectScope()
 const isMixing = ref($store.appState === APP_STATE.MIXING)
 const isNull = ref($store.appState === APP_STATE.NULL)
 
+/*
 watch(
   () => $store.midiData[1].value,
   (value) => {
     console.log(value)
   }
 )
+*/
 
 const resize = useDebounceFn((): void => {
   if (!$three) return
@@ -65,11 +67,9 @@ scope.run(() => {
   watch(
     () => $store.currentCorner,
     (v) => {
-      console.log(v)
       if (!v) return
 
       $store.corners[v] += 1
-      console.log($store.corners)
     }
   )
 

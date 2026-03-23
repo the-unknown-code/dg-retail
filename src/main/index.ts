@@ -98,8 +98,6 @@ app.whenReady().then(() => {
       ? path.join(path.dirname(app.getPath('exe')), 'machine_id.txt')
       : path.join(process.cwd(), 'machine_id.txt')
 
-    console.log(srcPath)
-
     try {
       return fs.readFileSync(srcPath, 'utf-8').trim()
     } catch {
