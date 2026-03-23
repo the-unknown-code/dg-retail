@@ -57,7 +57,7 @@ export const useAppStore = defineStore('app', {
       BL: 0,
       BR: 0
     } as { TL: number; TR: number; BL: number; BR: number },
-    playDuration: getQueryParam('debug') === '1' ? 15 : 20,
+    playDuration: getQueryParam('debug') === '1' ? 15 : 40,
     qrDuration: getQueryParam('debug') === '1' ? 15 : 15,
     tweakpane: getQueryParam('debug') === '1' ? new Pane() : null,
     midiData: {
