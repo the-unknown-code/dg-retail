@@ -17,12 +17,16 @@
     <div class="info p">
       <animated-text
         :key="activeLanguage"
-        :text="PARSED_LOCALES[activeLanguage].translations.language_selection"
+        :text="
+          $store.isIpad
+            ? 'Select your language'
+            : PARSED_LOCALES[activeLanguage].translations.language_selection
+        "
         :speed="0.5"
       />
     </div>
 
-    <div class="jogwheels">
+    <div v-if="!$store.isIpad" class="jogwheels">
       <div class="jogwheel-item">
         <Jogwheel animate />
       </div>
@@ -67,7 +71,9 @@ const PARSED_LOCALES = computed(() => {
 
 const $languageItems = ref<HTMLDivElement[]>([])
 const activeLanguage = ref($store.isIpad ? -1 : 0)
-const currentLanguage = ref(PARSED_LOCALES.value[activeLanguage.value].id)
+const currentLanguage = $store.isIpad
+  ? ref('en')
+  : ref(PARSED_LOCALES.value[activeLanguage.value].id)
 
 const canChange = ref(true)
 
