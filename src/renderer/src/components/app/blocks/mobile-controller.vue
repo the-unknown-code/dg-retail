@@ -226,6 +226,7 @@ const { height } = useElementSize($svg)
       width: 100%;
       height: calc(100% - var(--height));
       color: white;
+      display: none !important;
 
       p {
         position: absolute;

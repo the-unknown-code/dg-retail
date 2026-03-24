@@ -13,9 +13,10 @@ import dropFragmentShader from '../../../shaders/simulation/drop_fragment.glsl?r
 import normalFragmentShader from '../../../shaders/simulation/normal_fragment.glsl?raw'
 import updateFragmentShader from '../../../shaders/simulation/update_fragment.glsl?raw'
 import { M0Renderer } from '@renderer/libs/@gl/core'
+import { useAppStore } from '@renderer/store'
 
-const SIM_WIDTH = 512
-const SIM_HEIGHT = Math.round(512 * (720 / 1280)) // 288 — maintains 16:9
+let SIM_WIDTH = 512
+let SIM_HEIGHT = Math.round(SIM_WIDTH * (1080 / 1920))
 
 export default class WaterSimulation {
   _camera: OrthographicCamera
@@ -38,6 +39,12 @@ export default class WaterSimulation {
 
   constructor(renderer: M0Renderer) {
     this.#renderer = renderer
+    const $store = useAppStore()
+
+    if ($store.isIpad || $store.isMobile) {
+      SIM_WIDTH = 256
+      SIM_HEIGHT = Math.round(SIM_WIDTH * (window.innerHeight / window.innerWidth))
+    }
 
     this._camera = new OrthographicCamera(0, 1, 1, 0, 0, 2000)
     this._geometry = new PlaneGeometry(2, 2)
