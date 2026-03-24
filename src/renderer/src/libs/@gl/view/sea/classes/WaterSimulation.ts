@@ -42,7 +42,7 @@ export default class WaterSimulation {
     const $store = useAppStore()
 
     if ($store.isIpad || $store.isMobile) {
-      SIM_WIDTH = 256
+      SIM_WIDTH = 512
       SIM_HEIGHT = Math.round(SIM_WIDTH * (window.innerHeight / window.innerWidth))
     }
 
