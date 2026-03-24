@@ -14,7 +14,7 @@
     </transition>
 
     <transition mode="out-in" name="quick-fade">
-      <div v-if="$store.appState === APP_STATE.MIXING" class="full">
+      <div v-if="$store.appState === APP_STATE.MIXING" class="full controller">
         <IpadController v-if="$store.isIpad && !$store.isMobile" />
         <MobileController v-if="$store.isMobile && $store.isIpad" />
       </div>
@@ -142,6 +142,10 @@ tryOnMounted(async () => {
   width: 100%;
   height: 100%;
   z-index: 1000;
+
+  &.controller {
+    z-index: 5000;
+  }
 
   &.mixing {
     z-index: 2000;
