@@ -37,6 +37,7 @@ export default class M0Renderer {
     this.#manager = M0SceneManager.getInstance()
 
     this.#r = new WebGLRenderer({
+      powerPreference: 'high-performance',
       antialias: false,
       alpha: false
     })

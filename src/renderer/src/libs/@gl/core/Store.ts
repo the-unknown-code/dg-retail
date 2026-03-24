@@ -1,4 +1,5 @@
 export default class M0Store {
+  s
   static instance: M0Store
 
   #dpr: number = 1

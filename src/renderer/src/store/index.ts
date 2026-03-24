@@ -47,6 +47,7 @@ export const useAppStore = defineStore('app', {
     isActive: false,
     isElectron: false,
     currentCorner: null as CornerZone | null,
+    isMobile: getQueryParam('mobile') === '1',
     isIpad: getQueryParam('ipad') === '1',
     isJogwheel: false,
     midiFound: false,

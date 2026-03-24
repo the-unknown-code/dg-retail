@@ -466,7 +466,7 @@ onMounted(() => {
     left: 0;
     width: 100%;
     height: 100%;
-    transform: scale(var(--scale));
+    transform: scale(var(--scale), var(--scale));
     transition: filter 2s ease-out;
     z-index: 1;
   }

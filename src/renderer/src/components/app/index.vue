@@ -14,7 +14,10 @@
     </transition>
 
     <transition mode="out-in" name="quick-fade">
-      <IpadController v-if="$store.isIpad && $store.appState === APP_STATE.MIXING" />
+      <div v-if="$store.appState === APP_STATE.MIXING">
+        <IpadController v-if="$store.isIpad && !$store.isMobile" />
+        <MobileController v-if="$store.isMobile && $store.isIpad" />
+      </div>
     </transition>
 
     <JogwheelFx v-if="$store.appState === APP_STATE.MIXING" />
@@ -33,6 +36,7 @@ import QrCode from './blocks/qr-code.vue'
 import OnBoarding from './blocks/onBoarding.vue'
 import Mixing from './blocks/mixing.vue'
 import IpadController from './blocks/ipad-controller.vue'
+import MobileController from './blocks/mobile-controller.vue'
 import JogwheelFx from './blocks/jogwheel-fx.vue'
 
 import { APP_STATE } from '@renderer/libs/@global/const'
