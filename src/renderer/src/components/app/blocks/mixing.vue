@@ -12,7 +12,11 @@
     ref="$timeline"
     :class="[
       'mixing__timeline',
-      { 'is-ipad': $store.isIpad, active: $store.playDuration - currentTime <= 5 }
+      {
+        'is-ipad': $store.isIpad,
+        active: $store.playDuration - currentTime <= 5,
+        'is-mobile': $store.isMobile
+      }
     ]"
   >
     <p class="countdown">{{ $store.playDuration - currentTime }}</p>
@@ -210,6 +214,11 @@ tryOnBeforeUnmount(() => {
     &.is-ipad {
       margin-bottom: 310px;
       opacity: 0;
+    }
+
+    &.is-mobile {
+      margin-bottom: 0;
+      transform: translate(-50%, -37vh) !important;
     }
 
     &.active {
