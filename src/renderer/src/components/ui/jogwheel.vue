@@ -203,6 +203,8 @@ import { tryOnMounted } from '@vueuse/core'
 import gsap from 'gsap'
 import { Draggable } from 'gsap/all'
 import { useAppStore } from '@renderer/store'
+import { CornerZone } from '../app/controller/sound.vue'
+import { clamp } from 'three/src/math/MathUtils.js'
 
 const $store = useAppStore()
 const $jogwheel = ref<HTMLDivElement | null>(null)
@@ -234,15 +236,44 @@ const applySpeed = (speed: number): void => {
     pinState.vy = Math.abs(speed) / 10
   }
 
+  pinState.y = clamp(pinState.y, -bounds.y, 0)
+
   pinState.nx = pinState.x / bounds.x
   pinState.ny = pinState.y / bounds.y
 
   pinState.nx /= $store.scale
   pinState.ny /= $store.scale
 
-  console.log(pinState.nx, pinState.ny)
-
   $store.pinState = pinState
+  $store.currentCorner = getCornerZone($store.pinState.x, $store.pinState.y)
+}
+
+const PIN_SIZE = 32
+
+const bounds = {
+  x: window.innerWidth / 2 - PIN_SIZE / 2,
+  y: window.innerHeight / 2 - PIN_SIZE / 2
+}
+
+const CORNER_THRESHOLD = 0.15 // 0 = only at edge, 1 = whole screen — tweak to taste
+
+const getCornerZone = (x: number | null = null, y: number | null = null): CornerZone => {
+  const px = x ?? $store.pinState.x
+  const py = y ?? $store.pinState.y
+
+  const padding = 50
+  const nx = px / (bounds.x - padding) // -1 to 1
+  let ny = py / (bounds.y - padding) // -1 to 1
+  ny = gsap.utils.mapRange(-1, 0, -1, 1, ny)
+
+  const inCorner = Math.abs(nx) > CORNER_THRESHOLD && Math.abs(ny) > CORNER_THRESHOLD
+
+  if (!inCorner) return null
+
+  if (nx < 0 && ny < 0) return 'TL'
+  if (nx > 0 && ny < 0) return 'TR'
+  if (nx < 0 && ny > 0) return 'BL'
+  return 'BR'
 }
 
 const initialize = (): void => {

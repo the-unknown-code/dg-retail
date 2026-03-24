@@ -1,5 +1,5 @@
 <template>
-  <div class="controller-sound">
+  <div :class="['controller-sound', { 'is-ipad': $store.isIpad }]">
     <div class="controller-sound__grid">
       <div
         v-for="i in 16"
@@ -18,6 +18,7 @@
 import { APP_STATE } from '@renderer/libs/@global/const'
 import { useAppStore } from '@renderer/store'
 import { tryOnMounted } from '@vueuse/core'
+import gsap from 'gsap/all'
 import { ref, watch } from 'vue'
 export type CornerZone = 'TL' | 'TR' | 'BL' | 'BR' | null
 
@@ -146,7 +147,10 @@ const applyMovement = (rawValue: number, axis: 'x' | 'y'): void => {
   pinState.nx = pinState.x / (bounds.x - padding)
   pinState.ny = pinState.y / (bounds.y - padding)
 
-  $store.pinState = { ...pinState }
+  if (!$store.isIpad) {
+    $store.pinState = { ...pinState }
+  }
+
   currentGridIndex.value = getGridIndex()
   currentCorner.value = getCornerZone()
 }
@@ -180,8 +184,23 @@ watch(
   () => {
     if ($store.appState === APP_STATE.MIXING && $store.isIpad) {
       if (!$pin.value) return
-      $pin.value.style.transform = `translate(${$store.pinState.x}px, ${$store.pinState.y}px)`
-      currentGridIndex.value = getGridIndex($store.pinState.x, $store.pinState.y)
+
+      if (!$store.isIpad) {
+        $pin.value.style.transform = `translate(${$store.pinState.x}px, ${$store.pinState.y}px)`
+        currentGridIndex.value = getGridIndex($store.pinState.x, $store.pinState.y)
+      } else {
+        const y = gsap.utils.mapRange(
+          -window.innerHeight / 2,
+          0,
+          -window.innerHeight / 2,
+          window.innerHeight / 2,
+          $store.pinState.y
+        )
+
+        console.log(y)
+        $pin.value.style.transform = `translate(${$store.pinState.x}px, ${y}px)`
+        currentGridIndex.value = getGridIndex($store.pinState.x, y)
+      }
     }
   }
 )

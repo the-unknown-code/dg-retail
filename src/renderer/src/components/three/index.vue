@@ -13,7 +13,11 @@
     </div>
 
     <div
-      :class="['sound__grid', $store.currentCorner, { 'is-dark': $store.midiData[1].value > 55 }]"
+      :class="[
+        'sound__grid',
+        $store.currentCorner,
+        { 'is-dark': $store.midiData[1].value > 55, 'is-ipad': $store.isIpad }
+      ]"
     >
       <div />
       <div />
@@ -259,6 +263,10 @@ onMounted(() => {
   z-index: 100;
   mix-blend-mode: hue;
   // mix-blend-mode: plus-lighter;
+
+  &.is-ipad {
+    height: 65%;
+  }
 
   &.TL {
     > div {
