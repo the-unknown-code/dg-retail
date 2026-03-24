@@ -36,8 +36,11 @@ export default class Water {
 
     this.#pinia = useAppStore()
     this.#store = M0Store.getInstance()
+    const $store = useAppStore()
 
-    this._geometry = new PlaneGeometry(2, 2, 512, 512)
+    const segments = $store.isMobile ? 64 : 512
+
+    this._geometry = new PlaneGeometry(2, 2, segments, segments)
     this._shader = new ShaderMaterial({
       uniforms: {
         globalDay: { value: DAY_PARAMS.globalDay },
@@ -56,8 +59,6 @@ export default class Water {
     })
 
     this._mesh = new Mesh(this._geometry, this._shader)
-
-    const $store = useAppStore()
 
     const midiToExp = (input: number): number => {
       const t = input / 127

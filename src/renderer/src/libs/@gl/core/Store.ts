@@ -1,3 +1,5 @@
+import { useAppStore } from '@renderer/store'
+
 export default class M0Store {
   s
   static instance: M0Store
@@ -14,7 +16,8 @@ export default class M0Store {
     return M0Store.instance
   }
   constructor() {
-    this.#dpr = 1 // Math.min(window.devicePixelRatio, 1)
+    const $store = useAppStore()
+    this.#dpr = $store.isMobile ? 0.75 : 1
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
