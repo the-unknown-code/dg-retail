@@ -218,7 +218,7 @@ tryOnBeforeUnmount(() => {
 
     &.is-mobile {
       margin-bottom: 0;
-      transform: translate(-50%, -38vh) scale(0.65) !important;
+      transform: translate(-50%, -39vh) scale(0.65) !important;
     }
 
     &.active {
