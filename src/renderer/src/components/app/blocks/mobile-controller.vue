@@ -10,6 +10,7 @@
       <div class="ipad-controller__background--mask" />
       <div class="ipad-controller__background--blur" :style="{ height: `${height * 1.1}px` }" />
       <svg
+        ref="$svg"
         width="375"
         height="393"
         viewBox="0 0 375 393"
@@ -116,13 +117,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useElementSize } from '@vueuse/core'
 import Jogwheel from '../../ui/jogwheel.vue'
 import Fader from '../../ui/fader.vue'
 
 const $svg = ref<HTMLDivElement | null>(null)
 const { height } = useElementSize($svg)
+
+watch(
+  height,
+  (newHeight) => {
+    document.documentElement.style.setProperty('--svg-height', `${newHeight}px`)
+  },
+  { immediate: true }
+)
 </script>
 
 <style lang="scss" scoped>
