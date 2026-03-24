@@ -1,5 +1,5 @@
 <template>
-  <div ref="$header" class="header">
+  <div ref="$header" :class="['header', { 'is-mobile': $store.isMobile }]">
     <svg
       width="241"
       height="112"
@@ -133,10 +133,13 @@
 </template>
 
 <script setup lang="ts">
+import { useAppStore } from '@renderer/store'
 import { tryOnMounted } from '@vueuse/core'
 import gsap from 'gsap/all'
 import { ref } from 'vue'
 const $header = ref<HTMLDivElement>()
+
+const $store = useAppStore()
 
 const initialize = (): void => {
   if (!$header.value) return
@@ -201,6 +204,16 @@ tryOnMounted(() => {
   justify-content: center;
   align-items: center;
   z-index: 9999;
+
+  &.is-mobile {
+    top: -12px;
+
+    img,
+    svg {
+      width: 40vw;
+      transform: translateY(0%);
+    }
+  }
 
   img,
   svg {
