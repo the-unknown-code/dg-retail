@@ -14,7 +14,7 @@
     </transition>
 
     <transition mode="out-in" name="quick-fade">
-      <div v-if="$store.appState === APP_STATE.MIXING">
+      <div v-if="$store.appState === APP_STATE.MIXING" class="full">
         <IpadController v-if="$store.isIpad && !$store.isMobile" />
         <MobileController v-if="$store.isMobile && $store.isIpad" />
       </div>
