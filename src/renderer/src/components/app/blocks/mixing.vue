@@ -217,8 +217,8 @@ tryOnBeforeUnmount(() => {
     }
 
     &.is-mobile {
-      margin-bottom: calc(var(--svg-height) * 1 - 20vw) !important;
-      // transform: translate(-50%, -39vh) scale(0.65) !important;
+      margin-bottom: calc(var(--svg-height) * 1 - 30vw) !important;
+      transform: translate(-50%, 0) scale(0.65) !important;
     }
 
     &.active {
