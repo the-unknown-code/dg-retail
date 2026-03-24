@@ -64,6 +64,12 @@ const reloadApp = (): void => {
   if (!$overlay.value) return
   if (!$white.value) return
 
+  document.documentElement.classList.remove('loaded')
+  setTimeout(() => {
+    window.location.reload()
+  }, 1500)
+
+  /*
   gsap.to($overlay.value, {
     opacity: 1,
     duration: 1,
@@ -72,6 +78,7 @@ const reloadApp = (): void => {
       window.location.reload()
     }
   })
+    */
 }
 
 const animate = (): void => {

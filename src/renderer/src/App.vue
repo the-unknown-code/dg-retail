@@ -7,11 +7,13 @@
     <MidiDebug />
     <ControllerUI />
     <ControllerSound :sound-callback="soundCallback" />
+
+    <div class="background" />
   </main>
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { nextTick, ref, watch } from 'vue'
 import { tryOnMounted } from '@vueuse/core'
 import Three from './components/three/index.vue'
 import MidiDebug from './components/app/debug/midi.vue'
@@ -80,6 +82,8 @@ watch(
 )
 
 tryOnMounted(async () => {
+  await nextTick()
+
   if (isElectron) {
     const config: {
       machineId: string
@@ -113,6 +117,10 @@ tryOnMounted(async () => {
     await sound.preload()
     isPreloaded.value = true
   }
+
+  setTimeout(() => {
+    document.documentElement.classList.add('loaded')
+  }, 150)
 })
 </script>
 
@@ -153,5 +161,21 @@ main {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+.background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: white;
+  pointer-events: none;
+  z-index: 999;
+  transition: opacity 1.5s ease;
+
+  &:where(.loaded *) {
+    opacity: 0;
+  }
 }
 </style>
