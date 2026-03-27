@@ -353,35 +353,9 @@ onMounted(() => {
     width: 1000px;
     aspect-ratio: 1;
     border-radius: 50%;
-    filter: blur(20px);
+    //filter: blur(20px);
     opacity: 0;
     transition: all 0.3s ease-out;
-
-    /*
-    &::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle, var(--blue) 0%, transparent 100%);
-      border-radius: 50%;
-      filter: blur(20px);
-      opacity: 1;
-      transition: all 1s ease-out;
-      // animation: pulse 2s infinite ease-in-out;
-    }
-
-    &::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle, purple 0%, transparent 100%);
-      border-radius: 50%;
-      filter: blur(20px);
-      opacity: 0;
-      transition: all 1s ease-out;
-      // animation: pulse 2s infinite ease-in-out;
-    }
-      */
 
     &:nth-child(1) {
       top: 0;
@@ -392,9 +366,9 @@ onMounted(() => {
         content: '';
         position: absolute;
         inset: 0;
-        background: radial-gradient(circle, #f5d06bed 0%, transparent 100%);
+        background: radial-gradient(circle, #f5d06bed 0%, transparent 80%);
         border-radius: 50%;
-        filter: blur(20px);
+        //filter: blur(20px);
         opacity: 0.9;
       }
     }
@@ -407,9 +381,9 @@ onMounted(() => {
         content: '';
         position: absolute;
         inset: 0;
-        background: radial-gradient(circle, #f640c0cc 0%, transparent 100%);
+        background: radial-gradient(circle, #f640c0cc 0%, transparent 80%);
         border-radius: 50%;
-        filter: blur(20px);
+        //filter: blur(20px);
         opacity: 0.9;
       }
     }
@@ -422,9 +396,9 @@ onMounted(() => {
         content: '';
         position: absolute;
         inset: 0;
-        background: radial-gradient(circle, #537378 60%, transparent 100%);
+        background: radial-gradient(circle, #537378 60%, transparent 80%);
         border-radius: 50%;
-        filter: blur(20px);
+        //filter: blur(20px);
         opacity: 1;
       }
     }
@@ -437,9 +411,9 @@ onMounted(() => {
         content: '';
         position: absolute;
         inset: 0;
-        background: radial-gradient(circle, #649b83 0%, transparent 100%);
+        background: radial-gradient(circle, #649b83 0%, transparent 80%);
         border-radius: 50%;
-        filter: blur(20px);
+        //filter: blur(20px);
         opacity: 0.8;
       }
     }

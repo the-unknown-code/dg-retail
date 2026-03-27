@@ -6,5 +6,14 @@ export default defineConfig({
     glsl({
       include: ['**/*.glsl', '**/*.wgsl', '**/*.vert', '**/*.frag']
     })
-  ]
+  ],
+  server: {
+    headers: {
+      'Content-Security-Policy': [
+        "default-src 'self'",
+        "script-src 'self' 'unsafe-inline'",
+        "connect-src 'self' https://oauth2.googleapis.com https://sheets.googleapis.com"
+      ].join('; ')
+    }
+  }
 })

@@ -25,6 +25,7 @@ import App from './components/app/index.vue'
 import { useAppStore } from './store'
 import { APP_STATE } from './libs/@global/const'
 import { getConfig } from './utils/machineId'
+import { syncData } from './libs/@google/api'
 
 const $store = useAppStore()
 const isElectron = navigator.userAgent.toLowerCase().includes('electron')
@@ -103,8 +104,9 @@ tryOnMounted(async () => {
     $store.qrDuration = config?.qrDuration ?? 40
     document.documentElement.classList.add('electron')
 
+    window.electron.ipcRenderer.invoke('init-machine', config.machineId)
     window.addEventListener('online', () => {
-      window.electron.ipcRenderer.invoke('sync-data')
+      window.electron.ipcRenderer.invoke('sync-data', config.machineId)
     })
 
     await sound.start()
@@ -114,6 +116,20 @@ tryOnMounted(async () => {
     isPreloaded.value = true
     // isSoundStarted.value = true
   } else {
+    const id = localStorage.getItem('id')
+
+    if (!$store.isMobile && !id) {
+      // Open a prompt dialog box to input an id
+      const userId = window.prompt('Please enter your ID:', '')
+      if (userId && typeof userId === 'string' && userId.trim().length > 0) {
+        $store.sessionData.machineId = userId.trim()
+        localStorage.setItem('id', userId.trim())
+      }
+    } else if (!$store.isMobile && id) {
+      $store.sessionData.machineId = id as string
+      syncData(id, [{ a: '1' }])
+    }
+
     await sound.preload()
     isPreloaded.value = true
   }
