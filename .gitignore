@@ -4,3 +4,5 @@ out
 .DS_Store
 .eslintcache
 *.log*
+credentials.json
+src/renderer/public/data
