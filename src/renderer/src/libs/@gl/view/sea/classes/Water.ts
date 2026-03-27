@@ -38,7 +38,7 @@ export default class Water {
     this.#store = M0Store.getInstance()
     const $store = useAppStore()
 
-    const segments = $store.isMobile ? 64 : 512
+    const segments = $store.isMobile ? 256 : 512
 
     this._geometry = new PlaneGeometry(2, 2, segments, segments)
     this._shader = new ShaderMaterial({

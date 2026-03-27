@@ -6,7 +6,7 @@
 
     <div ref="$headphones" class="onboarding__content headphones p default">
       <animated-text :key="keyHeadphones" :text="$store.getLocale('onboarding_02_title')" />
-      <div class="icon">
+      <div v-if="!$store.isMobile" class="icon">
         <img src="/assets/headphones.svg" class="headphones-pulse" />
         <div ref="$content" class="p">
           <animated-text :key="keyHeadphones" :text="$store.getLocale('onboarding_02_subtitle')" />
@@ -195,6 +195,16 @@ tryOnBeforeUnmount(() => {})
     opacity: 0;
   }
 
+  .p {
+    &:where(.is-mobile *) {
+      text-align: center;
+
+      br {
+        display: none;
+      }
+    }
+  }
+
   &__content {
     position: absolute;
     width: 100%;
@@ -206,7 +216,7 @@ tryOnBeforeUnmount(() => {})
     gap: var(--app-gap);
     text-align: center;
     opacity: 0;
-    padding-top: 140px;
+    //  padding-top: 140px;
 
     .icon {
       position: relative;
@@ -238,6 +248,10 @@ tryOnBeforeUnmount(() => {})
       &:deep(.ui-jogwheel) {
         width: 240px;
         height: auto;
+
+        &:where(.is-mobile *) {
+          width: 320px;
+        }
       }
 
       &:deep(.ui-fader) {

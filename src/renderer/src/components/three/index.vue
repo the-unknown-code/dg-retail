@@ -288,13 +288,13 @@ onMounted(() => {
 
       &:nth-child(3) {
         &::before {
-          background: radial-gradient(circle, #005577cc 0%, transparent 100%);
+          background: radial-gradient(circle, #005577cc 0%, transparent 70%);
         }
       }
 
       &:nth-child(4) {
         &::before {
-          background: radial-gradient(circle, #00ff22dd 0%, transparent 100%);
+          background: radial-gradient(circle, #00ff22dd 0%, transparent 70%);
         }
       }
     }

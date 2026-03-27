@@ -17,7 +17,7 @@ export default class M0Store {
   }
   constructor() {
     const $store = useAppStore()
-    this.#dpr = $store.isMobile ? 0.75 : 1
+    this.#dpr = $store.isMobile ? 1 : 1
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,5 +1,5 @@
 <template>
-  <div class="app">
+  <div :class="['app', { 'is-mobile': $store.isMobile }]">
     <div ref="$background" class="app__background" />
     <transition mode="out-in" name="quick-fade">
       <null v-if="$store.appState === APP_STATE.NULL" />

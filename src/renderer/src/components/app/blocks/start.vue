@@ -2,7 +2,7 @@
   <div class="start">
     <circles :callback="handleStart" />
 
-    <div class="language">
+    <div v-if="!$store.isMobile" class="language">
       <div
         v-for="(language, index) in PARSED_LOCALES"
         ref="$languageItems"
@@ -13,8 +13,11 @@
         <span>{{ language.label }}</span>
       </div>
     </div>
+    <div v-else class="start-btn" @click="handleLanguageClick('en')">
+      <img src="/assets/start.png" alt="Start" />
+    </div>
 
-    <div class="info p">
+    <div v-if="!$store.isMobile" class="info p">
       <animated-text
         :key="activeLanguage"
         :text="
@@ -138,6 +141,16 @@ tryOnMounted(() => {
   height: 0;
   overflow: hidden;
   pointer-events: none;
+}
+
+.start-btn {
+  position: relative;
+  z-index: 1000;
+
+  img {
+    width: 320px;
+    height: 320px;
+  }
 }
 
 .jogwheels {
