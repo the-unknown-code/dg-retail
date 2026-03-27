@@ -350,8 +350,8 @@ tryOnBeforeUnmount(() => {
   border-radius: 50%;
 
   &.is-ipad {
-    width: 12px;
-    height: 12px;
+    width: 24px;
+    height: 24px;
     backdrop-filter: blur(2px) saturate(1.2);
     -webkit-backdrop-filter: blur(2px) saturate(1.2);
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(64, 237, 253, 0.1) 100%);
@@ -369,7 +369,7 @@ tryOnBeforeUnmount(() => {
       // outer glow
       0 8px 32px rgba(15, 184, 240, 0.15),
       0 2px 8px rgba(0, 0, 0, 0.2);
-    opacity: 0;
+    opacity: 1;
     mix-blend-mode: lighten;
   }
 

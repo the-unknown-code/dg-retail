@@ -1,8 +1,8 @@
 <template>
   <div :class="['controller-sound', { 'is-ipad': $store.isIpad }]">
-    <div class="controller-sound__grid">
+    <div :class="['controller-sound__grid', { 'is-mobile': $store.isMobile }]">
       <div
-        v-for="i in 16"
+        v-for="i in $store.isMobile ? 4 : 16"
         :key="i"
         :class="['controller-sound__grid-item', { 'is-active': currentGridIndex == i }]"
         :style="{ backgroundColor: SOUND_GRID[i] ? SOUND_GRID[i].color : '' }"
@@ -26,26 +26,34 @@ const props = defineProps<{
   soundCallback: (index: number | null) => void
 }>()
 
-const SOUND_GRID = {
-  1: { label: 'B3', color: '#ffb3f4' },
-  2: { label: 'B3_75-25_B4', color: '#efc6fe' },
-  3: { label: 'B3_25-75_B4', color: '#e2ceff' },
-  4: { label: 'B4', color: '#c9daf8' },
-  5: { label: 'B1_25-75_B3', color: '#fdcddd' },
-  6: { label: 'B3-75_B1-25_B4-25', color: '#ffffff' },
-  7: { label: 'B4-75_B2-25_B3-25', color: '#fffeff' },
-  8: { label: 'B2_25-75_B4', color: '#c9ffff' },
-  9: { label: 'B1_75-25_B3', color: '#fccdc7' },
-  10: { label: 'B1-75_B2-25_B4-25', color: '#ffffff' },
-  11: { label: 'B2-75_B1-25_B3-25', color: '#ffffff' },
-  12: { label: 'B2_75-25_B4', color: '#c0ffd0' },
-  13: { label: 'B1', color: '#f5c5c5' },
-  14: { label: 'B1_75-25_B2', color: '#ffe6cd' },
-  15: { label: 'B1_25-75_B2', color: '#fdffce' },
-  16: { label: 'B2', color: '#b6d7a8' }
-}
-
 const $store = useAppStore()
+
+const SOUND_GRID = $store.isMobile
+  ? {
+      1: { label: 'B3', color: '#ffb3f4' },
+      2: { label: 'B4', color: '#c9daf8' },
+      3: { label: 'B1', color: '#f5c5c5' },
+      4: { label: 'B2', color: '#b6d7a8' }
+    }
+  : {
+      1: { label: 'B3', color: '#ffb3f4' },
+      2: { label: 'B3_75-25_B4', color: '#efc6fe' },
+      3: { label: 'B3_25-75_B4', color: '#e2ceff' },
+      4: { label: 'B4', color: '#c9daf8' },
+      5: { label: 'B1_25-75_B3', color: '#fdcddd' },
+      6: { label: 'B3-75_B1-25_B4-25', color: '#ffffff' },
+      7: { label: 'B4-75_B2-25_B3-25', color: '#fffeff' },
+      8: { label: 'B2_25-75_B4', color: '#c9ffff' },
+      9: { label: 'B1_75-25_B3', color: '#fccdc7' },
+      10: { label: 'B1-75_B2-25_B4-25', color: '#ffffff' },
+      11: { label: 'B2-75_B1-25_B3-25', color: '#ffffff' },
+      12: { label: 'B2_75-25_B4', color: '#c0ffd0' },
+      13: { label: 'B1', color: '#f5c5c5' },
+      14: { label: 'B1_75-25_B2', color: '#ffe6cd' },
+      15: { label: 'B1_25-75_B2', color: '#fdffce' },
+      16: { label: 'B2', color: '#b6d7a8' }
+    }
+
 const $pin = ref<HTMLDivElement | null>(null)
 
 const pinState = { x: 0, y: 0, vx: 0, vy: 0, nx: 0, ny: 0 }
@@ -101,6 +109,8 @@ const getGridIndex = (x: number | null = null, y: number | null = null): number 
   const centerX = w / 2 + px
   const centerY = h / 2 + py
 
+  const gridSize = $store.isMobile ? 2 : 4 // ← add this
+
   const corners = [
     { x: centerX - PIN_SIZE / 2, y: centerY - PIN_SIZE / 2 },
     { x: centerX + PIN_SIZE / 2, y: centerY - PIN_SIZE / 2 },
@@ -109,11 +119,12 @@ const getGridIndex = (x: number | null = null, y: number | null = null): number 
   ]
 
   for (const corner of corners) {
-    const col = Math.floor((corner.x / w) * 4)
-    const row = Math.floor((corner.y / h) * 4)
+    const col = Math.floor((corner.x / w) * gridSize) // ← was hardcoded 4
+    const row = Math.floor((corner.y / h) * gridSize) // ← was hardcoded 4
 
-    if (col >= 0 && col <= 3 && row >= 0 && row <= 3) {
-      return row * 4 + col + 1
+    if (col >= 0 && col <= gridSize - 1 && row >= 0 && row <= gridSize - 1) {
+      // ← was 3
+      return row * gridSize + col + 1 // ← was row * 4 + col + 1
     }
   }
 
@@ -197,7 +208,6 @@ watch(
           $store.pinState.y
         )
 
-        console.log(y)
         $pin.value.style.transform = `translate(${$store.pinState.x}px, ${y}px)`
         currentGridIndex.value = getGridIndex($store.pinState.x, y)
       }
@@ -258,6 +268,11 @@ tryOnMounted(() => {
     height: 100%;
     color: black;
     opacity: 0.25;
+
+    &.is-mobile {
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+    }
 
     > div {
       position: relative;

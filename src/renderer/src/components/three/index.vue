@@ -8,15 +8,26 @@
     <div id="gl--blur" />
     <div id="gl--gradient" />
 
-    <div class="video-wrapper">
-      <video type="video/mp4" src="/videos/caustics.mp4" autoplay muted loop playsinline />
+    <div :class="['video-wrapper', { 'is-mobile': $store.isMobile }]">
+      <video
+        type="video/mp4"
+        :src="$store.isMobile ? `/videos/caustics_mobile.mp4` : `/videos/caustics.mp4`"
+        autoplay
+        muted
+        loop
+        playsinline
+      />
     </div>
 
     <div
       :class="[
         'sound__grid',
         $store.currentCorner,
-        { 'is-dark': $store.midiData[1].value > 55, 'is-ipad': $store.isIpad }
+        {
+          'is-dark': $store.midiData[1].value > 55,
+          'is-ipad': $store.isIpad,
+          'is-mobile': $store.isMobile
+        }
       ]"
     >
       <div />
@@ -261,8 +272,33 @@ onMounted(() => {
   width: 100%;
   height: 100%;
   z-index: 100;
-  mix-blend-mode: hue;
+  opacity: 0.85;
   // mix-blend-mode: plus-lighter;
+
+  &:not(.is-mobile) {
+    mix-blend-mode: hue;
+    opacity: 1;
+    // mix-blend-mode: plus-lighter;
+  }
+
+  &.is-mobile {
+    > div {
+      filter: none !important;
+      width: 512px !important;
+
+      &:nth-child(3) {
+        &::before {
+          background: radial-gradient(circle, #005577cc 0%, transparent 100%);
+        }
+      }
+
+      &:nth-child(4) {
+        &::before {
+          background: radial-gradient(circle, #00ff22dd 0%, transparent 100%);
+        }
+      }
+    }
+  }
 
   &.is-ipad {
     height: 65%;
@@ -478,8 +514,12 @@ onMounted(() => {
     width: 100%;
     height: 100%;
     z-index: 2;
-    mix-blend-mode: var(--caustics-blend);
-    opacity: var(--caustics-opacity);
+    opacity: 0.2;
+
+    &:not(.is-mobile) {
+      mix-blend-mode: var(--caustics-blend);
+      opacity: var(--caustics-opacity);
+    }
   }
 
   video {
