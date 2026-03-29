@@ -7,7 +7,10 @@
         v-for="(language, index) in PARSED_LOCALES"
         ref="$languageItems"
         :key="language.id"
-        :class="['language--item', { 'is-active': activeLanguage === index }]"
+        :class="[
+          'language--item',
+          { 'is-active': activeLanguage === index, 'is-ipad': $store.isIpad }
+        ]"
         @click="handleLanguageClick(language.id)"
       >
         <span>{{ language.label }}</span>
@@ -85,7 +88,7 @@ function getQueryParam(name: string): string | null {
 
 const $store = useAppStore()
 const qLanguage = getQueryParam('lang') || 'en'
-const activeLanguage = ref($store.isIpad ? -1 : 0)
+const activeLanguage = ref($store.isIpad ? 0 : 0)
 
 if ($store.isMobile) {
   activeLanguage.value = 0
@@ -325,18 +328,20 @@ tryOnMounted(() => {
         0 1px 3px rgba(0, 0, 0, 0.12);
 
       &.is-active {
-        background-color: var(--blue);
-        border: 0.5px solid rgba(255, 255, 255, 0.09);
+        &:not(.is-ipad) {
+          background-color: var(--blue);
+          border: 0.5px solid rgba(255, 255, 255, 0.09);
 
-        box-shadow:
-          0 1px 0 0 rgba(255, 255, 255, 0.5) inset,
-          0 -1px 0 0 rgba(255, 255, 255, 0.3) inset,
-          0 4px 24px rgba(0, 0, 0, 0.08),
-          0 1px 3px rgba(0, 0, 0, 0.12);
+          box-shadow:
+            0 1px 0 0 rgba(255, 255, 255, 0.5) inset,
+            0 -1px 0 0 rgba(255, 255, 255, 0.3) inset,
+            0 4px 24px rgba(0, 0, 0, 0.08),
+            0 1px 3px rgba(0, 0, 0, 0.12);
 
-        span {
-          color: white;
-          text-shadow: unset;
+          span {
+            color: white;
+            text-shadow: unset;
+          }
         }
       }
 
