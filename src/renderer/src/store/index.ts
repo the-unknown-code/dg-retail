@@ -23,7 +23,7 @@ export function getQueryParam(name: string): string | null {
   return params.get(name)
 }
 
-const isBuildIpad = true
+const isBuildIpad = false
 
 export const useAppStore = defineStore('app', {
   state: () => ({

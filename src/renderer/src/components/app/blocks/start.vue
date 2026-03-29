@@ -40,6 +40,25 @@
         <Jogwheel animate />
       </div>
     </div>
+
+    <div v-if="$store.isMobile" id="language">
+      <p>{{ qLanguage }}</p>
+      <svg width="15" height="9" viewBox="0 0 15 9" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M6.77819 8.19239C6.38767 7.80186 6.38767 7.1687 6.77819 6.77817L13.2635 0.292969C13.6541 -0.0975555 14.2872 -0.0975555 14.6778 0.292969C15.0683 0.683493 15.0683 1.31666 14.6778 1.70718L8.19241 8.19239C7.80188 8.58291 7.16872 8.58291 6.77819 8.19239Z"
+          fill="white"
+        />
+        <path
+          d="M8.19241 8.19239C8.58293 7.80186 8.58293 7.1687 8.19241 6.77817L1.70711 0.292893C1.31658 -0.0976311 0.683418 -0.0976311 0.292893 0.292893C-0.0976311 0.683417 -0.0976311 1.31658 0.292893 1.70711L6.77819 8.19239C7.16872 8.58291 7.80188 8.58291 8.19241 8.19239Z"
+          fill="white"
+        />
+      </svg>
+      <select @change="handleLanguageChange">
+        <option v-for="locale in LOCALES" :key="locale.id" :value="locale.id">
+          {{ locale.label }}
+        </option>
+      </select>
+    </div>
   </div>
 </template>
 
@@ -58,14 +77,29 @@ const props = defineProps<{
   qrCode: boolean
 }>()
 
+function getQueryParam(name: string): string | null {
+  if (typeof window === 'undefined') return null
+  const params = new URLSearchParams(window.location.search)
+  return params.get(name)
+}
+
 const $store = useAppStore()
+const qLanguage = getQueryParam('lang') || 'en'
+const activeLanguage = ref($store.isIpad ? -1 : 0)
+
+if ($store.isMobile) {
+  activeLanguage.value = 0
+}
 
 const PARSED_LOCALES = computed(() => {
   // Find the starting language
   let startingLanguage = $store.config.startingLanguage || LOCALES[0].id
-  if ($store.isIpad) {
+  if ($store.isIpad && !$store.isMobile) {
     startingLanguage = 'en'
+  } else if ($store.isMobile) {
+    startingLanguage = qLanguage
   }
+
   const startingIndex = LOCALES.findIndex((locale) => locale.id === startingLanguage)
 
   if (startingIndex === -1) return LOCALES
@@ -78,8 +112,22 @@ const PARSED_LOCALES = computed(() => {
   ]
 })
 
+const handleLanguageChange = (event: Event): void => {
+  const target = event.target as HTMLSelectElement
+  const selectedLang = target.value
+
+  // Update the URL with new "lang" param while keeping other params intact
+  const url = new URL(window.location.href)
+  if (url.searchParams.has('lang')) {
+    url.searchParams.set('lang', selectedLang)
+  } else {
+    url.searchParams.append('lang', selectedLang)
+  }
+  window.location.href = url.toString()
+}
+
 const $languageItems = ref<HTMLDivElement[]>([])
-const activeLanguage = ref($store.isIpad ? -1 : 0)
+
 const currentLanguage = $store.isIpad
   ? ref('en')
   : ref(PARSED_LOCALES.value[activeLanguage.value].id)
@@ -90,11 +138,19 @@ const CENTER = 64
 const DEADZONE = 4
 
 const handleLanguageClick = (id: string): void => {
-  $store.sessionData.language = id
-  props.callback?.()
-  setTimeout(() => {
-    document.documentElement.lang = id
-  }, 1000)
+  if (!$store.isMobile) {
+    $store.sessionData.language = id
+    props.callback?.()
+    setTimeout(() => {
+      document.documentElement.lang = id
+    }, 1000)
+  } else {
+    props.callback?.()
+    setTimeout(() => {
+      $store.sessionData.language = qLanguage
+      document.documentElement.lang = id
+    }, 1000)
+  }
 }
 
 const handleStart = (): void => {
@@ -141,6 +197,29 @@ tryOnMounted(() => {
 </script>
 
 <style lang="scss" scoped>
+#language {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  width: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100000;
+  gap: 8px;
+
+  p {
+    font-size: 14px;
+  }
+
+  select {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+  }
+}
+
 .svg-filters {
   position: fixed;
   width: 0;
