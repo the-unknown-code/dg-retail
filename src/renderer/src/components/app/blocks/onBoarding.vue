@@ -5,7 +5,14 @@
     </div>
 
     <div ref="$headphones" class="onboarding__content headphones p default">
-      <animated-text :key="keyHeadphones" :text="$store.getLocale('onboarding_02_title')" />
+      <animated-text
+        :key="keyHeadphones"
+        :text="
+          $store.isMobile
+            ? $store.getLocale('onboarding_02_title_mobile')
+            : $store.getLocale('onboarding_02_title')
+        "
+      />
       <div v-if="!$store.isMobile" class="icon">
         <img src="/assets/headphones.svg" class="headphones-pulse" />
         <div ref="$content" class="p">
@@ -15,14 +22,28 @@
     </div>
 
     <div ref="$fader" class="onboarding__content fader p default">
-      <animated-text :key="keyFader" :text="$store.getLocale('onboarding_03_title')" />
+      <animated-text
+        :key="keyFader"
+        :text="
+          $store.isMobile
+            ? $store.getLocale('onboarding_03_title_mobile')
+            : $store.getLocale('onboarding_03_title')
+        "
+      />
       <div>
         <Fader animate />
       </div>
     </div>
 
     <div ref="$jogwheels" class="onboarding__content jogwheels p default">
-      <animated-text :key="keyJogwheels" :text="$store.getLocale('onboarding_04')" />
+      <animated-text
+        :key="keyJogwheels"
+        :text="
+          $store.isMobile
+            ? $store.getLocale('onboarding_04_mobile')
+            : $store.getLocale('onboarding_04')
+        "
+      />
       <div class="console">
         <div>
           <Jogwheel animate />

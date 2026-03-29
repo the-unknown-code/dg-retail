@@ -17,13 +17,16 @@
       <img src="/assets/start.png" alt="Start" />
     </div>
 
-    <div v-if="!$store.isMobile" class="info p">
+    <div class="info p">
       <animated-text
         :key="activeLanguage"
         :text="
-          $store.isIpad
-            ? 'Select your language'
-            : PARSED_LOCALES[activeLanguage].translations.language_selection
+          $store.isMobile
+            ? PARSED_LOCALES[activeLanguage === -1 ? 0 : activeLanguage].translations
+                .language_selection_mobile
+            : $store.isIpad
+              ? PARSED_LOCALES[activeLanguage].translations.language_selection_ipad
+              : PARSED_LOCALES[activeLanguage].translations.language_selection
         "
         :speed="0.5"
       />
@@ -59,7 +62,10 @@ const $store = useAppStore()
 
 const PARSED_LOCALES = computed(() => {
   // Find the starting language
-  const startingLanguage = $store.config.startingLanguage || LOCALES[0].id
+  let startingLanguage = $store.config.startingLanguage || LOCALES[0].id
+  if ($store.isIpad) {
+    startingLanguage = 'en'
+  }
   const startingIndex = LOCALES.findIndex((locale) => locale.id === startingLanguage)
 
   if (startingIndex === -1) return LOCALES
