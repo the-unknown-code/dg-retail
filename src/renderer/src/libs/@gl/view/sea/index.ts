@@ -16,12 +16,6 @@ import { randomFloat } from '../../libs/Math'
 
 // const THRESHOLD_PX = 1
 
-function getQueryParam(name: string): string | null {
-  if (typeof window === 'undefined') return null
-  const params = new URLSearchParams(window.location.search)
-  return params.get(name)
-}
-
 export default class SeaScene extends M0AbstractScene {
   #waterSimulation: WaterSimulation
   #water: Water
