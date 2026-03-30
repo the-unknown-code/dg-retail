@@ -236,7 +236,7 @@ const applySpeed = (speed: number): void => {
     pinState.vy = Math.abs(speed) / 10
   }
 
-  pinState.y = clamp(pinState.y, -bounds.y, 75)
+  pinState.y = clamp(pinState.y, -bounds.y, 45)
 
   pinState.nx = pinState.x / bounds.x
   pinState.ny = pinState.y / bounds.y
