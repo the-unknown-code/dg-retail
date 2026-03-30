@@ -23,7 +23,7 @@ export function getQueryParam(name: string): string | null {
   return params.get(name)
 }
 
-const isBuildIpad = true
+const isBuildIpad = false
 const isMobile = true
 
 export const useAppStore = defineStore('app', {
@@ -44,7 +44,7 @@ export const useAppStore = defineStore('app', {
     isElectron: false,
     currentCorner: null as CornerZone | null,
     isMobile: getQueryParam('mobile') === '1' || isMobile,
-    isIpad: getQueryParam('ipad') === '1' || isBuildIpad,
+    isIpad: getQueryParam('ipad') === '1' || isBuildIpad || isMobile,
     isJogwheel: false,
     midiFound: false,
     scale: 1.25,

@@ -68,7 +68,7 @@ export default class SeaScene extends M0AbstractScene {
     this.#resume = resume
 
     const $store = useAppStore()
-    const iPad = getQueryParam('ipad') === '1'
+    const iPad = $store.isIpad
 
     if (!iPad) {
       watch(
