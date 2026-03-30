@@ -78,6 +78,17 @@ const fadeAudio = (volume: number = 0): void => {
 watch(
   () => $store.appState,
   (value) => {
+    if (value === APP_STATE.QR_CODE) {
+      // Set 3 query parameters in the current URL
+      const url = new URL(window.location.href)
+      url.searchParams.set('lang', $store.sessionData.language || 'en')
+      url.searchParams.set('mood', $store.sessionData.mood)
+      url.searchParams.set('fader', $store.midiData[1].value.toString() || '0')
+      window.history.replaceState({}, '', url.toString())
+
+      $store.isGame = false
+    }
+
     if (value === APP_STATE.MIXING) {
       setTimeout(() => {
         if (!$background.value) return

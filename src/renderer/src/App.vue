@@ -1,15 +1,22 @@
 <template>
-  <main v-if="isSoundStarted || isPreloaded" @click="handleStart">
-    <Three>
-      <App />
-    </Three>
+  <transition name="quick-fade" mode="out-in">
+    <template v-if="$store.isGame">
+      <main v-if="isSoundStarted || isPreloaded" @click="handleStart">
+        <Three>
+          <App />
+        </Three>
 
-    <MidiDebug />
-    <ControllerUI />
-    <ControllerSound :sound-callback="soundCallback" />
+        <MidiDebug />
+        <ControllerUI />
+        <ControllerSound :sound-callback="soundCallback" />
 
-    <div class="background" />
-  </main>
+        <div class="background" />
+      </main>
+    </template>
+    <template v-else>
+      <Landing />
+    </template>
+  </transition>
 </template>
 
 <script setup lang="ts">
@@ -21,6 +28,7 @@ import ControllerUI from './components/app/controller/ui.vue'
 import ControllerSound from './components/app/controller/sound.vue'
 import Midi from './libs/@midi'
 import SoundManager, { setMuffle, setNightReverb } from './libs/@tone'
+import Landing from './components/app/blocks/landing.vue'
 import App from './components/app/index.vue'
 import { useAppStore } from './store'
 import { APP_STATE } from './libs/@global/const'
@@ -82,8 +90,19 @@ watch(
   }
 )
 
+function getQueryParam(name: string): string | null {
+  if (typeof window === 'undefined') return null
+  const params = new URLSearchParams(window.location.search)
+  return params.get(name)
+}
+
 tryOnMounted(async () => {
   await nextTick()
+  if ($store.isMobile) {
+    document.documentElement.classList.add('is-mobile')
+    const lang = getQueryParam('lang') ?? 'en'
+    $store.sessionData.language = lang
+  }
 
   if (isElectron) {
     const config: {

@@ -366,7 +366,7 @@ onMounted(() => {
         content: '';
         position: absolute;
         inset: 0;
-        background: radial-gradient(circle, #f5d06bed 0%, transparent 80%);
+        background: radial-gradient(circle, #f5d06bed 0%, transparent 60%);
         border-radius: 50%;
         //filter: blur(20px);
         opacity: 0.9;
@@ -381,7 +381,7 @@ onMounted(() => {
         content: '';
         position: absolute;
         inset: 0;
-        background: radial-gradient(circle, #f640c0cc 0%, transparent 80%);
+        background: radial-gradient(circle, #f640c0cc 0%, transparent 60%);
         border-radius: 50%;
         //filter: blur(20px);
         opacity: 0.9;
@@ -396,7 +396,7 @@ onMounted(() => {
         content: '';
         position: absolute;
         inset: 0;
-        background: radial-gradient(circle, #537378 60%, transparent 80%);
+        background: radial-gradient(circle, #537378 60%, transparent 60%);
         border-radius: 50%;
         //filter: blur(20px);
         opacity: 1;
@@ -411,7 +411,7 @@ onMounted(() => {
         content: '';
         position: absolute;
         inset: 0;
-        background: radial-gradient(circle, #649b83 0%, transparent 80%);
+        background: radial-gradient(circle, #649b83 0%, transparent 60%);
         border-radius: 50%;
         //filter: blur(20px);
         opacity: 0.8;

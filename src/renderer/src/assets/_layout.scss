@@ -1,14 +1,16 @@
-html,
-body {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vh;
-  height: 100vw;
+html {
   font-family: 'Futura Cyrillic', sans-serif;
   font-size: 22px;
   color: var(--white);
   overscroll-behavior: none;
+
+  &:not(.is-mobile) {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+  }
 
   * {
     user-select: none !important;

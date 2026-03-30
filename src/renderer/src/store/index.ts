@@ -23,10 +23,12 @@ export function getQueryParam(name: string): string | null {
   return params.get(name)
 }
 
-const isBuildIpad = false
+const isBuildIpad = true
+const isMobile = true
 
 export const useAppStore = defineStore('app', {
   state: () => ({
+    isGame: getQueryParam('mood') === null,
     config: {
       startingLanguage: 'fr',
       machineId: '',
@@ -41,7 +43,7 @@ export const useAppStore = defineStore('app', {
     isActive: false,
     isElectron: false,
     currentCorner: null as CornerZone | null,
-    isMobile: getQueryParam('mobile') === '1',
+    isMobile: getQueryParam('mobile') === '1' || isMobile,
     isIpad: getQueryParam('ipad') === '1' || isBuildIpad,
     isJogwheel: false,
     midiFound: false,
@@ -52,7 +54,7 @@ export const useAppStore = defineStore('app', {
       BL: 0,
       BR: 0
     } as { TL: number; TR: number; BL: number; BR: number },
-    playDuration: getQueryParam('debug') === '1' ? 300 : 40,
+    playDuration: getQueryParam('debug') === '1' ? 300 : isMobile ? 25 : 40,
     qrDuration: getQueryParam('debug') === '1' ? 15 : 15,
     tweakpane: getQueryParam('debug') === '1' ? new Pane() : null,
     midiData: {
@@ -89,7 +91,8 @@ export const useAppStore = defineStore('app', {
       }
     },
     getLocale(label: string) {
-      return LOCALES.find((locale) => locale.id === this.sessionData.language)?.translations[label]
+      return LOCALES.find((locale) => locale.id === (this.sessionData.language || 'en'))
+        ?.translations[label]
     }
   }
 })
