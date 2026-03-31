@@ -222,9 +222,11 @@ const state = {
 
 const applySpeed = (speed: number): void => {
   const pinState = { ...$store.pinState }
+  const PIN_SIZE = $store.isMobile ? -8 : 16
+
   const bounds = {
-    x: window.innerWidth / 2 - 16,
-    y: window.innerHeight / 2 - 16
+    x: window.innerWidth / 2 - PIN_SIZE,
+    y: window.innerHeight / 2 - PIN_SIZE
   }
 
   const padding = 40
@@ -236,7 +238,7 @@ const applySpeed = (speed: number): void => {
     pinState.vy = Math.abs(speed) / 10
   }
 
-  const max = $store.isMobile ? -10 : 45
+  const max = $store.isMobile ? -2 : 45
   pinState.y = clamp(pinState.y, -bounds.y, max)
 
   pinState.nx = pinState.x / bounds.x

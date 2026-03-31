@@ -192,9 +192,9 @@ const initialize = (): void => {
 
   Draggable.create($fader.value, {
     type: 'y',
-    bounds: $svg.value,
+    bounds: { minY: -80, maxY: 80 },
     onDrag() {
-      const bounds = this.maxY - this.minY
+      const bounds = 80 - -80
       const midi = Math.round(((this.y - this.minY) / bounds) * 127)
       $store.updateChannel(1, midi, 0, 0, 0)
     }
