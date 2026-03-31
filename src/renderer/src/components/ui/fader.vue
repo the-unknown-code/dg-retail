@@ -184,7 +184,7 @@ const props = defineProps<{
 }>()
 
 const $store = useAppStore()
-const $svg = ref<HTMLDivElement | null>(null)
+// const $svg = ref<HTMLDivElement | null>(null)
 const $fader = ref<HTMLDivElement | null>(null)
 
 const initialize = (): void => {
