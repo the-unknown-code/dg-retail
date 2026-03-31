@@ -75,6 +75,30 @@ const fadeAudio = (volume: number = 0): void => {
   ambientPlayer.volume.rampTo(db, 1)
 }
 
+const getDominantCorner = (corners: Record<string, number>): string => {
+  const max = Math.max(...Object.values(corners))
+  const topCorners = Object.entries(corners)
+    .filter(([, count]) => count === max)
+    .map(([corner]) => corner)
+
+  return topCorners[Math.floor(Math.random() * topCorners.length)]
+}
+
+const getMood = (corner): string => {
+  switch (corner) {
+    case 'TL':
+      return 'funky'
+    case 'TR':
+      return 'party'
+    case 'BL':
+      return 'chill'
+    case 'BR':
+      return 'groovy'
+    default:
+      return 'funky'
+  }
+}
+
 watch(
   () => $store.appState,
   (value) => {
@@ -82,7 +106,7 @@ watch(
       // Set 3 query parameters in the current URL
       const url = new URL(window.location.href)
       url.searchParams.set('lang', $store.sessionData.language || 'en')
-      url.searchParams.set('mood', $store.sessionData.mood)
+      url.searchParams.set('mood', getMood(getDominantCorner($store.corners)))
       url.searchParams.set('fader', $store.midiData[1].value.toString() || '0')
       window.history.replaceState({}, '', url.toString())
 
