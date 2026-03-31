@@ -85,7 +85,7 @@
         <a :href="activePlaylist?.url" target="_blank">
           <btn :label="$store.getLocale('landing_discover')" />
         </a>
-        <a class="icon" :href="activeWallpaper" download="wallpaper.png">
+        <div class="icon" @click="restartApp">
           <svg
             width="18"
             height="18"
@@ -98,7 +98,7 @@
               fill="white"
             />
           </svg>
-        </a>
+        </div>
       </div>
     </div>
     <footer class="footer">
@@ -167,6 +167,18 @@ const playlists = [
     image: '/landing/images/product-party.jpg'
   }
 ]
+
+const restartApp = (): void => {
+  const url = new URL(window.location.href)
+  // Remove all existing search params
+  url.search = ''
+  // If lang param exists in the current URL, put it back
+  const lang = getQueryParam('lang')
+  if (lang) {
+    url.searchParams.set('lang', lang)
+  }
+  window.location.href = url.toString()
+}
 
 const handleLanguageChange = (event: Event): void => {
   const target = event.target as HTMLSelectElement

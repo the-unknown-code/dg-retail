@@ -236,7 +236,8 @@ const applySpeed = (speed: number): void => {
     pinState.vy = Math.abs(speed) / 10
   }
 
-  pinState.y = clamp(pinState.y, -bounds.y, -10)
+  const max = $store.isMobile ? -10 : 45
+  pinState.y = clamp(pinState.y, -bounds.y, max)
 
   pinState.nx = pinState.x / bounds.x
   pinState.ny = pinState.y / bounds.y
@@ -332,7 +333,9 @@ const initialize = (): void => {
       if (da < -Math.PI) da += Math.PI * 2
 
       state.velocity = da / (dt / 1000)
-      applySpeed((state.velocity / Math.PI) * 12)
+
+      const speed = $store.isMobile ? 6 : 12
+      applySpeed((state.velocity / Math.PI) * speed)
 
       state.lastAngle = currentAngle
       state.lastTime = now

@@ -4,6 +4,10 @@
       <animated-text :key="keyIntro" :text="$store.getLocale('onboarding_01')" />
     </div>
 
+    <div id="tutorial" class="p">
+      <animated-text :text="$store.getLocale('tutorial')" />
+    </div>
+
     <div ref="$headphones" class="onboarding__content headphones p default">
       <animated-text
         :key="keyHeadphones"
@@ -181,6 +185,23 @@ tryOnBeforeUnmount(() => {})
 
 .headphones-pulse {
   animation: headphones-pulse 2s infinite ease-in-out;
+}
+
+#tutorial {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 32px;
+  text-transform: uppercase;
+
+  > * {
+    font-size: 14px !important;
+  }
 }
 
 .onboarding {

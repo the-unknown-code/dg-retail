@@ -177,6 +177,14 @@ tryOnBeforeUnmount(() => {
     align-items: center;
     pointer-events: none;
     opacity: 0;
+
+    &:where(.is-mobile *) {
+      height: 65%;
+
+      > * {
+        transform: scale(0.65);
+      }
+    }
   }
 
   &__timeline {
