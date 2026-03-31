@@ -306,6 +306,7 @@ tryOnMounted(() => {
     &:where(.is-mobile *) {
       top: unset;
       bottom: 0;
+      transform: translateY(0) !important;
     }
   }
 
