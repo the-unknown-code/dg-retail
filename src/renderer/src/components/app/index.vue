@@ -71,7 +71,7 @@ const onMixing = (): void => {
 }
 
 const fadeAudio = (volume: number = 0): void => {
-  const db = volume <= 0 ? -80 : Tone.gainToDb(volume)
+  const db = volume <= 0 ? -80 : -24
   ambientPlayer.volume.rampTo(db, 1)
 }
 
@@ -138,6 +138,7 @@ const onPlayAudio = (): void => {
 
 const playAmbientAudio = (): void => {
   Tone.loaded().then(() => {
+    ambientPlayer.volume.value = -24 // Volume to 0.5 (in dB: gainToDb(0.5) ≈ -6)
     ambientPlayer.start()
   })
 }

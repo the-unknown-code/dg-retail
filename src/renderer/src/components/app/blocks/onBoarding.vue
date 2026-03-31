@@ -2,6 +2,28 @@
   <div class="onboarding">
     <div ref="$intro" class="onboarding__intro p default">
       <animated-text :key="keyIntro" :text="$store.getLocale('onboarding_01')" />
+      <div v-show="!$store.isMobile" class="mood">
+        <div ref="$moodTL" class="p">
+          <span>
+            <animated-text :text="'funky'" />
+          </span>
+        </div>
+        <div ref="$moodTR" class="p">
+          <span>
+            <animated-text :text="'party'" />
+          </span>
+        </div>
+        <div ref="$moodBL" class="p">
+          <span>
+            <animated-text :text="'chill'" />
+          </span>
+        </div>
+        <div ref="$moodBR" class="p">
+          <span>
+            <animated-text :text="'groovy'" />
+          </span>
+        </div>
+      </div>
     </div>
 
     <div id="tutorial" class="p">
@@ -77,6 +99,11 @@ const $headphones = ref<HTMLDivElement>()
 const $fader = ref<HTMLDivElement>()
 const $jogwheels = ref<HTMLDivElement>()
 
+const $moodTL = ref<HTMLDivElement>()
+const $moodTR = ref<HTMLDivElement>()
+const $moodBL = ref<HTMLDivElement>()
+const $moodBR = ref<HTMLDivElement>()
+
 const keyIntro = ref(0)
 const keyHeadphones = ref(0)
 const keyFader = ref(0)
@@ -110,7 +137,7 @@ const initialize = (): void => {
   })
 
   timeline.to($fader.value, {
-    delay: 4.5,
+    delay: 3.5,
     opacity: 1,
     duration: 1,
     ease: 'power2.inOut',
@@ -126,7 +153,7 @@ const initialize = (): void => {
   })
 
   timeline.to($jogwheels.value, {
-    delay: 4.5,
+    delay: 3.5,
     opacity: 1,
     duration: 1,
     ease: 'power2.inOut',
@@ -142,7 +169,7 @@ const initialize = (): void => {
   })
 
   timeline.to($intro.value, {
-    delay: 4.5,
+    delay: 3.5,
     opacity: 1,
     duration: 1,
     ease: 'power2.inOut',
@@ -154,11 +181,49 @@ const initialize = (): void => {
         duration: 1,
         ease: 'power2.inOut'
       })
+
+      const delay = 3.5
+
+      gsap.to($moodTL.value as unknown as HTMLDivElement, {
+        opacity: 0,
+        delay,
+        duration: 1,
+        ease: 'power2.inOut',
+        x: -200,
+        y: -200
+      })
+
+      gsap.to($moodTR.value as unknown as HTMLDivElement, {
+        opacity: 0,
+        delay,
+        duration: 1,
+        ease: 'power2.inOut',
+        x: 200,
+        y: -200
+      })
+
+      gsap.to($moodBL.value as unknown as HTMLDivElement, {
+        opacity: 0,
+        delay,
+        duration: 1,
+        ease: 'power2.inOut',
+        x: -200,
+        y: 200
+      })
+
+      gsap.to($moodBR.value as unknown as HTMLDivElement, {
+        opacity: 0,
+        delay,
+        duration: 1,
+        ease: 'power2.inOut',
+        x: 200,
+        y: 200
+      })
     },
     onComplete: () => {
       setTimeout(() => {
         $store.appState = APP_STATE.MIXING
-      }, 3500)
+      }, 2500)
     }
   })
 }
@@ -196,11 +261,19 @@ tryOnBeforeUnmount(() => {})
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-bottom: 32px;
+  padding-bottom: 86px;
   text-transform: uppercase;
 
   > * {
-    font-size: 14px !important;
+    font-size: 22px !important;
+  }
+
+  &:where(.is-mobile *) {
+    padding-bottom: 32px;
+
+    > * {
+      font-size: 14px !important;
+    }
   }
 }
 
@@ -235,6 +308,58 @@ tryOnBeforeUnmount(() => {})
     justify-content: center;
     align-items: center;
     opacity: 0;
+
+    .mood {
+      position: absolute;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 320px;
+
+      > div {
+        position: absolute;
+        text-align: center;
+
+        span {
+          position: relative;
+          display: block;
+        }
+
+        &:nth-child(1) {
+          top: -100px;
+          left: 0px;
+
+          span {
+            transform: translateX(-50%);
+          }
+        }
+        &:nth-child(2) {
+          top: -100px;
+          right: 0px;
+
+          span {
+            transform: translateX(50%);
+          }
+        }
+        &:nth-child(3) {
+          bottom: -100px;
+          left: 0px;
+
+          span {
+            transform: translateX(-50%);
+          }
+        }
+        &:nth-child(4) {
+          bottom: -100px;
+          right: 0px;
+
+          span {
+            transform: translateX(50%);
+          }
+        }
+      }
+    }
   }
 
   .p {

@@ -396,7 +396,7 @@ onMounted(() => {
         content: '';
         position: absolute;
         inset: 0;
-        background: radial-gradient(circle, #537378 60%, transparent 60%);
+        background: radial-gradient(circle, #537378 0%, transparent 60%);
         border-radius: 50%;
         //filter: blur(20px);
         opacity: 1;

@@ -169,7 +169,7 @@ const applyMovement = (rawValue: number, axis: 'x' | 'y'): void => {
 watch(
   () => $store.midiData[2].value,
   (value) => {
-    if ($store.appState !== APP_STATE.MIXING) return
+    if ($store.appState !== APP_STATE.MIXING && $store.appState !== APP_STATE.ONBOARDING) return
     applyMovement(value, 'x')
   }
 )
@@ -177,7 +177,7 @@ watch(
 watch(
   () => $store.midiData[3].value,
   (value) => {
-    if ($store.appState !== APP_STATE.MIXING) return
+    if ($store.appState !== APP_STATE.MIXING && $store.appState !== APP_STATE.ONBOARDING) return
     applyMovement(value, 'y')
   }
 )
@@ -193,7 +193,10 @@ watch(currentCorner, (value) => {
 watch(
   () => $store.pinState,
   () => {
-    if ($store.appState === APP_STATE.MIXING && $store.isIpad) {
+    if (
+      ($store.appState === APP_STATE.MIXING || $store.appState === APP_STATE.ONBOARDING) &&
+      $store.isIpad
+    ) {
       if (!$pin.value) return
 
       if (!$store.isIpad) {

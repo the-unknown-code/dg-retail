@@ -68,7 +68,11 @@ export default class SeaScene extends M0AbstractScene {
       watch(
         () => this.#store.midiData[2].value,
         () => {
-          if (this.#store.appState !== APP_STATE.MIXING) return
+          if (
+            this.#store.appState !== APP_STATE.MIXING &&
+            this.#store.appState !== APP_STATE.ONBOARDING
+          )
+            return
 
           const o = this.#store.pinState
           const scale = $store.scale
@@ -88,7 +92,11 @@ export default class SeaScene extends M0AbstractScene {
       watch(
         () => this.#store.midiData[3].value,
         () => {
-          if (this.#store.appState !== APP_STATE.MIXING) return
+          if (
+            this.#store.appState !== APP_STATE.MIXING &&
+            this.#store.appState !== APP_STATE.ONBOARDING
+          )
+            return
 
           const o = this.#store.pinState
           const scale = $store.scale

@@ -295,7 +295,8 @@ tryOnMounted(() => {
 
   .info {
     position: absolute;
-    bottom: 44px;
+    top: 50%;
+    transform: translateY(calc(-50% - 86px));
     left: 0;
     width: 100%;
     text-align: center;
