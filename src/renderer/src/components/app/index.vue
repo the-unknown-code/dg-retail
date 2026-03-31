@@ -102,7 +102,7 @@ const getMood = (corner): string => {
 watch(
   () => $store.appState,
   (value) => {
-    if (value === APP_STATE.QR_CODE) {
+    if (value === APP_STATE.QR_CODE && $store.isMobile) {
       // Set 3 query parameters in the current URL
       const url = new URL(window.location.href)
       url.searchParams.set('lang', $store.sessionData.language || 'en')

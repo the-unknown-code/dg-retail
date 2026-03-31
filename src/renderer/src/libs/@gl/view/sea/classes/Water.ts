@@ -68,7 +68,11 @@ export default class Water {
     watch(
       () => this.#pinia.midiData[1].value,
       () => {
-        if (this.#pinia.appState !== APP_STATE.MIXING) return
+        if (
+          this.#pinia.appState !== APP_STATE.MIXING &&
+          this.#pinia.appState !== APP_STATE.ONBOARDING
+        )
+          return
         gsap.killTweensOf(this._shader.uniforms.fader)
         this._shader.uniforms.fader.value = 1 - midiToExp(this.#pinia.midiData[1].value)
       }
@@ -77,7 +81,11 @@ export default class Water {
     watch(
       () => this.#pinia.midiData[1].input,
       () => {
-        if (this.#pinia.appState !== APP_STATE.MIXING) return
+        if (
+          this.#pinia.appState !== APP_STATE.MIXING &&
+          this.#pinia.appState !== APP_STATE.ONBOARDING
+        )
+          return
         gsap.killTweensOf(this._shader.uniforms.fader)
         this._shader.uniforms.fader.value = 1 - midiToExp(this.#pinia.midiData[1].value)
       }
@@ -86,7 +94,7 @@ export default class Water {
     watch(
       () => $store.appState,
       (value) => {
-        if (value !== APP_STATE.MIXING) return
+        if (value !== APP_STATE.MIXING && value !== APP_STATE.ONBOARDING) return
         const fade = 1 - this.#pinia.midiData[1].value / 127
         gsap.to(this._shader.uniforms.fader, {
           duration: 1,

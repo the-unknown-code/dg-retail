@@ -302,6 +302,11 @@ tryOnMounted(() => {
     text-align: center;
     font-size: 16px;
     padding: 64px 32px;
+
+    &:where(.is-mobile *) {
+      top: unset;
+      bottom: 0;
+    }
   }
 
   .language {
