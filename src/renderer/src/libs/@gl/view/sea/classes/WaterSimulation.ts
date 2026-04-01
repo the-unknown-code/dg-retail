@@ -94,10 +94,11 @@ export default class WaterSimulation {
       fragmentShader: normalFragmentShader
     })
 
+    const mult = $store.isMobile ? 1 : 1.5
     this._updateShader = new ShaderMaterial({
       uniforms: {
-        delta: { value: [1.5 / SIM_WIDTH, 1.5 / SIM_HEIGHT] }, // correct per-axis
-        uLerp: { value: $store.isMobile ? 0.909 : 0.989 },
+        delta: { value: [mult / SIM_WIDTH, mult / SIM_HEIGHT] }, // correct per-axis
+        uLerp: { value: $store.isMobile ? 0.911 : 0.989 },
         tDiffuse: { value: null }
       },
       vertexShader,
