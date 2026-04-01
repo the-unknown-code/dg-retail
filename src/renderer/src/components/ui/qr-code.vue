@@ -10,6 +10,10 @@ import { useAppStore } from '@renderer/store'
 import { tryOnMounted } from '@vueuse/core'
 import { ref } from 'vue'
 
+const props = defineProps<{
+  simple?: boolean
+}>()
+
 const $store = useAppStore()
 const $qrSVG = ref<HTMLDivElement>()
 
@@ -43,20 +47,21 @@ const initialize = () => {
   $store.sessionData.mood = getMood(getDominantCorner($store.corners))
   $store.sessionData.fader = $store.midiData[1].value
 
-  const qrSVG = new QRCodeSVG(
-    `https://lightbluedj.dolcegabbana.com/?lang=${$store.sessionData.language || 'en'}&mood=${$store.sessionData.mood}&fader=${$store.midiData[1].value}`,
-    {
-      level: 'Q',
-      fgColor: '#00A6E9',
-      image: {
-        source: new URL('assets/icon.png', window.location.href).href,
-        width: '30%',
-        height: '30%',
-        x: 'center',
-        y: 'center'
-      }
+  const url = props.simple
+    ? 'https://lightbluedj.dolcegabbana.com/'
+    : `https://lightbluedj.dolcegabbana.com/?lang=${$store.sessionData.language || 'en'}&mood=${$store.sessionData.mood}&fader=${$store.midiData[1].value}`
+
+  const qrSVG = new QRCodeSVG(url, {
+    level: 'Q',
+    fgColor: '#00A6E9',
+    image: {
+      source: new URL('assets/icon.png', window.location.href).href,
+      width: '30%',
+      height: '30%',
+      x: 'center',
+      y: 'center'
     }
-  )
+  })
 
   $qrSVG.value.innerHTML = qrSVG.toString() ?? ''
 }

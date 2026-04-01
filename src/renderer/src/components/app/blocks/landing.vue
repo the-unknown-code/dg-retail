@@ -148,22 +148,22 @@ const $store = useAppStore()
 const playlists = [
   {
     label: 'CHILL',
-    url: 'https://open.spotify.com/playlist/5vbHt95wONmVuHYzJ2uAxy?si=82d6a8a9137d4192&pt=b20f864b1fa5a1383e8',
+    url: 'https://open.spotify.com/playlist/5vbHt95wONmVuHYzJ2uAxy',
     image: '/landing/images/product-chill.jpg'
   },
   {
     label: 'GROOVY',
-    url: 'https://open.spotify.com/playlist/2eSsvveeov3wCtVmEc4C7M?si=307240d6ac2d43ad&pt=289b12f6e5e37c5d28d',
+    url: 'https://open.spotify.com/playlist/2eSsvveeov3wCtVmEc4C7M',
     image: '/landing/images/product-groovy.jpg'
   },
   {
     label: 'FUNKY',
-    url: 'https://open.spotify.com/playlist/138bOBJKY1Fx4JHEyTwGgO?si=b180c2aabce043e4&pt=9a0e8040a89d828f01a',
+    url: 'https://open.spotify.com/playlist/138bOBJKY1Fx4JHEyTwGgO?si=ULkfbO7bTvKJe6hvradOwQ',
     image: '/landing/images/product-funky.jpg'
   },
   {
     label: 'PARTY',
-    url: 'https://open.spotify.com/playlist/0IOizbhms86FHJU63Fm64t?si=1a8290ff1b234db7&pt=bacd3b97bcd143180be',
+    url: 'https://open.spotify.com/playlist/0IOizbhms86FHJU63Fm64t',
     image: '/landing/images/product-party.jpg'
   }
 ]

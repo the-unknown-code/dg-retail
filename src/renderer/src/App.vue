@@ -3,7 +3,8 @@
     <template v-if="$store.isGame">
       <main v-if="isSoundStarted || isPreloaded" @click="handleStart">
         <Three>
-          <App />
+          <App v-show="!isDesktop" />
+          <Desktop v-show="isDesktop" />
         </Three>
 
         <MidiDebug />
@@ -20,8 +21,8 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, ref, watch } from 'vue'
-import { tryOnMounted } from '@vueuse/core'
+import { nextTick, ref, watch, computed } from 'vue'
+import { tryOnMounted, useWindowSize } from '@vueuse/core'
 import Three from './components/three/index.vue'
 import MidiDebug from './components/app/debug/midi.vue'
 import ControllerUI from './components/app/controller/ui.vue'
@@ -34,10 +35,16 @@ import { useAppStore } from './store'
 import { APP_STATE } from './libs/@global/const'
 import { getConfig } from './utils/machineId'
 import { syncData } from './libs/@google/api'
+import Desktop from './components/app/blocks/desktop.vue'
 
 const $store = useAppStore()
 const isElectron = navigator.userAgent.toLowerCase().includes('electron')
 $store.isElectron = isElectron
+const { width } = useWindowSize()
+
+const isDesktop = computed(() => {
+  return $store.isMobile && width.value > 800
+})
 
 const isSoundStarted = ref(false)
 const isPreloaded = ref(false)
