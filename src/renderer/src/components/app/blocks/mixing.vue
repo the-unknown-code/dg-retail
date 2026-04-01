@@ -185,6 +185,14 @@ tryOnBeforeUnmount(() => {
         transform: scale(0.65);
       }
     }
+
+    &:where(.is-ipad *) {
+      height: 65%;
+
+      > * {
+        transform: scale(0.8);
+      }
+    }
   }
 
   &__timeline {

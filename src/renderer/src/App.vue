@@ -104,6 +104,10 @@ tryOnMounted(async () => {
     $store.sessionData.language = lang
   }
 
+  if ($store.isIpad) {
+    document.documentElement.classList.add('is-ipad')
+  }
+
   if (isElectron) {
     const config: {
       machineId: string
