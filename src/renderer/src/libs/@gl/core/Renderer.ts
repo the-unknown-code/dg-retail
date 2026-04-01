@@ -1,28 +1,18 @@
-import {
-  HalfFloatType,
-  LinearFilter,
-  NoToneMapping,
-  RGBAFormat,
-  SRGBColorSpace,
-  WebGLRenderer,
-  WebGLRenderTarget
-} from 'three'
-import { M0Store, M0Viewport } from './index'
+import { NoToneMapping, SRGBColorSpace, WebGLRenderer } from 'three'
+import { M0Store } from './index'
 
 import M0SceneManager from '../view/SceneManager'
-import { BlendFunction, EffectComposer, EffectPass, TextureEffect } from 'postprocessing'
 
 export default class M0Renderer {
   static instance: M0Renderer
 
   #store: M0Store
   #manager: M0SceneManager
-  #viewport: M0Viewport
+  //#viewport: M0Viewport
 
   #r: WebGLRenderer
-  #c!: EffectComposer
 
-  #diffuseRT: WebGLRenderTarget
+  //#diffuseRT: WebGLRenderTarget
 
   static getInstance(): M0Renderer {
     if (!M0Renderer.instance) {
@@ -32,7 +22,6 @@ export default class M0Renderer {
   }
 
   constructor() {
-    this.#viewport = M0Viewport.getInstance()
     this.#store = M0Store.getInstance()
     this.#manager = M0SceneManager.getInstance()
 
@@ -47,6 +36,7 @@ export default class M0Renderer {
     this.#r.toneMapping = NoToneMapping
     this.#r.setPixelRatio(this.#store.dpr)
 
+    /*
     this.#c = new EffectComposer(this.#r, {
       frameBufferType: HalfFloatType
     })
@@ -62,9 +52,11 @@ export default class M0Renderer {
 
     this.#diffuseRT.texture.needsUpdate = true
     this.#diffuseRT.texture.colorSpace = SRGBColorSpace
+    */
   }
 
   addPostProcessing(): void {
+    /*
     const { instance } = this.#manager.activeScene
     if (!instance) return
 
@@ -78,12 +70,11 @@ export default class M0Renderer {
     const effectPass = new EffectPass(instance.camera, textureEffect)
     effectPass.renderToScreen = true
     this.#c.addPass(effectPass)
+    */
   }
 
   resize(width: number, height: number): void {
     this.#r.setSize(width, height, false)
-    this.#c.setSize(width, height)
-    this.#diffuseRT.setSize(width, height)
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

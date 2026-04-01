@@ -57,7 +57,12 @@
         />
       </svg>
       <select @change="handleLanguageChange">
-        <option v-for="locale in LOCALES" :key="locale.id" :value="locale.id">
+        <option
+          v-for="locale in LOCALES"
+          :key="locale.id"
+          :value="locale.id"
+          :selected="locale.id === qLanguage"
+        >
           {{ locale.label }}
         </option>
       </select>

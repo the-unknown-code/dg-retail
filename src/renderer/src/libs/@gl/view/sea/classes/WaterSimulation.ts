@@ -1,8 +1,10 @@
 import {
   FloatType,
+  HalfFloatType,
   Mesh,
   OrthographicCamera,
   PlaneGeometry,
+  RGBAFormat,
   ShaderMaterial,
   Texture,
   WebGLRenderTarget
@@ -46,12 +48,24 @@ export default class WaterSimulation {
       SIM_HEIGHT = Math.round(SIM_WIDTH * 5)
     }
 
-    const size = $store.isMobile ? 128 : 256
+    const size = $store.isMobile ? 64 : 256
 
-    this._camera = new OrthographicCamera(0, 1, 1, 0, 0, 2000)
+    this._camera = new OrthographicCamera(-1, 1, 1, -1, 0, 2000)
     this._geometry = new PlaneGeometry(2, 2)
-    this._rtA = new WebGLRenderTarget(size, size, { type: FloatType })
-    this._rtB = new WebGLRenderTarget(size, size, { type: FloatType })
+
+    const rtType = $store.isMobile ? HalfFloatType : FloatType
+    this._rtA = new WebGLRenderTarget(size, size, {
+      type: rtType,
+      format: RGBAFormat,
+      depthBuffer: false,
+      stencilBuffer: false
+    })
+    this._rtB = new WebGLRenderTarget(size, size, {
+      type: rtType,
+      format: RGBAFormat,
+      depthBuffer: false,
+      stencilBuffer: false
+    })
 
     this._rt = this._rtA
 
@@ -78,6 +92,7 @@ export default class WaterSimulation {
     this._updateShader = new ShaderMaterial({
       uniforms: {
         delta: { value: [1.5 / SIM_WIDTH, 1.5 / SIM_HEIGHT] }, // correct per-axis
+        uLerp: { value: $store.isMobile ? 0.969 : 0.989 },
         tDiffuse: { value: null }
       },
       vertexShader,

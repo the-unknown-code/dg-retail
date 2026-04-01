@@ -8,7 +8,7 @@
     <div id="gl--blur" />
     <div id="gl--gradient" />
 
-    <div :class="['video-wrapper', { 'is-mobile': $store.isMobile }]">
+    <div v-if="!$store.isMobile" :class="['video-wrapper', { 'is-mobile': $store.isMobile }]">
       <video
         type="video/mp4"
         :src="$store.isMobile ? `/videos/caustics_mobile.mp4` : `/videos/caustics.mp4`"

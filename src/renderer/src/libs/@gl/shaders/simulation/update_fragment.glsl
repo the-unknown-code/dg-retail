@@ -2,6 +2,7 @@ precision highp float;
 precision highp int;
 
 uniform sampler2D tDiffuse;
+uniform float uLerp;
 uniform vec2 delta;
 varying vec2 coord;
 
@@ -24,7 +25,7 @@ void main() {
   info.g += (average - info.r) * 2.;
 
   /* attenuate the velocity a little so waves do not last forever */
-  info.g *= 0.989;
+  info.g *= uLerp;
 
   /* move the vertex along the velocity */
   info.r += info.g;

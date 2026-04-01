@@ -29,6 +29,7 @@ const isMobile = true
 export const useAppStore = defineStore('app', {
   state: () => ({
     isGame: getQueryParam('mood') === null,
+    utils: null as string | null,
     config: {
       startingLanguage: 'fr',
       machineId: '',

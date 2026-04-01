@@ -7,8 +7,8 @@ export default defineConfig({
   preload: {},
   renderer: {
     server: {
-      host: true,
-      port: 5173
+      host: '0.0.0.0', // expose to all network interfaces
+      port: 5173 // or whatever port you prefer
     },
     resolve: {
       alias: {
