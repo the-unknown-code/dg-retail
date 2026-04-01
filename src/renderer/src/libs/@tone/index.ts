@@ -19,6 +19,7 @@ const SOUND_GRID: Record<number, { label: string; color: string; player: Tone.Pl
   16: { label: 'B2', color: '#b6d7a8', player: null }
 }
 
+const MAX_VOLUME = 0.6
 const SILENT_DB = -80
 // const FADE_OUT = 1.5
 // const FADE_IN = 1.5
@@ -39,8 +40,9 @@ const reverb = new Tone.Reverb({
   wet: 0
 }).connect(muffle) // chain: reverb → muffle → masterVolume → destination
 
-export const fadeVolume = (volume: number = 1, rampTime: number = 1): void => {
-  const db = volume <= 0 ? SILENT_DB : Tone.gainToDb(volume)
+export const fadeVolume = (volume: number = MAX_VOLUME, rampTime: number = 1): void => {
+  const clamped = Math.min(volume, MAX_VOLUME)
+  const db = clamped <= 0 ? SILENT_DB : Tone.gainToDb(clamped)
   masterVolume.volume.rampTo(db, rampTime)
 }
 
@@ -179,7 +181,7 @@ export default class SoundManager {
     // Fade in the next sound
     next.volume.cancelScheduledValues(now)
     next.volume.setValueAtTime(SILENT_DB, now) // 👈 start silent
-    next.volume.linearRampToValueAtTime(0, now + this.FADE_TIME) // 👈 fade in to 0db
+    next.volume.linearRampToValueAtTime(Tone.gainToDb(MAX_VOLUME), now + this.FADE_TIME)
     next.start(now)
 
     if (progress > 0 && next.buffer.duration > 0) {

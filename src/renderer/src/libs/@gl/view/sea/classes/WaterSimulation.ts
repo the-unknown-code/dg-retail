@@ -43,17 +43,23 @@ export default class WaterSimulation {
     this.#renderer = renderer
     const $store = useAppStore()
 
-    if ($store.isIpad || $store.isMobile) {
+    const size = $store.isMobile ? 128 : 256
+
+    if ($store.isIpad) {
       SIM_WIDTH = 512
       SIM_HEIGHT = Math.round(SIM_WIDTH * 5)
     }
 
-    const size = $store.isMobile ? 64 : 256
+    if ($store.isMobile) {
+      SIM_WIDTH = size
+      SIM_HEIGHT = Math.round(SIM_WIDTH * 5)
+    }
 
     this._camera = new OrthographicCamera(-1, 1, 1, -1, 0, 2000)
     this._geometry = new PlaneGeometry(2, 2)
 
     const rtType = $store.isMobile ? HalfFloatType : FloatType
+
     this._rtA = new WebGLRenderTarget(size, size, {
       type: rtType,
       format: RGBAFormat,
@@ -66,7 +72,6 @@ export default class WaterSimulation {
       depthBuffer: false,
       stencilBuffer: false
     })
-
     this._rt = this._rtA
 
     this._dropShader = new ShaderMaterial({
@@ -92,7 +97,7 @@ export default class WaterSimulation {
     this._updateShader = new ShaderMaterial({
       uniforms: {
         delta: { value: [1.5 / SIM_WIDTH, 1.5 / SIM_HEIGHT] }, // correct per-axis
-        uLerp: { value: $store.isMobile ? 0.969 : 0.989 },
+        uLerp: { value: $store.isMobile ? 0.909 : 0.989 },
         tDiffuse: { value: null }
       },
       vertexShader,
