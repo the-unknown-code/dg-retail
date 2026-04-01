@@ -14,6 +14,9 @@ export default defineConfig({
     }
   },
   renderer: {
+    define: {
+      __IS_MOBILE_BUILD__: false
+    },
     server: {
       host: '0.0.0.0',
       port: 5173

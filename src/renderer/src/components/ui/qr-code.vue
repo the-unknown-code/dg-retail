@@ -44,7 +44,7 @@ const initialize = () => {
   $store.sessionData.fader = $store.midiData[1].value
 
   const qrSVG = new QRCodeSVG(
-    `https://dg-retail-landing.vercel.app/?lang=${$store.sessionData.language || 'en'}&mood=${$store.sessionData.mood}&fader=${$store.midiData[1].value}`,
+    `https://lightbluedj.dolcegabbana.com/?lang=${$store.sessionData.language || 'en'}&mood=${$store.sessionData.mood}&fader=${$store.midiData[1].value}`,
     {
       level: 'Q',
       fgColor: '#00A6E9',

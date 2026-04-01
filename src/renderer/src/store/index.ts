@@ -4,6 +4,7 @@ import { defineStore } from 'pinia'
 import { Pane } from 'tweakpane'
 import { LOCALES } from './locale'
 
+declare const __IS_MOBILE_BUILD__: boolean
 export type MidiChannelId = 1 | 2 | 3 | 60
 
 export interface MidiChannel {
@@ -24,7 +25,7 @@ export function getQueryParam(name: string): string | null {
 }
 
 const isBuildIpad = false
-const isMobile = true
+const isMobile = !__IS_MOBILE_BUILD__ && !navigator.userAgent.toLowerCase().includes('electron')
 
 export const useAppStore = defineStore('app', {
   state: () => ({
