@@ -148,22 +148,22 @@ const $store = useAppStore()
 const playlists = [
   {
     label: 'CHILL',
-    url: 'https://open.spotify.com/playlist/4oWoNQmxxDr7NlyENENcam?si=N9N5Cd9wRHGMFEiyOuc7nw&pi=KxKcgYobRgOAw',
+    url: 'https://open.spotify.com/playlist/5vbHt95wONmVuHYzJ2uAxy?si=82d6a8a9137d4192&pt=b20f864b1fa5a1383e8',
     image: '/landing/images/product-chill.jpg'
   },
   {
     label: 'GROOVY',
-    url: 'https://open.spotify.com/playlist/4z18EIIZ948U9mh3JFbddL?si=8zHhm9kgQE6dt7Ry7KcIpw&pi=NBein343S82me',
+    url: 'https://open.spotify.com/playlist/2eSsvveeov3wCtVmEc4C7M?si=307240d6ac2d43ad&pt=289b12f6e5e37c5d28d',
     image: '/landing/images/product-groovy.jpg'
   },
   {
     label: 'FUNKY',
-    url: 'https://open.spotify.com/playlist/5kI5SYjRFHLlnjKdbyyhNn?si=BAWJgn2hSw2KqKpS8KCTww&pi=zjbQdd_9QzS50',
+    url: 'https://open.spotify.com/playlist/138bOBJKY1Fx4JHEyTwGgO?si=b180c2aabce043e4&pt=9a0e8040a89d828f01a',
     image: '/landing/images/product-funky.jpg'
   },
   {
     label: 'PARTY',
-    url: 'https://open.spotify.com/playlist/2NL3uZrVLmBfLnqnDS2VE9?si=2Osm6eKtQjO3zrLzdsleqA&pi=WbsnqM07Qcmow',
+    url: 'https://open.spotify.com/playlist/0IOizbhms86FHJU63Fm64t?si=1a8290ff1b234db7&pt=bacd3b97bcd143180be',
     image: '/landing/images/product-party.jpg'
   }
 ]
